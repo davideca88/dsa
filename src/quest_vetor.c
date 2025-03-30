@@ -12,8 +12,8 @@ int main(){
     printf("Vetor sem ordenar: ");
     mostrarVetor(vet,tamVet);
     implementacaoBuscaSequencial(vet,tamVet);
-    meuSelectionSort(vet,tamVet);
-    //meuInsertSort(vet,tamVet);
+    //meuSelectionSort(vet,tamVet);
+    meuInsertSort(vet,tamVet);
     //meuQuickSort(vet,tamVet);
     //meuMergeSort(vet,tamVet);
     //meuBubbleSort(vet,tamVet);
