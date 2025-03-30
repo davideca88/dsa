@@ -27,9 +27,9 @@ void meuQuickSort(int vet[], unsigned tamvet);
 void meuMergeSortR(int vet[], int aux[], int inicio, int fim);
 void meuMergeSort(int vet[], int tamVet);
 void meuBubbleSort (int vet[], unsigned tamVet);
-int minhaBuscaSequencial(int vet[],int tamVet, int chave);
+int minhaBuscaSequencialVetor(int vet[], int tamVet, int chave);
 int minhaBuscaBinaria(int vet[],int tamVet,int chave);
-void implementacaoBuscaSequencial(int vet[], int tamVet);
+void implementacaoBuscaSequencialVetor(int vet[], int tamVet);
 void implementacaoBuscaBinaria(int vet[], int tamVet);
 
 #endif // _VETOR_H

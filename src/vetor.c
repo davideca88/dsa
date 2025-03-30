@@ -1,4 +1,4 @@
-//feito pelo maior coder do mundo mr.aed
+//feito pelo maior coder do mundo, mr.aed.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,10 +11,7 @@ void set_time(){
     srand(time(NULL));
     
 }
-/*
-Função que insere numeros aleatorios num vetor de n posicoes, 
-usando a função rand e time das bibliotecas stdlib time respectivamente.
-*/
+
 
 void inserirVetor(int vet[], unsigned tamVet){
     int x;
@@ -25,7 +22,7 @@ void inserirVetor(int vet[], unsigned tamVet){
     }
 }
 
-// Função de mostrar vetor para testes.
+
 void mostrarVetor(int vet[], unsigned tamVet){
     unsigned i;
     printf("[");
@@ -59,6 +56,7 @@ void meuSelectionSort(int vet[], unsigned tamVet){
 
 }
 
+
 void meuInsertSort (int vet[], int tamVet){
     int i,j,pivot;
 
@@ -76,28 +74,21 @@ void meuInsertSort (int vet[], int tamVet){
 }
 
 
-/* Versão 2
-usa a constante limiarInsercao (setada acima como 60) para o 
-quickSortR2 passar a ordenar apenas pedaços maiores que 60.
-O vetor fica parcialmente ordenado e a ordenação termina com a chamada para a
-ordenação por inserção
-implementa também a otimização proposta por Robert Sedgewick que mencionei hoje
-*/
 
 
 void meuQuickSortR(int vet[], int inicio, int fim) {
     int i,j;
-    int pivot;  // do mesmo tipo da minha chave de ordenacao (ou dos elem. de v)
-    int tmp; // do mesmo tipo dos elementos do vetor
+    int pivot;  
+    int tmp; 
     int meio;
     while(fim -inicio > 60) {
       meio = (inicio+fim)/2;
       pivot =  vet[meio];
       i= inicio;
       j = fim;
-      while(i <=j) {    // WHILE NO LUGAR DO IF QUE NORMALMENTE APARECERIA AQUI
-        while(vet[i] < pivot) { i++;}  // avanca enquanto está do lado certo
-        while(vet[j] > pivot) { j--;} // recua enquanto está do lado certo
+      while(i <=j) {    
+        while(vet[i] < pivot) { i++;}  
+        while(vet[j] > pivot) { j--;} 
         if(i <=j ) {
       tmp  = vet[i];
       vet[i] = vet[j];
@@ -106,25 +97,26 @@ void meuQuickSortR(int vet[], int inicio, int fim) {
       j--;
         } 
       }
-      if(j < meio)  {  // DECIDE QUE LADO VAI TER CHAMADA RECURSIVA E QUE LADO VAI SER TRATADO NESTA MESMA CHAMADA
-        meuQuickSortR(vet,inicio,j); // Lado esquerdo é tratado com chamada recursiva
-        inicio = i;  // Lado direito é tratado sem chamar recursivamente
+      if(j < meio)  {  
+        meuQuickSortR(vet,inicio,j); 
+        inicio = i;  
       }
       else {
-        meuQuickSortR(vet,i, fim); // Lado direito é tratado com chamada recursiva
-        fim = j;   // Lado direito é tratado sem chamar recursivamente
+        meuQuickSortR(vet,i, fim);
+        fim = j;  
       }
     }
 }
   
   
-/* usa a versão 2 e ordena por inserção para completar o trabalho
-experimentem pra ver como fica mais rápido */
+
   
 void meuQuickSort(int vet[], unsigned tamvet) {
     meuQuickSortR(vet,0, tamvet-1);
     meuInsertSort(vet,tamvet);
 }
+
+
 
 
 void meuMergeSortR(int vet[], int aux[], int inicio, int fim) {
@@ -148,7 +140,7 @@ void meuMergeSortR(int vet[], int aux[], int inicio, int fim) {
 }
   
   
-  
+
 void meuMergeSort(int vet[], int tamVet) {
     int *aux;
   
@@ -180,7 +172,7 @@ void meuBubbleSort (int vet[], unsigned tamVet) {
 
 
 
-int minhaBuscaSequencial(int vet[], int tamVet, int chave){
+int minhaBuscaSequencialVetor(int vet[], int tamVet, int chave){
     int i;
     for(i = 0; i < tamVet; i++){
 
@@ -223,16 +215,16 @@ int minhaBuscaBinaria(int vet[],int tamVet,int chave){
     return -1;
 }
 
-void implementacaoBuscaSequencial(int vet[], int tamVet){
+void implementacaoBuscaSequencialVetor(int vet[], int tamVet){
     int result, num_aleatorio;
 
     num_aleatorio = rand() % tamVet;
 
-    result = minhaBuscaSequencial(vet,tamVet,vet[num_aleatorio]);
+    result = minhaBuscaSequencialVetor(vet,tamVet,vet[num_aleatorio]);
 
     if(result){
 
-        printf("encontrei o %d na posicao %d\n",vet[result],result);
+        printf("usando busca sequencial encontrei o %d na posicao %d\n",vet[result],result);
 
     }
 
@@ -250,7 +242,7 @@ void implementacaoBuscaBinaria(int vet[], int tamVet){
 
     if(result){
 
-        printf("encontrei o %d na posicao %d\n",vet[result],result);
+        printf("usando busca binaria encontrei o %d na posicao %d\n",vet[result],result);
         
     }
 
