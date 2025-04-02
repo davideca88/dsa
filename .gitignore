@@ -3,3 +3,6 @@ testee
 testeee
 .vscode
 output
+*.o
+*.d
+.pt_br

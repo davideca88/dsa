@@ -1,9 +1,11 @@
 //feito pelo maior coder do mundo, mr.aed.
 
+// melhorado por aquele que é melhor, mr.aed II
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "../include/vetor.h"
+#include "../include/vector.h"
 
 
 void set_time(){
@@ -26,10 +28,10 @@ void randomize(int arr[], unsigned len){
 void print_arr(int arr[], unsigned len){
     unsigned i;
     printf("[");
-    printf("%d",vet[0]);
+    printf("%d",arr[0]);
     for(i = 1; i < len; i++){
         
-        printf(", %d",vet[i]);
+        printf(", %d",arr[i]);
     }
     printf("]\n");
 }
@@ -43,7 +45,7 @@ void s_sort(int arr[], unsigned len){
         min_pos = i;
 
         for(j = i+1; j < len; j++){
-            if(vet[j] < arr[min_pos]){
+            if(arr[j] < arr[min_pos]){
                 min_pos = j;
             }
         }
@@ -87,8 +89,8 @@ void q_sortR(int arr[], int beg, int end) {
       i= beg;
       j = end;
       while(i <=j) {    
-        while(vet[i] < pivot) { i++;}  
-        while(vet[j] > pivot) { j--;} 
+        while(arr[i] < pivot) { i++;}  
+        while(arr[j] > pivot) { j--;} 
         if(i <=j ) {
       tmp  = arr[i];
       arr[i] = arr[j];
@@ -98,11 +100,11 @@ void q_sortR(int arr[], int beg, int end) {
         } 
       }
       if(j < mid)  {  
-        q_sortR(vet,beg,j); 
+        q_sortR(arr,beg,j); 
         beg = i;  
       }
       else {
-        q_sortR(vet,i, end);
+        q_sortR(arr,i, end);
         end = j;  
       }
     }
@@ -111,9 +113,9 @@ void q_sortR(int arr[], int beg, int end) {
   
 
   
-void q_sort(int arr[], unsigned tamvet) {
-    q_sortR(vet,0, tamvet-1);
-    i_sort(vet,tamvet);
+void q_sort(int arr[], unsigned len) {
+    q_sortR(arr,0, len-1);
+    i_sort(arr,len);
 }
 
 
@@ -124,12 +126,12 @@ void m_sortR(int arr[], int aux[], int beg, int end) {
     if(beg < end) {
   
       int mid = (beg+end)/2;
-      m_sortR(vet, aux, beg, mid);
-      m_sortR(vet, aux, mid+1, end);
+      m_sortR(arr, aux, beg, mid);
+      m_sortR(arr, aux, mid+1, end);
     
       a = beg;  b = mid+1;   k = beg;
       while((a <= mid) && (b<=end)) {
-        if(vet[a] < arr[b]) {    aux[k] = arr[a];      a++;    }
+        if(arr[a] < arr[b]) {    aux[k] = arr[a];      a++;    }
         else            {    aux[k] = arr[b];      b++;    }
         k++;
       }
@@ -146,7 +148,7 @@ void m_sort(int arr[], int len) {
   
     aux =    (int*) malloc( sizeof(int)*len);
   
-    m_sortR(vet, aux, 0, len-1);
+    m_sortR(arr, aux, 0, len-1);
   
     free(aux);
 }
@@ -160,7 +162,7 @@ void b_sort (int arr[], unsigned len) {
 
         for (j = 0; j < len - 1; j++) {
 
-            if (vet[j] > arr[j + 1]) {
+            if (arr[j] > arr[j + 1]) {
                 tmp = arr[j];
                 arr[j] = arr[j + 1];
                 arr[j + 1] = tmp;
@@ -172,11 +174,11 @@ void b_sort (int arr[], unsigned len) {
 
 
 
-int s_search(int arr[], int len, int chave){
+int s_search(int arr[], int len, int key){
     int i;
     for(i = 0; i < len; i++){
 
-        if(chave == arr[i]){
+        if(key == arr[i]){
             return i;
         }
 
@@ -186,19 +188,19 @@ int s_search(int arr[], int len, int chave){
 }
 
 
-int b_search(int arr[],int len,int chave){
+int b_search(int arr[],int len,int key){
     int mid, beg = 0, end = len-1;
 
     while(beg <= end){
 
         mid = (beg+end)/2;
 
-        if(chave > arr[mid]){
+        if(key > arr[mid]){
 
             beg = mid+1;
 
         }
-        else if(chave < arr[mid]){
+        else if(key < arr[mid]){
 
             end = mid-1;
 
@@ -214,23 +216,24 @@ int b_search(int arr[],int len,int chave){
 
     return -1;
 }
+/*
 
 void implementacaoBuscaSequencialVetor(int arr[], int len){
     int result, random_num;
 
     random_num = rand() % len;
 
-    result = s_search(vet,len,vet[random_num]);
+    result = s_search(arr,len,arr[random_num]);
 
     if(result){
 
-        printf("usando busca sequencial encontrei o %d na posicao %d\n",vet[result],result);
+        printf("usando busca sequencial encontrei o %d na posicao %d\n",arr[result],result);
 
     }
-
     
 
 }
+
 
 
 void implementacaoBuscaBinaria(int arr[], int len){
@@ -238,11 +241,11 @@ void implementacaoBuscaBinaria(int arr[], int len){
 
     random_num = rand() % len;
 
-    result = b_search(vet,len,vet[random_num]);
+    result = b_search(arr,len,arr[random_num]);
 
     if(result){
 
-        printf("usando busca binaria encontrei o %d na posicao %d\n",vet[result],result);
+        printf("usando busca binaria encontrei o %d na posicao %d\n",arr[result],result);
         
     }
 
@@ -250,4 +253,4 @@ void implementacaoBuscaBinaria(int arr[], int len){
 
 
 
-
+*/
