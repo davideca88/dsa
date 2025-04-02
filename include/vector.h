@@ -10,6 +10,8 @@
 void set_time();
 // Aleatoriza um vetor
 void randomize(int arr[], unsigned len);
+// Preence ordenamente um vetor
+void sorted_arr(int *arr, unsigned len);
 // Imprime um vetor
 void print_arr(int arr[], unsigned len);
 // Selection sort

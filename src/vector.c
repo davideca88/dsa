@@ -24,6 +24,14 @@ void randomize(int arr[], unsigned len){
     }
 }
 
+void sorted_arr(int *arr, unsigned len){
+    arr[0] = rand() % 20;
+
+    for (unsigned i = 0; i < len; i++)
+    {
+        arr[i] = arr[i-1] + (rand() % 20+1);
+    }
+}
 
 void print_arr(int arr[], unsigned len){
     unsigned i;
@@ -74,9 +82,6 @@ void i_sort (int arr[], int len){
         arr[j+1] = pivot;
     }
 }
-
-
-
 
 void q_sortR(int arr[], int beg, int end) {
     int i,j;
