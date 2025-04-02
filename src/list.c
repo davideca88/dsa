@@ -10,24 +10,17 @@ List new_list() {
     return l;
 }
 
-// Retorna o tamanho da lista
-size_t llen(List l) {
-    return l->len;
-}
+// Retorna o dado contido no index i da lista
+int lindex(List l, size_t i) {
+    Node *node = l->head;
+    size_t pos = 0;
 
-// Insere na cabeça (head) da lista
-int linserth(List l, int data) {
-    Node *node = (Node*) malloc(sizeof(Node));
-    node->data = data;
-    node->next = l->head;
-    l->head = node;
-    
-    if(l->tail == NULL) {
-        l->tail = node;
+    while(pos < i) {
+        node = node->next;
+        pos++;
     }
     
-    l->len++;
-    return data;
+    return node->data;
 }
 
 // Insere na cauda (tail) da lista
@@ -46,37 +39,6 @@ int linsertt(List l, int data) {
     l->len++;
     return data;
 } 
-
-// Remove um nó de índice. Retorna o dado do nó removido. Retorna INT_MAX se não encontrar o elemento
-int lremove(List l, size_t i) {
-    Node *node = l->head;
-    Node *prev;
-    size_t pos = 0;
-    int data;
-    
-    if(l->len) {
-
-        if(i == 0) {
-            node = l->head;
-            l->head = node->next;
-        }
-        else if(i < l->len) {
-            while(pos < i) {
-                prev = node;
-                node = node->next;
-                pos++;
-            }
-            prev->next = node->next;
-            data = node->data;
-        }
-        
-            free(node);
-            l->len--;
-            return data;
-            
-    }
-    return INT_MAX;
-}
 
 // Imprime a lista no stdout e retorna o tamanho da lista
 size_t print_list(List l) {
@@ -99,7 +61,7 @@ size_t print_list(List l) {
     return l->len;
 }
 
-// Transforma um vetor em uma lista
+// Transforma um vetor em uma lista. Retorna o tamanho da lista se conseguiu criar. Se não, retorna INT_MAX
 size_t array_to_list(List l, int arr[], size_t arr_len) {
     Node *node = l->head;
    
@@ -111,4 +73,18 @@ size_t array_to_list(List l, int arr[], size_t arr_len) {
     }
 
     return INT_MAX;
+}
+
+// Busca sequencial na lista. Retorna bool se encontrou ou não
+char lb_search(List l, int key) {
+    Node *node = l->head;
+    Node *prev;
+    while(node->data != key && node) {
+        prev = node;
+        node = node->next;
+    }
+    if(node) {
+        return 1;
+    }
+    return 0;
 }

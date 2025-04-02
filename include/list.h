@@ -23,22 +23,13 @@ struct _list_s {
 // Cria uma lista
 List new_list();
 
-// Retorna o tamanho da lista
-size_t llen(List l); 
+// Retorna o dado contido no index i da lista
+int lindex(List l, size_t i);
 
-// Insere na cabeça (head) da lista
-int linserth(List l, int data);
-
-// Insere na cauda (tail) da lista
-int linsertt(List l, int data);
-
-// Remove um nó de índice. Retorna o dado do nó removido. Retorna INT_MAX se não encontrar o elemento
-int lremove(List l, size_t i);
-
-// Imprime a lista no stdout e retorna o tamanho da lista
-size_t print_list(List l);
-
-// Transforma um vetor em uma lista
+// Transforma um vetor em uma lista. Retorna o tamanho da lista se conseguiu criar. Se não, retorna INT_MAX
 size_t array_to_list(List l, int arr[], size_t arr_len);
+
+// Busca sequencial na lista
+char lb_search(List l, int key);
 
 #endif /* _LIST_H */
