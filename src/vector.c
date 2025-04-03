@@ -5,13 +5,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <math.h>
-#include <string.h>
 #include "../include/vector.h"
 
 
-int* new_vector(size_t rep) {
-    int *v = (int*) malloc(sizeof(int) * rep);
+int* new_vector(size_t len) {
+    int *v = (int*) malloc(sizeof(int) * len);
     return v;
 }
 
@@ -22,29 +20,29 @@ void set_time(){
 }
 
 
-void randomize(Vector v, unsigned rep){
+void randomize(Vector v, unsigned len){
     int x;
 
-    for(unsigned i = 0; i < rep; i++){
-        x = rand() % (rep*10);
+    for(unsigned i = 0; i < len; i++){
+        x = rand() % (len*10);
         v[i] = x; 
     }
 }
 
-void sorted_arr(int *arr, unsigned rep){
+void sorted_arr(int *arr, unsigned len){
     arr[0] = rand() % 20;
 
-    for (unsigned i = 0; i < rep; i++)
+    for (unsigned i = 0; i < len; i++)
     {
         arr[i] = arr[i-1] + (rand() % 20+1);
     }
 }
 
-void print_v(Vector v, unsigned rep){
+void print_v(Vector v, unsigned len){
     unsigned i;
     printf("[");
     printf("%d", v[0]);
-    for(i = 1; i < rep; i++){
+    for(i = 1; i < len; i++){
         
         printf(", %d", v[i]);
     }
@@ -52,14 +50,14 @@ void print_v(Vector v, unsigned rep){
 }
 
 
-void s_sort(Vector v, unsigned rep){
+void s_sort(Vector v, unsigned len){
     unsigned i, j, min_pos; 
     int tmp;
 
-    for(i = 0; i < rep-1; i++){
+    for(i = 0; i < len-1; i++){
         min_pos = i;
 
-        for(j = i+1; j < rep; j++){
+        for(j = i+1; j < len; j++){
             if(v[j] < v[min_pos]){
                 min_pos = j;
             }
@@ -74,10 +72,10 @@ void s_sort(Vector v, unsigned rep){
 }
 
 
-void i_sort (Vector v, int rep){
+void i_sort (Vector v, int len){
     int i,j,pivot;
 
-    for(i = 1; i < rep; i++){
+    for(i = 1; i < len; i++){
         pivot = v[i];
         j = i-1;
 
@@ -125,9 +123,9 @@ void q_sortR(Vector v, int beg, int end) {
   
 
   
-void q_sort(Vector v, unsigned rep) {
-    q_sortR(v,0, rep-1);
-    i_sort(v,rep);
+void q_sort(Vector v, unsigned len) {
+    q_sortR(v,0, len-1);
+    i_sort(v,len);
 }
 
 
@@ -155,24 +153,24 @@ void m_sortR(Vector v, int aux[], int beg, int end) {
   
   
 
-void m_sort(Vector v, int rep) {
+void m_sort(Vector v, int len) {
     int *aux;
   
-    aux =    (int*) malloc( sizeof(int)*rep);
+    aux =    (int*) malloc( sizeof(int)*len);
   
-    m_sortR(v, aux, 0, rep-1);
+    m_sortR(v, aux, 0, len-1);
   
     free(aux);
 }
 
 
-void b_sort (Vector v, unsigned rep) {
+void b_sort (Vector v, unsigned len) {
     unsigned k, j; 
     int tmp;
 
-    for (k = 1; k < rep; k++) {
+    for (k = 1; k < len; k++) {
 
-        for (j = 0; j < rep - 1; j++) {
+        for (j = 0; j < len - 1; j++) {
 
             if (v[j] > v[j + 1]) {
                 tmp = v[j];
@@ -186,9 +184,9 @@ void b_sort (Vector v, unsigned rep) {
 
 
 
-int s_search(Vector v, int rep, int key){
+int s_search(Vector v, int len, int key){
     int i;
-    for(i = 0; i < rep; i++){
+    for(i = 0; i < len; i++){
 
         if(key == v[i]){
             return i;
@@ -200,8 +198,8 @@ int s_search(Vector v, int rep, int key){
 }
 
 
-int b_search(Vector v,int rep,int key){
-    int mid, beg = 0, end = rep-1;
+int b_search(Vector v,int len,int key){
+    int mid, beg = 0, end = len-1;
 
     while(beg <= end){
 
@@ -228,70 +226,14 @@ int b_search(Vector v,int rep,int key){
 
     return -1;
 }
-
-void bb_search(Vector v, unsigned len, unsigned rep, const char* file_name){
-    FILE* file = fopen(file_name, "w");
-    if (file == NULL)
-    {
-        printf("error creating file");
-        return;
-    }
-
-    fprintf(file, "Execucao, tempo(s), pos, valor\n");
-
-    clock_t beg, end;
-    double times[rep];
-    double sum = 0.0;
-
-    char used[len];
-    memset(used, 0, sizeof(used));
-
-
-    for (unsigned i = 0; i < rep; i++)
-    {
-        int key;
-        do
-        {
-            key = rand() % len; 
-        } while (used[key]);
-        
-        used[key] = 1;
-
-        beg = clock();
-        b_search(v, len, key);
-        end = clock();
-
-        double time = ((double)(end-beg))/CLOCKS_PER_SEC;
-        times[i] = time;
-        sum += time;
-
-        fprintf(file, "%d,     %.6f,  %d,  %d\n", i+1, time, key, v[key]);
-    }
-
-    double average = sum/rep;
-    double variance = 0.0;
-
-    for (unsigned i = 0; i < rep; i++)
-    {
-        variance += pow(times[i]-average,2);
-    }
-
-    double s_dev = sqrt(variance/(rep-1));
-
-    fprintf(file,"media: %.6f\n",average);
-    fprintf(file,"desvio padrao: %.7f\n", s_dev);
-
-    fclose(file);
-    printf("Arquivo salvo");
-}
 /*
 
-void implementacaoBuscaSequencialVetor(Vector v, int rep){
+void implementacaoBuscaSequencialVetor(Vector v, int len){
     int result, random_num;
 
-    random_num = rand() % rep;
+    random_num = rand() % len;
 
-    result = s_search(v,rep,v[random_num]);
+    result = s_search(v,len,v[random_num]);
 
     if(result){
 
@@ -304,12 +246,12 @@ void implementacaoBuscaSequencialVetor(Vector v, int rep){
 
 
 
-void implementacaoBuscaBinaria(Vector v, int rep){
+void implementacaoBuscaBinaria(Vector v, int len){
     int result, random_num;
 
-    random_num = rand() % rep;
+    random_num = rand() % len;
 
-    result = b_search(v,rep,v[random_num]);
+    result = b_search(v,len,v[random_num]);
 
     if(result){
 
