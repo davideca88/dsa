@@ -8,6 +8,8 @@
 
 typedef int* Vector;
 
+void bb_search(Vector v, unsigned len, unsigned rep, const char* file_name);
+
 // Cria um vetor de tamanho len
 int* new_vector(size_t len);
 
