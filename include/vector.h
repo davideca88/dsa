@@ -14,6 +14,9 @@ int* new_vector(size_t len);
 // Aleatoriza um vetor
 void randomize(Vector v, unsigned len);
 
+// Preence ordenamente um vetor
+void sorted_arr(Vector v, unsigned len);
+
 // Imprime um vetor
 void print_arr(Vector v, unsigned len);
 
