@@ -6,40 +6,45 @@
 
 //CODIGO AQUI:
 
-// Configura rand()
-void set_time();
+typedef int* Vector;
+
+// Cria um vetor de tamanho len
+int* new_vector(size_t len);
+
 // Aleatoriza um vetor
-void randomize(int arr[], unsigned len);
+void randomize(Vector v, unsigned len);
+
 // Imprime um vetor
-void print_arr(int arr[], unsigned len);
+void print_arr(Vector v, unsigned len);
+
 // Selection sort
-void s_sort(int arr[], unsigned len);
+void s_sort(Vector v, unsigned len);
 
 // Insertion sort
-void i_sort (int arr[], int len);
+void i_sort (Vector v, int len);
 
 // Quick sort (parte recursiva)
-void q_sortR(int arr[], int inicio, int fim);
+void q_sortR(Vector v, int inicio, int fim);
 
 // Quick sort
-void q_sort(int arr[], unsigned len);
+void q_sort(Vector v, unsigned len);
 
 // Merge sorr (parte recursiva)
-void m_sortR(int arr[], int aux[], int inicio, int fim);
+void m_sortR(Vector v, int aux[], int inicio, int fim);
 
 // Merge sort
-void m_sort(int arr[], int len);
+void m_sort(Vector v, int len);
 
 // Bubble sort
-void b_sort (int arr[], unsigned len);
+void b_sort (Vector v, unsigned len);
 
 // Busca sequencial no vetor
-int  s_search(int arr[], int len, int chave);
+int  s_search(Vector v, int len, int chave);
 
 // Busca binária no vetor
-int  b_search(int arr[],int len,int chave);
+int  b_search(Vector v,int len,int chave);
 
-// void implementacaoBuscaSequencialVetor(int arr[], int len);
-// void implementacaoBuscaBinaria(int arr[], int len);
+// void implementacaoBuscaSequencialVetor(Vector v, int len);
+// void implementacaoBuscaBinaria(Vector v, int len);
 
 #endif // _VETOR_H
