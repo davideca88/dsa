@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
+#include <string.h>
 #include "../include/vector.h"
 
 
@@ -32,7 +34,7 @@ void randomize(Vector v, unsigned len){
 void sorted_arr(int *arr, unsigned len){
     arr[0] = rand() % 20;
 
-    for (unsigned i = 0; i < len; i++)
+    for (unsigned i = 1; i < len; i++)
     {
         arr[i] = arr[i-1] + (rand() % 20+1);
     }
@@ -226,6 +228,63 @@ int b_search(Vector v,int len,int key){
 
     return -1;
 }
+
+void bm_search(Vector v, int len, int rep, const char* file_name, search method){
+    FILE* file = fopen(file_name, "w");
+    if (file == NULL)
+    {
+        printf("error creating file");
+        return;
+    }
+
+    fprintf(file, "Execucao, tempo(s), pos, valor\n");
+
+    clock_t beg, end;
+    double times[rep];
+    double sum = 0.0;
+
+    char used[len];
+    memset(used, 0, sizeof(used));
+
+
+    for (unsigned i = 0; i < rep; i++)
+    {
+        int key;
+        do
+        {
+            key = rand() % len; 
+        } while (used[key]);
+        
+        used[key] = 1;
+
+        beg = clock();
+        method(v, len, key);
+        end = clock();
+
+        double time = ((double)(end-beg))/CLOCKS_PER_SEC;
+        times[i] = time;
+        sum += time;
+
+        fprintf(file, "%d,     %.6f,  %d,  %d\n", i+1, time, key, v[key]);
+    }
+
+    double average = sum/rep;
+    double variance = 0.0;
+
+    for (unsigned i = 0; i < rep; i++)
+    {
+        variance += pow(times[i]-average,2);
+    }
+
+    double s_dev = sqrt(variance/(rep-1));
+
+    fprintf(file,"media: %.6f\n",average);
+    fprintf(file,"desvio padrao: %.7f\n", s_dev);
+
+    fclose(file);
+    printf("Arquivo salvo\n");
+}
+
 /*
 
 void implementacaoBuscaSequencialVetor(Vector v, int len){

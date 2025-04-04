@@ -3,10 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
+#include <string.h>
 
 //CODIGO AQUI:
 
 typedef int* Vector;
+typedef int (*search) (Vector, int, int);
 
 // Cria um vetor de tamanho len
 int* new_vector(size_t len);
@@ -47,7 +50,10 @@ int  s_search(Vector v, int len, int chave);
 // Busca binária no vetor
 int  b_search(Vector v,int len,int chave);
 
+// Benchmark para busca binária e sequencial
+void bm_search(Vector v, int len, int rep, const char* file_name, search method);
+
 // void implementacaoBuscaSequencialVetor(Vector v, int len);
 // void implementacaoBuscaBinaria(Vector v, int len);
 
-#endif // _VETOR_H
+#endif // _VETOR_H;
