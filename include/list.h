@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include "../include/vector.h"
 
 // Tipo nó
 typedef struct node {
@@ -27,7 +28,7 @@ List new_list();
 int lindex(List l, size_t i);
 
 // Transforma um vetor em uma lista. Retorna o tamanho da lista se conseguiu criar. Se não, retorna INT_MAX
-size_t array_to_list(List l, int arr[], size_t arr_len);
+size_t array_to_list(List l, Vector arr, size_t arr_len);
 
 // Busca sequencial na lista
 char lb_search(List l, int key);
