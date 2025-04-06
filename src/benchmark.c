@@ -95,7 +95,11 @@ void bm_vec_inc(int initial_size, int step, int max, int rep, const char* name, 
     
             fprintf(fd, "%d,     %.6f,  %d,  %d,  %d\n", j++, time, keys[i], v[keys[i]], size);
         }
+        // TODO necessário?
+        delete_vector(v);
+        delete_vector(keys);
     }
+
     fclose(fd);
     printf("Arquivo salvo\n");
 }
@@ -203,6 +207,9 @@ void bm_listvec_inc(int initial_size, int step, int max, int rep, const char* na
     
             fprintf(fd, "%d,   %d,  %d,  %.6f,    %.6f,  %d\n", j++, keys[i], v[keys[i]], t_vec, t_list, size);
         }
+        // TODO necessário?
+        delete_vector(v);
+        delete_vector(keys);
     }
     fclose(fd);
     printf("Arquivo salvo\n");
@@ -255,6 +262,10 @@ void bm_sortalg(int initial_size, int step, int max, int rep, const char*name){
             double t_merge = ((double)(end-beg))/CLOCKS_PER_SEC;
 
             fprintf(fd, "%d,            %d,     %.6f,     %.6f,            %.6f,     %.6f,     %.6f,     %.6f\n", j++, size, t_bubble, t_insertion, t_selection, t_qsort, t_qsort2, t_merge);
+        
+            // TODO necessário? v2
+            delete_vector(v);
+            delete_vector(copy);
         }        
     }
     fclose(fd);
@@ -278,5 +289,5 @@ void s_keys(Vector keys, int len, int rep) {
         keys[i] = v[i];
     }
 
-    free(v);
+    v = delete_vector(v);
 }
