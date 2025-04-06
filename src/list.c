@@ -10,6 +10,20 @@ List new_list() {
     return l;
 }
 
+// Deleta uma lista
+List delete_list(List l) {
+    Node *node = l->head;
+    Node *next;
+
+    while(node) {
+        next = node->next;
+        free(node);
+        node = next;
+    }
+    
+    return NULL;
+}
+
 // Retorna o dado contido no index i da lista
 int lindex(List l, size_t i) {
     Node *node = l->head;

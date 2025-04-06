@@ -24,6 +24,9 @@ struct _list_s {
 // Cria uma lista
 List new_list();
 
+// Deleta uma lista
+List delete_list(List l);
+
 // Retorna o dado contido no index i da lista
 int lindex(List l, size_t i);
 
