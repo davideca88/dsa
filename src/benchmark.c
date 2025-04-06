@@ -132,7 +132,7 @@ void bm_listvec_fix(List l, Vector v, Vector keys, int len, int rep, const char*
         double t_vec = ((double)(end - beg)) / CLOCKS_PER_SEC;
 
         beg = clock();
-        lb_search(l, key);
+        ls_search(l, key);
         end = clock();
         double t_list = ((double)(end - beg)) / CLOCKS_PER_SEC;
 
@@ -201,7 +201,7 @@ void bm_listvec_inc(int initial_size, int step, int max, int rep, const char* na
             double t_vec = ((double)(end-beg))/CLOCKS_PER_SEC;
 
             beg = clock();
-            lb_search(l, key);
+            ls_search(l, key);
             end = clock();
             double t_list = ((double)(end - beg)) / CLOCKS_PER_SEC;
     

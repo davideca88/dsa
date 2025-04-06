@@ -90,7 +90,7 @@ size_t array_to_list(List l, Vector arr, size_t arr_len) {
 }
 
 // Busca sequencial na lista. Retorna bool se encontrou ou não
-char lb_search(List l, int key) {
+char ls_search(List l, int key) {
     Node *node = l->head;
     Node *prev;
     while(node && node->data != key) {
