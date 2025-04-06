@@ -210,6 +210,7 @@ void bm_listvec_inc(int initial_size, int step, int max, int rep, const char* na
         // TODO necessário?
         delete_vector(v);
         delete_vector(keys);
+        delete_list(l);
     }
     fclose(fd);
     printf("Arquivo salvo\n");
