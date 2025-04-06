@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <math.h>
 #include <string.h>
 
 //CODIGO AQUI:
@@ -12,6 +11,8 @@ typedef int* Vector;
 
 // Cria um vetor de tamanho len
 int* new_vector(size_t len);
+
+int* delete_vector(Vector v);
 
 // Aleatoriza um vetor
 void randomize(Vector v, unsigned len);
@@ -32,7 +33,7 @@ void s_sort(Vector v, unsigned len);
 void i_sort (Vector v, int len);
 
 // Quick sort (parte recursiva)
-void q_sortR(Vector v, int inicio, int fim);
+void q_sortR(Vector v, int beg, int end);
 
 // Quick sort original
 void q_sort(Vector v, unsigned len);
@@ -41,7 +42,7 @@ void q_sort(Vector v, unsigned len);
 void q_sortv2(Vector v, unsigned len);
 
 // Merge sorr (parte recursiva)
-void m_sortR(Vector v, int aux[], int inicio, int fim);
+void m_sortR(Vector v, int aux[], int beg, int end);
 
 // Merge sort
 void m_sort(Vector v, int len);
@@ -50,10 +51,10 @@ void m_sort(Vector v, int len);
 void b_sort (Vector v, unsigned len);
 
 // Busca sequencial no vetor
-int  s_search(Vector v, int len, int chave);
+int  s_search(Vector v, int len, int key);
 
 // Busca binária no vetor
-int  b_search(Vector v,int len,int chave);
+int  b_search(Vector v,int len,int key);
 
 // void implementacaoBuscaSequencialVetor(Vector v, int len);
 // void implementacaoBuscaBinaria(Vector v, int len);

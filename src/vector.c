@@ -5,13 +5,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <math.h>
 #include <string.h>
 #include "../include/vector.h"
 
 int* new_vector(size_t len) {
     int *v = (int*) malloc(sizeof(int) * len);
     return v;
+}
+
+int* delete_vector(Vector v) {
+    free(v);
+    return NULL;
 }
 
 void set_time(){
