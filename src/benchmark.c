@@ -113,7 +113,7 @@ void bm_listvec_fix(List l, Vector v, Vector keys, int len, int rep, const char*
         return;
     }
 
-    vector_to_list(l, v, len);
+    vector_to_list(v, l, len);
 
     fprintf(fd, "Execucao,      pos,       valor,     tempo_vetor(s),      tempo_lista(s)\n");
 
@@ -187,7 +187,7 @@ void bm_listvec_inc(int initial_size, int step, int max, int rep, const char* na
         clock_t beg, end;
 
         randomize(v,size);
-        vector_to_list(l,v,size);
+        vector_to_list(v, l, size);
         s_keys(keys,size,rep);
 
         for (int i = 0; i < rep; i++)

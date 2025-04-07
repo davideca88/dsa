@@ -77,7 +77,7 @@ size_t print_list(List l) {
 
 // Transforma um vetor em uma lista. Retorna o tamanho da lista se conseguiu criar. Se não, retorna INT_MAX
 // TODO: (!) Carece de testes
-size_t vector_to_list(List l, Vector v, size_t v_len) {
+size_t vector_to_list(Vector v, List l, size_t v_len) {
     Node *node = l->head;
     Node *aux;
     size_t v_pos = 0;
@@ -93,8 +93,13 @@ size_t vector_to_list(List l, Vector v, size_t v_len) {
         
         // Define-se a nova cauda para o caso do vetor ser menor do que a lista
         // Se for maior ou igual, só sobrescreverá com o mesmo valor
-        l->tail = aux;
-        
+        if(node) {
+            l->tail = aux;
+            aux->next = NULL;
+        } else {
+            l->tail = node;
+        }
+
         // Se a o vetor for menor do que a lista, apaga os nós que ainda restam
         while(node) {
             aux = node;
