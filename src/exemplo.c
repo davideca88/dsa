@@ -33,16 +33,16 @@ int main(){
     //**QUESTÃO 05**
 
     //Busca binária no vetor crescente (ref: questão 01)
-    bm_vec_inc(10000,10000,100000,1,"questa05_buscabinaria.txt",1,b_search);
+    bm_vec_inc(10000,10000,100000,1,"questao05_buscabinaria.txt",1,b_search);
 
     //Busca sequencial no vetor crescente (ref: questão 01)
-    bm_vec_inc(10000,10000,100000,1,"questa05_buscasequencial.txt",0,s_search);
+    bm_vec_inc(10000,10000,100000,1,"questao05_buscasequencial.txt",0,s_search);
 
     //Busca sequencial no vetor x lista crescente (ref: questão 02)
     bm_listvec_inc(10000,10000,100000,1,"questao05_listavetor.txt");
 
     //Ordenação no vetor crescente (ref: questão 03)
-    bm_sortalg(100,100,1000,1,"questao05_ordenacao.txt");
+    bm_sortalg(100000,0,100000,1,"questao05_ordenacao.txt");
 
     return 0;
 }

@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+# Compila as bibliotecas em arquivos objetos
+gcc -c src/*.c
+
+# Faz a linkedição dos arquivos objeto
+gcc *.o -lm -o main
