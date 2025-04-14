@@ -1,3 +1,13 @@
+/*
+    Equipe:
+            David Lucas Lopes Caetano       (mr.aed2)
+            Erick Gomes da Silva            (mr.aed1)
+            Gabriel Rafael Lima Ferreira    (mr.paa)
+            Vitor de Souza Oliveira         (mr.ic)
+
+
+*/
+
 #ifndef _LIST_H
 #define _LIST_H
 

@@ -9,3 +9,4 @@ output
 *.o
 *.d
 .pt_br
+main
