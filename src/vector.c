@@ -96,6 +96,31 @@ void i_sort (Vector v, int len){
     }
 }
 
+
+void q_sortR2(Vector v, int beg, int end) {
+    int i,j;
+    int pivot;
+    int tmp;
+
+    pivot =  v[(beg+end)/2];
+    i= beg;
+    j = end;
+    while(i <=j) {
+        while(v[i] < pivot) { i++;} 
+        while(v[j] > pivot) { j--;} 
+        if(i <=j ) {
+            tmp  = v[i];
+            v[i] = v[j];
+            v[j] = tmp;
+            i++;
+            j--;
+        } 
+    }
+    if(beg < j)  q_sortR2(v,beg,j);
+    if(i < end) q_sortR2(v,i,end);
+}
+
+
 void q_sortR(Vector v, int beg, int end) {
     int i,j;
     int pivot;  
@@ -130,7 +155,7 @@ void q_sortR(Vector v, int beg, int end) {
   
   
 void q_sort(Vector v, unsigned len){
-    q_sortR(v, 0, len-1);
+    q_sortR2(v, 0, len-1);
 }
   
 void q_sortv2(Vector v, unsigned len) {
