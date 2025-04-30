@@ -19,6 +19,8 @@
 
 typedef int* Vector;
 
+void set_time();
+
 // Cria um vetor de tamanho len
 int* new_vector(size_t len);
 
