@@ -4,15 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "node.h"
+
 #define PREORDER  0
 #define INORDER   1
 #define POSTORDER 2
 
-typedef struct _node_s {
-    struct _node_s* l;
-    struct _node_s* r;
-    int data;
-} Node;
 
 typedef Node* BinTree;
 
