@@ -261,6 +261,41 @@ int b_search(Vector v,int len,int key){
 
     return -1;
 }
+/*
+Gera os pacotes para a árvore binária de busca;
+Cada pacote é composto: Identificador(n algarismos) + dado(sempre os 4 algarismos finais);
+*/
+int gen_packages(Vector packages, int len){
+    int disorder = (20*len)/100;
+    int duplicate = 10;
+
+    for (int i = 0; i < len; i++)
+    {
+        int id = (i+1)*10000;
+        int dado = rand() % 9000 + 1000;
+        int pacote = id + dado;
+
+        packages[i] = pacote;
+
+        if ((i+1 < len) && (rand() % 100 < duplicate))
+        {
+            i++;
+            packages[i] = pacote;
+        }
+    }
+
+    for (int i = 0; i < disorder; i++)
+    {
+        int ind1 = rand() % len;
+        int ind2 = rand() % len;
+
+        int temp = packages[ind1];
+        packages[ind1] = packages[ind2];
+        packages[ind2] = temp;
+    }
+
+    return 0;
+}
 
 /*
 

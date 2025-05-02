@@ -21,6 +21,8 @@ typedef int* Vector;
 
 void set_time();
 
+int gen_packages(Vector packages, int len);
+
 // Cria um vetor de tamanho len
 int* new_vector(size_t len);
 
@@ -33,7 +35,7 @@ void randomize(Vector v, unsigned len);
 void sorted_arr(Vector v, unsigned len);
 
 // Imprime um vetor
-void print_arr(Vector v, unsigned len);
+void print_v(Vector v, unsigned len);
 
 // Copia vetores
 void copy_vec(Vector orgin, Vector dest, size_t len);
