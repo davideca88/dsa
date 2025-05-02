@@ -21,8 +21,6 @@ typedef int* Vector;
 
 void set_time();
 
-int gen_packages(Vector packages, int len);
-
 // Cria um vetor de tamanho len
 int* new_vector(size_t len);
 
@@ -33,6 +31,9 @@ void randomize(Vector v, unsigned len);
 
 // Preenche ordenamente um vetor
 void sorted_arr(Vector v, unsigned len);
+
+// Gera pacotes para a árvore binária de busca
+int gen_packages(Vector packages, int len);
 
 // Imprime um vetor
 void print_v(Vector v, unsigned len);

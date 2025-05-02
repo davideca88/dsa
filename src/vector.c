@@ -268,12 +268,13 @@ Cada pacote é composto: Identificador(n algarismos) + dado(sempre os 4 algarism
 int gen_packages(Vector packages, int len){
     int disorder = (20*len)/100;
     int duplicate = 10;
+    int id = 1;
 
     for (int i = 0; i < len; i++)
     {
-        int id = (i+1)*10000;
         int dado = rand() % 9000 + 1000;
-        int pacote = id + dado;
+        int pacote = id*10000 + dado;
+        id++;
 
         packages[i] = pacote;
 
