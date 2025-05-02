@@ -17,11 +17,11 @@ BinTree binsert(BinTree t, int data) {
         return new;   
     }
     
-    else if(data <= t->data) {
+    if(data < t->data) {
         t->l = binsert(t->l, data);
     }
     
-    else {
+    else if(data > t->data) {
         t->r = binsert(t->r, data);
     }
     
