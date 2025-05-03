@@ -28,11 +28,7 @@ BinTree binsert(BinTree t, int data) {
     return t;
 }
 
-// TODO
-// Varargs não estão funcionando (ainda)
-
-
-void bwalk(BinTree t, void(*visit)(BinTree t, ...), char walk_mode) {
+void bwalk(BinTree t, void(*visit)(BinTree t), char walk_mode) {
     if(t == NULL)
         return;
     
@@ -55,27 +51,52 @@ void bwalk(BinTree t, void(*visit)(BinTree t, ...), char walk_mode) {
     }
 }
 
+// TODO
+// não sei se varargs estão funcionando (ainda)
 
-void print_node(BinTree t, ...) {
-    va_list ap;
-    va_start(ap, t);
+void _vbwalk(BinTree t, void(*visit)(BinTree t, size_t n, va_list args), char walk_mode, size_t n,va_list args) {    
+    if(t == NULL)
+        return;
     
-    printf("%d ", t->data);
+    switch (walk_mode){
+        case INORDER:
+            _vbwalk(t->l, visit, walk_mode, n, args);
+            (*visit)(t, n, args);
+            _vbwalk(t->r, visit, walk_mode, n, args);
+            break;
+        case PREORDER:
+            (*visit)(t, n, args);
+            _vbwalk(t->r, visit, walk_mode, n, args);
+            _vbwalk(t->r, visit, walk_mode, n, args);
+            break;
+        case POSTORDER:
+            _vbwalk(t->r, visit, walk_mode, n, args);
+            _vbwalk(t->r, visit, walk_mode, n, args);
+            (*visit)(t, n, args);
+            break;
+    }
+}
+
+void vbwalk(BinTree t, void(*visit)(BinTree t, size_t n, va_list args), char walk_mode, size_t n, ...) {
+    va_list ap;
+    va_start(ap, n);
+
+    _vbwalk(t, visit, walk_mode, n, ap);
 
     va_end(ap);
 }
 
-void node_to_file(BinTree t, ...) {
-    va_list ap;
-    va_start(ap, t);
 
+void print_node(BinTree t) {
+    printf("%d ", t->data);
+}
+
+void node_to_file(BinTree t, size_t n, va_list ap) {
     fwrite(&(t->data), sizeof(int), 1, va_arg(ap, FILE*));
-
-    va_end(ap);
 }
 
 void tree_to_file(BinTree t, FILE *fd) {
-    bwalk(t, node_to_file, INORDER);
+    vbwalk(t, node_to_file, INORDER, 1, fd);
 }
 
 

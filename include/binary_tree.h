@@ -20,7 +20,13 @@ BinTree new_bintree();
 BinTree binsert(BinTree t, int data);
 
 // Caminhamentos em ordem, pré ordem e pós ordem
-void bwalk(BinTree t, void (*visit)(BinTree t, ...), char walk_mode);
+void bwalk(BinTree t, void (*visit)(BinTree t), char walk_mode);
+
+// Caminhamentos acima com varars. Semelhante à anterior, mas recebe 'n' argumentos para 'visit'  
+void vbwalk(BinTree t, void(*visit)(BinTree t, size_t n, va_list args), char walk_mode, size_t n, ...);
+
+// Transforma uma árvore t em um arquivo 
+void tree_to_file(BinTree t, FILE *fd);
 
 // Imprime os dados da árvore sem formatação
 void print_tree(BinTree t, char print_mode);
