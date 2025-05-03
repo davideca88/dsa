@@ -28,8 +28,11 @@ BinTree binsert(BinTree t, int data) {
     return t;
 }
 
+// TODO
+// Varargs não estão funcionando (ainda)
 
-void bwalk(BinTree t, void(*visit)(BinTree t), char walk_mode) {
+
+void bwalk(BinTree t, void(*visit)(BinTree t, ...), char walk_mode) {
     if(t == NULL)
         return;
     
@@ -53,8 +56,26 @@ void bwalk(BinTree t, void(*visit)(BinTree t), char walk_mode) {
 }
 
 
-void print_node(BinTree t) {
+void print_node(BinTree t, ...) {
+    va_list ap;
+    va_start(ap, t);
+    
     printf("%d ", t->data);
+
+    va_end(ap);
+}
+
+void node_to_file(BinTree t, ...) {
+    va_list ap;
+    va_start(ap, t);
+
+    fwrite(&(t->data), sizeof(int), 1, va_arg(ap, FILE*));
+
+    va_end(ap);
+}
+
+void tree_to_file(BinTree t, FILE *fd) {
+    bwalk(t, node_to_file, INORDER);
 }
 
 
