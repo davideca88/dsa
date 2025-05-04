@@ -7,21 +7,21 @@
 
 
 
-#define len 1000000
+#define LEN 1000000
 
 int main(){
     
     srand(time(NULL));
     BinTree root = new_bintree();
     int reps = 30;
-    Vector v = new_vector(len);
+    Vector v = new_vector(LEN);
     Vector keys = new_vector(reps);
 
-    randomize(v,len); // vetor randomizado
-    s_keys(keys,len,reps);
+    randomize(v,LEN); // vetor randomizado
+    s_keys(keys,LEN,reps);
 
     // Questão 3: busca binária vetor x busca em árvore binária
-    bm_vec_bin(v,len,keys,reps,root,"exercicio3.txt");
+    bm_vec_bin(v,LEN,keys,reps,root,"exercicio3.txt");
     
 }
   
