@@ -15,6 +15,7 @@
 #include <string.h>
 #include "../include/vector.h"
 #include "../include/list.h"
+#include "binary_tree.h"
 
 typedef int (*search) (Vector, int, int);
 
@@ -35,3 +36,6 @@ void bm_listvec_inc(int initial_size, int step, int max, int rep, const char* na
 
 // Função auxiliar para selecionar rep posições em um vetor de tamanho len
 void s_keys(Vector v, int len, int rep);
+
+// Busca binária no vetor x busca na árvore binária
+void bm_vec_bin(Vector v, int len, Vector keys, int reps, BinTree t, const char* name);

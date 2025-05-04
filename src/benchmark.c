@@ -292,3 +292,52 @@ void s_keys(Vector keys, int len, int rep) {
 
     v = delete_vector(v);
 }
+
+// função recebe: um vetor, o tamanho do vetor, vetor de chaves, repetições, arvóre binária e nome do arquivo
+void bm_vec_bin(Vector v, int len, Vector keys, int reps, BinTree t, const char* name){
+    FILE* file = fopen(name,"w");
+    if(file == NULL){
+        printf("error creating file\n");
+        return;
+    }
+    
+    t = arvbin_vec(t,v,len,0); // transfere dados do vetor para a árvore
+    q_sort(v,len); // ordena o vetor para a busca binária
+
+    clock_t beg, end;
+
+    fprintf(file,"execução, pos, valor, tempo_vetor(s), tempo_arvbin(s)\n");
+    
+    double time_vec;
+    double time_arvbin;
+    double sum_vec = 0.0;
+    double sum_arvbin = 0.0;
+
+    for(unsigned i = 0; i < reps; i++){
+        int key = keys[i];  
+        
+        beg = clock();
+        b_search(v,len,key); // busca binária no vetor
+        end = clock();
+
+        time_vec = ((double)(end-beg))/CLOCKS_PER_SEC;
+        sum_vec += time_vec;
+
+        beg = clock();
+        arvbin_Search(t,key); // busca na árvore binária
+        end = clock();
+
+        time_arvbin = ((double)(end-beg))/CLOCKS_PER_SEC;
+        sum_arvbin += time_arvbin;
+
+        fprintf(file,"%d,    %d,    %d,    %.7f,    %.7f\n", i+1, key, v[key], time_vec, time_arvbin);
+    }
+    double media_vec = sum_vec/reps;
+    double media_arvbin = sum_arvbin/reps;
+    fprintf(file,"\nmédia vetor: %f\n", media_vec);
+    fprintf(file,"média arvbin: %f\n", media_arvbin);
+    fclose(file);
+    printf("arquivo salvo");
+}
+
+

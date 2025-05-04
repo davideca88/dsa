@@ -6,7 +6,11 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <stdint.h>
 #include "../include/vector.h"
+
+#define MAX_DATA  ((1 << 14) - 1)
+#define MAX_ID    ((1 << 18) - 1)
 
 int* new_vector(size_t len) {
     int *v = (int*) malloc(sizeof(int) * len);
@@ -261,32 +265,39 @@ int b_search(Vector v,int len,int key){
 
     return -1;
 }
+
+void print_package(uint32_t package) {
+    int id = (package >> 14); 
+    int data = (package & MAX_DATA);
+    printf("ID: %d DATA: %d\n", id, data);
+}
+
 /*
 Gera os pacotes para a árvore binária de busca;
-Cada pacote é composto: Identificador(n algarismos) + dado(sempre os 4 algarismos finais);
+Cada pacote é composto: Identificador(18 bits) + dado(14 bits);
 */
-int gen_packages(Vector packages, int len){
-    int disorder = (20*len)/100;
-    int duplicate = 10;
-    int id = 1;
+int gen_packages(Vector packages, int len, int dis, int dup){
+    if(len>MAX_ID)return 0;
+    int disorder = (dis * len) / 100;
+    int id = 0;
+    int count = 0;
+    clock_t beg,end;
 
-    for (int i = 0; i < len; i++)
-    {
-        int dado = rand() % 9000 + 1000;
-        int pacote = id*10000 + dado;
+    beg = clock();
+    for (int i = 0; i < len; i++) {
+        int info = rand() % (MAX_DATA + 1);
+
+        uint32_t package = (id << 14) | (info & MAX_DATA);
+        packages[i] = package;
         id++;
 
-        packages[i] = pacote;
-
-        if ((i+1 < len) && (rand() % 100 < duplicate))
-        {
-            i++;
-            packages[i] = pacote;
+        if ((i + 1 < len) && (rand() % 100 < dup)) {
+            i++, count++;
+            packages[i] = package;
         }
     }
 
-    for (int i = 0; i < disorder; i++)
-    {
+    for (int i = 0; i < disorder; i++) {
         int ind1 = rand() % len;
         int ind2 = rand() % len;
 
@@ -294,7 +305,19 @@ int gen_packages(Vector packages, int len){
         packages[ind1] = packages[ind2];
         packages[ind2] = temp;
     }
+    end = clock();
+    double time = ((double)(end-beg))/CLOCKS_PER_SEC;
 
+
+    for (int i = 0; i < len; i++)
+    {
+        print_package(packages[i]);
+    }
+
+    printf("**-------------------------------------------**\n");
+    printf("TOTAL: %d PACKETS\nSIZE: %lu BYTES\nRETRANSMISSION: %d PACKETS\nPACKAGE TRANSMISSION TIME: %.7lf SEC",len,len*sizeof(packages[0]),count,time);
+
+    
     return 0;
 }
 

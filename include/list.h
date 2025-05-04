@@ -17,16 +17,16 @@
 #include "../include/vector.h"
 
 // Tipo nó
-typedef struct node {
+typedef struct node2 {
     int data;
-    struct node* next;
-} Node;
+    struct node2* next;
+} Node2;
 
 typedef struct _list_s* List;
 
 struct _list_s {
-    Node *head; // Cabeça da lista
-    Node *tail; // Cauda da lista
+    Node2 *head; // Cabeça da lista
+    Node2 *tail; // Cauda da lista
     size_t len; // Tamanho da lista
     // TODO outros dados, se necessário
 };
