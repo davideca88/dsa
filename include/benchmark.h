@@ -15,6 +15,7 @@
 #include <string.h>
 #include "../include/vector.h"
 #include "../include/list.h"
+#include "binary_tree.h"
 
 typedef int (*search) (Vector, int, int);
 

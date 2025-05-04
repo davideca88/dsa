@@ -6,6 +6,7 @@
 #include <stdarg.h>
 
 #include "node.h"
+#include "vector.h"
 
 #define PREORDER  0
 #define INORDER   1
