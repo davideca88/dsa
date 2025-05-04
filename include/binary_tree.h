@@ -31,4 +31,7 @@ void tree_to_file(BinTree t, FILE *fd);
 // Imprime os dados da árvore sem formatação
 void print_tree(BinTree t, char print_mode);
 
+// Transfere dados do vetor para árvore binária
+BinTree arvbin_vec(BinTree root, Vector v, int t);
+
 #endif // _BINARY_TREE_H 
