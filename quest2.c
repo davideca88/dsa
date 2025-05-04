@@ -29,7 +29,7 @@ int main(){
     puts("IN-ODRDER:\n");
     print_tree(root,1, INORDER);
     printf("**-------------------------------------------**\n");
-    printf("TOTAL: %d PACKETS\nBST SIZE: %lu BYTES\nPACKAGE SIZE: %lu BYTES\nPACKAGE RECEIVE TIME: %.7lf\n",total_nodes,sizeof(root)*total_nodes,total_nodes*sizeof(packages[0]),time);
+    printf("TOTAL: %d PACKETS\nBST SIZE: %lu BYTES\nPACKAGE SIZE: %lu BYTES\nPACKAGE RECEIVE TIME: %.7lf SEC\n",total_nodes,sizeof(root)*total_nodes,total_nodes*sizeof(packages[0]),time);
     printf("**-------------------------------------------**\n");
 
     FILE *fd = fopen("packages.bin","wb");
@@ -45,6 +45,7 @@ int main(){
 
     puts("PACKAGE.BIN DATA (FROM BINARY ARCHIVE):\n");
     rpfile("packages.bin");
+    printf("**---------------------END--------------------**\n");
 
     return 0;
 }
