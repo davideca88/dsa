@@ -127,3 +127,22 @@ BinTree arvbin_vec(BinTree root, Vector v, int t){
     }
     return root;
 }
+
+int arvbin_Search(BinTree raiz, int d){
+    if(raiz == NULL){
+        return -1;
+    }
+    else{
+        if(raiz->data == d){
+            return raiz->data;
+        }else{
+
+            if(raiz->data < d){
+                return arvbin_Search(raiz->r,d);
+            }
+            else{
+                return arvbin_Search(raiz->l,d);
+            }
+        }
+    }
+}
