@@ -34,4 +34,7 @@ void print_tree(BinTree t, char print_mode);
 // Transfere dados do vetor para árvore binária
 BinTree arvbin_vec(BinTree root, Vector v, int t);
 
+// busca um inteiro em uma árvore 
+int arvbin_Search(BinTree raiz, int d);
+
 #endif // _BINARY_TREE_H 
