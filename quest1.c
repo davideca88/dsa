@@ -18,13 +18,13 @@ int main(int argc, char* argv[]) {
     }
     
     puts("Impressão da árvore:\n\tPré-ordem:\n");
-    print_tree(root, PREORDER);
+    print_tree(root,0, PREORDER);
 
     puts("\n\tEm-ordem:\n");
-    print_tree(root, INORDER);
+    print_tree(root,0, INORDER);
 
     puts("\n\tPós-ordem:\n");
-    print_tree(root, POSTORDER);
+    print_tree(root,0, POSTORDER);
 
     return 0;
 }
