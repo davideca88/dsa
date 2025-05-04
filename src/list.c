@@ -12,13 +12,13 @@ List new_list() {
 
 // Deleta uma lista
 List delete_list(List l) {
-    Node *node = l->head;
-    Node *next;
+    Node2 *node2 = l->head;
+    Node2 *next;
 
-    while(node) {
-        next = node->next;
-        free(node);
-        node = next;
+    while(node2) {
+        next = node2->next;
+        free(node2);
+        node2 = next;
     }
     
     return NULL;
@@ -26,29 +26,29 @@ List delete_list(List l) {
 
 // Retorna o dado contido no index i da lista
 int lindex(List l, size_t i) {
-    Node *node = l->head;
+    Node2 *node2 = l->head;
     size_t pos = 0;
 
     while(pos < i) {
-        node = node->next;
+        node2 = node2->next;
         pos++;
     }
     
-    return node->data;
+    return node2->data;
 }
 
 // Insere na cauda (tail) da lista
 int linsertt(List l, int data) {
-    Node *node = (Node*) malloc(sizeof(Node));
-    node->data = data;
-    node->next = NULL;
+    Node2 *node2 = (Node2*) malloc(sizeof(Node2));
+    node2->data = data;
+    node2->next = NULL;
     
     if(l->tail) {
-        l->tail->next = node;
+        l->tail->next = node2;
     } else {
-        l->head = node;
+        l->head = node2;
     }
-    l->tail = node;
+    l->tail = node2;
     
     l->len++;
     return data;
@@ -56,17 +56,17 @@ int linsertt(List l, int data) {
 
 // Imprime a lista no stdout e retorna o tamanho da lista
 size_t print_list(List l) {
-    Node *node;
+    Node2 *node2;
     putchar('[');
     
     if(l->len) {
-        node = l->head;
-        printf("%d", node->data);
-        node = node->next;
+        node2 = l->head;
+        printf("%d", node2->data);
+        node2 = node2->next;
         
-        while(node) {
-            printf(", %d", node->data);
-            node = node->next;
+        while(node2) {
+            printf(", %d", node2->data);
+            node2 = node2->next;
         }
     }
     
@@ -78,32 +78,32 @@ size_t print_list(List l) {
 // Transforma um vetor em uma lista. Retorna o tamanho da lista se conseguiu criar. Se não, retorna INT_MAX
 // TODO: (!) Carece de testes
 size_t vector_to_list(Vector v, List l, size_t v_len) {
-    Node *node = l->head;
-    Node *aux;
+    Node2 *node2 = l->head;
+    Node2 *aux;
     size_t v_pos = 0;
     
     // Se a lista não for vazia, reaproveita-se os nós já existentes e muda o campo `data` e avança a posição no vetor
     if(l->len > 0) {
-        while(node && v_pos < v_len) {
-            aux = node;
-            node->data = v[v_pos];
+        while(node2 && v_pos < v_len) {
+            aux = node2;
+            node2->data = v[v_pos];
             v_pos++;
-            node = node->next;
+            node2 = node2->next;
         }
         
         // Define-se a nova cauda para o caso do vetor ser menor do que a lista
         // Se for maior ou igual, só sobrescreverá com o mesmo valor
-        if(node) {
+        if(node2) {
             l->tail = aux;
             aux->next = NULL;
         } else {
-            l->tail = node;
+            l->tail = node2;
         }
 
         // Se a o vetor for menor do que a lista, apaga os nós que ainda restam
-        while(node) {
-            aux = node;
-            node = node->next;
+        while(node2) {
+            aux = node2;
+            node2 = node2->next;
             free(aux);
             l->len--;
         }
@@ -121,13 +121,13 @@ size_t vector_to_list(Vector v, List l, size_t v_len) {
 
 // Busca sequencial na lista. Retorna bool se encontrou ou não
 char ls_search(List l, int key) {
-    Node *node = l->head;
-    Node *prev;
-    while(node && node->data != key) {
-        prev = node;
-        node = node->next;
+    Node2 *node2 = l->head;
+    Node2 *prev;
+    while(node2 && node2->data != key) {
+        prev = node2;
+        node2 = node2->next;
     }
-    if(node) {
+    if(node2) {
         return 1;
     }
     return 0;
