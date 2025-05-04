@@ -54,27 +54,44 @@ void bwalk(BinTree t, void(*visit)(BinTree t), char walk_mode) {
 // TODO
 // não sei se varargs estão funcionando (ainda)
 
-void _vbwalk(BinTree t, void(*visit)(BinTree t, size_t n, va_list args), char walk_mode, size_t n,va_list args) {    
+void _vbwalk(BinTree t, void(*visit)(BinTree t, size_t n, va_list args), char walk_mode, size_t n, va_list args) {    
     if(t == NULL)
         return;
     
+    va_list args_cpy;
+    va_copy(args_cpy, args); // Necessário copiar toda vez que for utilizar (cada chamada)
+    
     switch (walk_mode){
         case INORDER:
-            _vbwalk(t->l, visit, walk_mode, n, args);
-            (*visit)(t, n, args);
-            _vbwalk(t->r, visit, walk_mode, n, args);
+            _vbwalk(t->l, visit, walk_mode, n, args_cpy);
+
+            va_copy(args_cpy, args);
+            (*visit)(t, n, args_cpy);
+
+            va_copy(args_cpy, args);
+            _vbwalk(t->r, visit, walk_mode, n, args_cpy);
             break;
         case PREORDER:
-            (*visit)(t, n, args);
-            _vbwalk(t->r, visit, walk_mode, n, args);
-            _vbwalk(t->r, visit, walk_mode, n, args);
+            (*visit)(t, n, args_cpy);
+
+            va_copy(args_cpy, args);
+            _vbwalk(t->r, visit, walk_mode, n, args_cpy);
+
+            va_copy(args_cpy, args);
+            _vbwalk(t->r, visit, walk_mode, n, args_cpy);
             break;
         case POSTORDER:
-            _vbwalk(t->r, visit, walk_mode, n, args);
-            _vbwalk(t->r, visit, walk_mode, n, args);
-            (*visit)(t, n, args);
+            _vbwalk(t->r, visit, walk_mode, n, args_cpy);
+
+            va_copy(args_cpy, args);
+            _vbwalk(t->r, visit, walk_mode, n, args_cpy);
+
+            va_copy(args_cpy, args);
+            (*visit)(t, n, args_cpy);
             break;
     }
+
+    va_end(args_cpy);
 }
 
 void vbwalk(BinTree t, void(*visit)(BinTree t, size_t n, va_list args), char walk_mode, size_t n, ...) {
