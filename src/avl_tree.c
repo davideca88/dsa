@@ -14,7 +14,7 @@ Avl new_avl() {
 }
 
 uint8_t avl_height(Avl t) {
-    return t->height;
+    return t == NullNode ? 0 : t->height;
 }
 
 void avl_update_height(Avl t) {
