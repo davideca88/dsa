@@ -120,3 +120,10 @@ void tree_to_file(BinTree t, FILE *fd) {
 void print_tree(BinTree t, char print_mode) {
     bwalk(t, print_node, print_mode);
 }
+
+BinTree arvbin_vec(BinTree root, Vector v, int t){
+    for(int i = 0; i < t; i++){
+        root = binsert(root,v[i]);
+    }
+    return root;
+}
