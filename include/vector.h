@@ -33,7 +33,7 @@ void randomize(Vector v, unsigned len);
 void sorted_arr(Vector v, unsigned len);
 
 // Gera pacotes para a árvore binária de busca
-int gen_packages(Vector packages, int len);
+int gen_packages(Vector packages, int len, int dis, int dup);
 
 // Imprime um vetor
 void print_v(Vector v, unsigned len);
