@@ -44,4 +44,7 @@ BinTree arvbin_vec(BinTree root, Vector v, int t, int mode);
 // busca um inteiro em uma árvore 
 int arvbin_Search(BinTree raiz, int d);
 
+// Calcula a quantidade de elementos de uma árvore
+int count_nodes(BinTree root);
+
 #endif // _BINARY_TREE_H 

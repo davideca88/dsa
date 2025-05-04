@@ -339,3 +339,5 @@ void bm_vec_bin(Vector v, int len, Vector keys, int reps, BinTree t, const char*
     fclose(file);
     printf("arquivo salvo");
 }
+
+

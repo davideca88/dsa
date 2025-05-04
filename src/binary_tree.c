@@ -206,3 +206,8 @@ int arvbin_Search(BinTree raiz, int d){
         }
     }
 }
+
+int count_nodes(BinTree root) {
+    if (root == NULL) return 0;
+    return 1 + count_nodes(root->l) + count_nodes(root->r);
+}

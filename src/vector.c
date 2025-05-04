@@ -281,7 +281,9 @@ int gen_packages(Vector packages, int len, int dis, int dup){
     int disorder = (dis * len) / 100;
     int id = 0;
     int count = 0;
+    clock_t beg,end;
 
+    beg = clock();
     for (int i = 0; i < len; i++) {
         int info = rand() % (MAX_DATA + 1);
 
@@ -303,6 +305,9 @@ int gen_packages(Vector packages, int len, int dis, int dup){
         packages[ind1] = packages[ind2];
         packages[ind2] = temp;
     }
+    end = clock();
+    double time = ((double)(end-beg))/CLOCKS_PER_SEC;
+
 
     for (int i = 0; i < len; i++)
     {
@@ -310,7 +315,7 @@ int gen_packages(Vector packages, int len, int dis, int dup){
     }
 
     printf("**-------------------------------------------**\n");
-    printf("TOTAL: %d PACKETS\nSIZE: %lu BYTES\nRETRANSMISSION: %d PACKETS\n",len,len*sizeof(packages[0]),count);
+    printf("TOTAL: %d PACKETS\nSIZE: %lu BYTES\nRETRANSMISSION: %d PACKETS\nPACKAGE TRANSMISSION TIME: %.7lf SEC",len,len*sizeof(packages[0]),count,time);
 
     
     return 0;
