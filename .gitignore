@@ -10,3 +10,4 @@ output
 *.d
 .pt_br
 main
+.env
