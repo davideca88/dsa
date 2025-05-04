@@ -39,7 +39,7 @@ void print_tree(BinTree t,char option, char print_mode);
 void rpfile(const char* filename);
 
 // Transfere dados do vetor para árvore binária
-BinTree arvbin_vec(BinTree root, Vector v, int t);
+BinTree arvbin_vec(BinTree root, Vector v, int t, int mode);
 
 // busca um inteiro em uma árvore 
 int arvbin_Search(BinTree raiz, int d);

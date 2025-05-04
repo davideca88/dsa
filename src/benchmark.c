@@ -301,7 +301,7 @@ void bm_vec_bin(Vector v, int len, Vector keys, int reps, BinTree t, const char*
         return;
     }
     
-    t = arvbin_vec(t,v,len); // transfere dados do vetor para a árvore
+    t = arvbin_vec(t,v,len,0); // transfere dados do vetor para a árvore
     q_sort(v,len); // ordena o vetor para a busca binária
 
     clock_t beg, end;

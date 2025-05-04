@@ -170,9 +170,20 @@ void rpfile(const char* filename) {
     fclose(f);
 }
 
-BinTree arvbin_vec(BinTree root, Vector v, int t){
-    for(int i = 0; i < t; i++){
-        root = binsert(root,v[i]);
+BinTree arvbin_vec(BinTree root, Vector v, int t, int mode){
+    switch (mode)
+    {
+    case 0:
+        for(int i = 0; i < t; i++){
+            root = binsert(root,v[i]);
+        }
+        break;
+    
+    case 1:
+        for (int i = 0; i < t; i++){
+            root = binsert_by_id(root,v[i]);
+        }
+        break;
     }
     return root;
 }
