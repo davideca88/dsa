@@ -20,6 +20,9 @@ BinTree new_bintree();
 // Insere um nó na árvore
 BinTree binsert(BinTree t, int data);
 
+// Insere um nó na árvore pelo id
+BinTree binsert_by_id(BinTree t, uint32_t package) ;
+
 // Caminhamentos em ordem, pré ordem e pós ordem
 void bwalk(BinTree t, void (*visit)(BinTree t), char walk_mode);
 
@@ -30,7 +33,10 @@ void vbwalk(BinTree t, void(*visit)(BinTree t, size_t n, va_list args), char wal
 void tree_to_file(BinTree t, FILE *fd);
 
 // Imprime os dados da árvore sem formatação
-void print_tree(BinTree t, char print_mode);
+void print_tree(BinTree t,char option, char print_mode);
+
+// Imprime os dados em decimal de um arquivo binário
+void rpfile(const char* filename);
 
 // Transfere dados do vetor para árvore binária
 BinTree arvbin_vec(BinTree root, Vector v, int t);

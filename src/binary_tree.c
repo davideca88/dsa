@@ -1,5 +1,5 @@
 #include "../include/binary_tree.h"
-
+#define MAX_DATA  ((1 << 14) - 1)
 
 BinTree new_bintree() {
     return NULL;
@@ -25,6 +25,28 @@ BinTree binsert(BinTree t, int data) {
         t->r = binsert(t->r, data);
     }
     
+    return t;
+}
+
+BinTree binsert_by_id(BinTree t, uint32_t package) {
+    if(t == NULL) {
+        BinTree new = (BinTree) malloc(sizeof(Node));
+        
+        new->l = NULL;
+        new->r = NULL;
+        new->data = package;
+
+        return new;   
+    }
+    int id_root = t->data >> 14;
+    int id_new  = package >> 14;
+
+    if (id_new < id_root) {
+        t->l = binsert_by_id(t->l, package);
+    } else if(id_new > id_root) {
+        t->r = binsert_by_id(t->r, package);
+    }
+
     return t;
 }
 
@@ -103,9 +125,25 @@ void vbwalk(BinTree t, void(*visit)(BinTree t, size_t n, va_list args), char wal
     va_end(ap);
 }
 
-
 void print_node(BinTree t) {
     printf("%d ", t->data);
+}
+
+void print_node2(BinTree t) {
+    printf("ID: %d DATA: %d\n", t->data>>14,t->data & MAX_DATA);
+}
+
+void print_tree(BinTree t,char option, char print_mode) {
+    switch (option)
+    {
+    case 0:
+        bwalk(t, print_node, print_mode);
+        break;
+    
+    case 1:
+        bwalk(t,print_node2,print_mode);
+        break;
+    }
 }
 
 void node_to_file(BinTree t, size_t n, va_list ap) {
@@ -116,9 +154,20 @@ void tree_to_file(BinTree t, FILE *fd) {
     vbwalk(t, node_to_file, INORDER, 1, fd);
 }
 
+void rpfile(const char* filename) {
+    FILE* f = fopen(filename, "rb");
+    if (!f) {
+        printf("error opening file");
+        return;
+    }
 
-void print_tree(BinTree t, char print_mode) {
-    bwalk(t, print_node, print_mode);
+    int val;
+    while (fread(&val, sizeof(int), 1, f) == 1) {
+        printf("ID: %d DATA: %d\n", val>>14, val & MAX_DATA);
+    }
+
+    printf("\n");
+    fclose(f);
 }
 
 BinTree arvbin_vec(BinTree root, Vector v, int t){
