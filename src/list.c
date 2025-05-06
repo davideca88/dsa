@@ -122,9 +122,7 @@ size_t vector_to_list(Vector v, List l, size_t v_len) {
 // Busca sequencial na lista. Retorna bool se encontrou ou não
 char ls_search(List l, int key) {
     Node2 *node2 = l->head;
-    Node2 *prev;
     while(node2 && node2->data != key) {
-        prev = node2;
         node2 = node2->next;
     }
     if(node2) {
