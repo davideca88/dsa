@@ -3,7 +3,7 @@
 AvlNode _NullNode = {
     NULL,
     NULL,
-    69,
+    0,
     -1
 };
 
@@ -77,7 +77,6 @@ Avl avl_balance(Avl t) {
 }
 
 Avl avl_insert(Avl t, uint32_t data) {
-
     if(t == NullNode) {
         Avl new = (Avl) malloc(sizeof(AvlNode));
         new->l = NullNode;
@@ -117,6 +116,38 @@ Avl avl_search(Avl t, uint32_t data) {
     else {
         return t;
     }
+}
+
+
+void avl_walk(Avl t, void(*visit)(Avl t), char walk_mode) {
+    if(t == NullNode)
+        return;
+    
+    switch (walk_mode){
+        case INORDER:
+            avl_walk(t->l, visit, walk_mode);
+            (*visit)(t);
+            avl_walk(t->r, visit, walk_mode);
+            break;
+        case PREORDER:
+            (*visit)(t);
+            avl_walk(t->l, visit, walk_mode);
+            avl_walk(t->r, visit, walk_mode);
+            break;
+        case POSTORDER:
+            avl_walk(t->l, visit, walk_mode);
+            avl_walk(t->r, visit, walk_mode);
+            (*visit)(t);
+            break;
+    }
+}
+
+void avl_print_node(Avl t) {
+    printf("%d ", t->data);
+}
+
+void avl_print(Avl t, char print_mode) {
+    avl_walk(t, avl_print_node, print_mode);
 }
 
 Avl avl_vec(Avl root, Vector v, size_t t){
