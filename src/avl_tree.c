@@ -3,8 +3,8 @@
 AvlNode _NullNode = {
     NULL,
     NULL,
-    0,
-    (int8_t) -1
+    69,
+    -1
 };
 
 Avl NullNode = &_NullNode;
@@ -13,19 +13,19 @@ Avl new_avl() {
     return NullNode;
 }
 
-uint8_t avl_height(Avl t) {
+int8_t avl_height(Avl t) {
     return t == NullNode ? 0 : t->height;
 }
 
 void avl_update_height(Avl t) {
-    uint8_t hl = t->l->height;
-    uint8_t hr = t->r->height;
+    int8_t hl = t->l->height;
+    int8_t hr = t->r->height;
 
     t->height = 1 + max(hl, hr);
 }
 
 int8_t avl_balance_factor(Avl t) {
-    return (int8_t) (t->l->height - t->r->height);
+    return (avl_height(t->l) - avl_height(t->r));
 }
 
 Avl avl_r_rotate(Avl t) {
@@ -119,8 +119,8 @@ Avl avl_search(Avl t, uint32_t data) {
     }
 }
 
-Avl avl_vec(Avl root, Vector v, int t){
-    for(int i = 0; i < t; i++){
+Avl avl_vec(Avl root, Vector v, size_t t){
+    for(size_t i = 0; i < t; i++){
         root = avl_insert(root,v[i]);
     }
     

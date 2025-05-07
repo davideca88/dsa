@@ -14,7 +14,7 @@ typedef struct _avl_node_s {
     struct _avl_node_s* l;
     struct _avl_node_s* r;
     uint32_t data;
-    uint8_t height;
+    int8_t height;
 } AvlNode;
 
 typedef AvlNode* Avl;
@@ -29,11 +29,11 @@ Avl avl_insert(Avl t, uint32_t data);
 Avl avl_search(Avl t, uint32_t data);
 
 // Retorna o tamanho da árvore
-uint8_t avl_height(Avl t);
+int8_t avl_height(Avl t);
 
 //Passa valores de um vetor para uma AVL
 
-Avl avl_vec(Avl root, Vector v, int t);
+Avl avl_vec(Avl root, Vector v, size_t t);
 
 #endif // _AVL_TREE_H
 /*
