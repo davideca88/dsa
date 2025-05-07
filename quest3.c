@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <time.h>
-#include "../include/benchmark.h"
+#include "include/benchmark.h"
 #include "include/vector.h"
 #include "include/binary_tree.h"
 
