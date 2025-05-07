@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#include "../include/vector.h"
+
 #define max(A, B) ((A > B) ? A : B)
 
 // Nó para árvore avl
@@ -28,6 +30,10 @@ Avl avl_search(Avl t, uint32_t data);
 
 // Retorna o tamanho da árvore
 uint8_t avl_height(Avl t);
+
+//Passa valores de um vetor para uma AVL
+
+Avl avl_vec(Avl root, Vector v, int t);
 
 #endif // _AVL_TREE_H
 /*

@@ -16,6 +16,7 @@
 #include "../include/vector.h"
 #include "../include/list.h"
 #include "binary_tree.h"
+#include "../include/avl_tree.h"
 
 typedef int (*search) (Vector, int, int);
 
@@ -39,3 +40,12 @@ void s_keys(Vector v, int len, int rep);
 
 // Busca binária no vetor x busca na árvore binária
 void bm_vec_bin(Vector v, int len, Vector keys, int reps, BinTree t, const char* name);
+
+// Inserção na AVL e BST
+void insert_AVL_AB(int len, int reps, BinTree t, Avl t2, const char* name);
+
+//Busca Binária AVL e BST
+void AB_AVL_bin(int len, int reps, BinTree t, Avl t2, const char* name);
+
+//Busca Binária AVL e BST, inserindo de forma ordenada
+void AB_AVL_bin_sorted(Vector v, Vector keys, int len, int reps, BinTree t, Avl t2, const char* name);

@@ -118,3 +118,12 @@ Avl avl_search(Avl t, uint32_t data) {
         return t;
     }
 }
+
+Avl avl_vec(Avl root, Vector v, int t){
+    for(int i = 0; i < t; i++){
+        root = avl_insert(root,v[i]);
+    }
+    
+    return root;
+
+}

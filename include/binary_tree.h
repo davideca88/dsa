@@ -47,4 +47,8 @@ int arvbin_Search(BinTree raiz, int d);
 // Calcula a quantidade de elementos de uma árvore
 int count_nodes(BinTree root);
 
+//Altura da Arvore
+
+uint8_t height_binTree(BinTree root);
+
 #endif // _BINARY_TREE_H 
