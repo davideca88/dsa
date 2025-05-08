@@ -341,3 +341,192 @@ void bm_vec_bin(Vector v, int len, Vector keys, int reps, BinTree t, const char*
 }
 
 
+
+void insert_AVL_AB(int len, int reps, BinTree t, Avl t2, const char* name){
+    FILE* file = fopen(name,"w");
+    if(file == NULL){
+        printf("error creating file\n");
+        return;
+    }
+
+    Vector v = new_vector(len);
+
+
+    clock_t beg, end;
+
+    fprintf(file,"execução, tempo_AVL(s), tamanho_AVL, tempo_arvbin(s), tamanho_arvbin\n");
+    
+    double time_AVL;
+    double time_arvbin;
+    int height_avl = 0;
+    int height_ab = 0;
+
+    for(unsigned i = 0; i < reps; i++){
+        randomize(v,len);
+
+        beg = clock();
+
+        t2 = avl_vec(t2,v,len); // transfere dados do vetor para a AVL
+        
+        end = clock();
+
+        time_AVL = ((double)(end-beg))/CLOCKS_PER_SEC;
+
+        height_avl = avl_height(t2);
+       
+
+        beg = clock();
+
+        t = arvbin_vec(t,v,len,0); //  transfere dados do vetor para a árvore
+        
+        end = clock();
+
+        time_arvbin = ((double)(end-beg))/CLOCKS_PER_SEC;
+
+        height_ab = height_binTree(t);
+
+        fprintf(file,"%d,    %.7f,    %d,    %.7f,    %d\n", i+1, time_AVL, height_avl, time_arvbin, height_ab);
+    }
+
+
+    fclose(file);
+    printf("arquivo salvo");
+
+    v = delete_vector(v);
+}
+
+
+
+
+void AB_AVL_bin(int len, int reps, BinTree t, Avl t2, const char* name){
+    
+    
+    FILE* file = fopen(name,"w");
+    if(file == NULL){
+        printf("error creating file\n");
+        return;
+    }
+
+
+
+    Vector v = new_vector(len);
+    Vector keys = new_vector(reps);
+
+    randomize(v,len);
+
+    s_keys(keys,len,reps);
+
+
+
+    t = arvbin_vec(t,v,len,0); // transfere dados do vetor para a árvore
+    t2 = avl_vec(t2,v,len);
+
+    clock_t beg, end;
+
+    fprintf(file,"execução, pos, valor, tempo_AVL(s), tempo_arvbin(s)\n");
+    
+    double time_vec;
+    double time_arvbin;
+    double sum_vec = 0.0;
+    double sum_arvbin = 0.0;
+
+    for(unsigned i = 0; i < reps; i++){
+        int key = keys[i];  
+        
+        beg = clock();
+        avl_search(t2,key); // busca binária no vetor
+        end = clock();
+
+        time_vec = ((double)(end-beg))/CLOCKS_PER_SEC;
+        sum_vec += time_vec;
+
+        beg = clock();
+        arvbin_Search(t,key); // busca na árvore binária
+        end = clock();
+
+        time_arvbin = ((double)(end-beg))/CLOCKS_PER_SEC;
+        sum_arvbin += time_arvbin;
+
+        fprintf(file,"%d,    %d,    %d,    %.7f,    %.7f\n", i+1, key, v[key], time_vec, time_arvbin);
+    }
+    double media_vec = sum_vec/reps;
+    double media_arvbin = sum_arvbin/reps;
+    fprintf(file,"\nmédia AVL: %f\n", media_vec);
+    fprintf(file,"média arvbin: %f\n", media_arvbin);
+    fclose(file);
+    printf("arquivo salvo");
+
+    v = delete_vector(v);
+    keys = delete_vector(keys);
+}
+
+
+
+void AB_AVL_bin_sorted(int len, int reps, BinTree t, Avl t2, const char* name){
+    
+    
+    FILE* file = fopen(name,"w");
+    if(file == NULL){
+        printf("error creating file\n");
+        return;
+    }
+
+
+
+    Vector v = new_vector(len);
+    Vector keys = new_vector(reps);
+
+    sorted_arr(v,len);
+
+    s_keys(keys,len,reps);
+
+
+
+    t = arvbin_vec(t,v,len,0); // transfere dados do vetor para a árvore
+    t2 = avl_vec(t2,v,len);
+
+    clock_t beg, end;
+
+    fprintf(file,"execução, pos, valor, tempo_AVL(s), tempo_arvbin(s)\n");
+    
+    double time_vec;
+    double time_arvbin;
+    double sum_vec = 0.0;
+    double sum_arvbin = 0.0;
+
+    for(unsigned i = 0; i < reps; i++){
+
+        sorted_arr(v,len);
+        s_keys(keys,len,reps);
+
+
+        int key = keys[i];  
+        
+        beg = clock();
+        avl_search(t2,key); // busca binária no vetor
+        end = clock();
+
+        time_vec = ((double)(end-beg))/CLOCKS_PER_SEC;
+        sum_vec += time_vec;
+
+        beg = clock();
+        arvbin_Search(t,key); // busca na árvore binária
+        end = clock();
+
+        time_arvbin = ((double)(end-beg))/CLOCKS_PER_SEC;
+        sum_arvbin += time_arvbin;
+
+        fprintf(file,"%d,    %d,    %d,    %.7f,    %.7f\n", i+1, key, v[key], time_vec, time_arvbin);
+
+    }
+    double media_vec = sum_vec/reps;
+    double media_arvbin = sum_arvbin/reps;
+    fprintf(file,"\nmédia AVL: %f\n", media_vec);
+    fprintf(file,"média arvbin: %f\n", media_arvbin);
+    fclose(file);
+    printf("arquivo salvo");
+
+    v = delete_vector(v);
+    keys = delete_vector(keys);
+
+}

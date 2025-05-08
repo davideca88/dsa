@@ -1,12 +1,16 @@
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -O3 -ffast-math
 LDFLAGS = -lm
-OBJ = obj/list.o obj/vector.o obj/avl_tree.o obj/binary_tree.o obj/benchmark.o 
+OBJDIR = obj/
+OBJ = $(OBJDIR)/list.o $(OBJDIR)/vector.o $(OBJDIR)/avl_tree.o $(OBJDIR)/binary_tree.o $(OBJDIR)/benchmark.o 
 QUESTS = quest1 quest2 quest3 quest4
 
 all: $(QUESTS)
-	
-obj/%.o: src/%.c 
+
+$(OBJDIR):
+	mkdir $@
+
+$(OBJ): $(OBJDIR)/%.o: src/%.c $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(QUESTS): %: %.c $(OBJ)

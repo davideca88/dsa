@@ -4,7 +4,7 @@ AvlNode _NullNode = {
     NULL,
     NULL,
     0,
-    (int8_t) -1
+    -1
 };
 
 Avl NullNode = &_NullNode;
@@ -13,19 +13,19 @@ Avl new_avl() {
     return NullNode;
 }
 
-uint8_t avl_height(Avl t) {
+int8_t avl_height(Avl t) {
     return t == NullNode ? 0 : t->height;
 }
 
 void avl_update_height(Avl t) {
-    uint8_t hl = t->l->height;
-    uint8_t hr = t->r->height;
+    int8_t hl = t->l->height;
+    int8_t hr = t->r->height;
 
     t->height = 1 + max(hl, hr);
 }
 
 int8_t avl_balance_factor(Avl t) {
-    return (int8_t) (t->l->height - t->r->height);
+    return (avl_height(t->l) - avl_height(t->r));
 }
 
 Avl avl_r_rotate(Avl t) {
@@ -77,7 +77,6 @@ Avl avl_balance(Avl t) {
 }
 
 Avl avl_insert(Avl t, uint32_t data) {
-
     if(t == NullNode) {
         Avl new = (Avl) malloc(sizeof(AvlNode));
         new->l = NullNode;
@@ -117,4 +116,45 @@ Avl avl_search(Avl t, uint32_t data) {
     else {
         return t;
     }
+}
+
+
+void avl_walk(Avl t, void(*visit)(Avl t), char walk_mode) {
+    if(t == NullNode)
+        return;
+    
+    switch (walk_mode){
+        case INORDER:
+            avl_walk(t->l, visit, walk_mode);
+            (*visit)(t);
+            avl_walk(t->r, visit, walk_mode);
+            break;
+        case PREORDER:
+            (*visit)(t);
+            avl_walk(t->l, visit, walk_mode);
+            avl_walk(t->r, visit, walk_mode);
+            break;
+        case POSTORDER:
+            avl_walk(t->l, visit, walk_mode);
+            avl_walk(t->r, visit, walk_mode);
+            (*visit)(t);
+            break;
+    }
+}
+
+void avl_print_node(Avl t) {
+    printf("%d ", t->data);
+}
+
+void avl_print(Avl t, char print_mode) {
+    avl_walk(t, avl_print_node, print_mode);
+}
+
+Avl avl_vec(Avl root, Vector v, size_t t){
+    for(size_t i = 0; i < t; i++){
+        root = avl_insert(root,v[i]);
+    }
+    
+    return root;
+
 }

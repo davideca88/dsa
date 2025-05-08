@@ -211,3 +211,17 @@ int count_nodes(BinTree root) {
     if (root == NULL) return 0;
     return 1 + count_nodes(root->l) + count_nodes(root->r);
 }
+
+
+uint8_t height_binTree(BinTree root) {
+    if (root == NULL) {
+        return -1; // Árvore vazia tem altura -1 (ou 0, se considerar folha como altura 1)
+    } else {
+        // Calcula a altura das subárvores esquerda e direita
+        int heightL = height_binTree(root->l);
+        int heightR = height_binTree(root->r);
+        
+        // Retorna a maior altura + 1 (contando o nó atual)
+        return (heightL > heightR) ? heightL + 1 : heightR + 1;
+    }
+}
