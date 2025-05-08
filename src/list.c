@@ -79,7 +79,7 @@ size_t print_list(List l) {
 // TODO: (!) Carece de testes
 size_t vector_to_list(Vector v, List l, size_t v_len) {
     Node2 *node2 = l->head;
-    Node2 *aux;
+    Node2 *aux = node2;
     size_t v_pos = 0;
     
     // Se a lista não for vazia, reaproveita-se os nós já existentes e muda o campo `data` e avança a posição no vetor
