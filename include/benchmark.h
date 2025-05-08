@@ -48,4 +48,4 @@ void insert_AVL_AB(int len, int reps, BinTree t, Avl t2, const char* name);
 void AB_AVL_bin(int len, int reps, BinTree t, Avl t2, const char* name);
 
 //Busca Binária AVL e BST, inserindo de forma ordenada
-void AB_AVL_bin_sorted(Vector v, Vector keys, int len, int reps, BinTree t, Avl t2, const char* name);
+void AB_AVL_bin_sorted(int len, int reps, BinTree t, Avl t2, const char* name);
