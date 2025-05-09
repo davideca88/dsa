@@ -225,3 +225,16 @@ int height_binTree(BinTree root) {
         return (heightL > heightR) ? heightL + 1 : heightR + 1;
     }
 }
+
+
+void delete_BST(BinTree t){
+
+    if(t == NULL) return;
+
+    delete_BST(t->l);
+    delete_BST(t->r);
+
+    free(t);
+
+
+}

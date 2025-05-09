@@ -10,22 +10,21 @@
 int main(){
     set_time();
     Avl rootAVL = new_avl();
-    Avl rootAVL2 = new_avl();
-    Avl rootAVL3 = new_avl();
     BinTree rootAB = new_bintree();
-    BinTree rootAB2 = new_bintree();
-    BinTree rootAB3 = new_bintree();
 
 
-
-    
     insert_AVL_AB(LEN,10,rootAB,rootAVL,"exercicio4part1.txt");
     printf("\n");
-    AB_AVL_bin(LEN,30,rootAB2,rootAVL2,"exercicio4part2.txt");
+    
+    AB_AVL_bin(LEN,30,rootAB,rootAVL,"exercicio4part2.txt");
     printf("\n");
-    AB_AVL_bin_sorted(LEN,1,rootAB3,rootAVL3,"exercicio4part3.txt");
+    
+    AB_AVL_bin_sorted(160000,30,rootAB,rootAVL,"exercicio4part3.txt");
 
 
+
+
+   
 
 
 

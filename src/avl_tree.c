@@ -158,3 +158,15 @@ Avl avl_vec(Avl root, Vector v, size_t t){
     return root;
 
 }
+
+void delete_AVL(Avl t){
+
+    if(t == NullNode) return;
+
+    delete_AVL(t->l);
+    delete_AVL(t->r);
+
+    free(t);
+
+
+}

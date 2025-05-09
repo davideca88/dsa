@@ -360,6 +360,8 @@ void insert_AVL_AB(int len, int reps, BinTree t, Avl t2, const char* name){
     double time_arvbin;
     int height_avl = 0;
     int height_ab = 0;
+    double sum_AVL = 0.0;
+    double sum_arvbin = 0.0;
 
     for(unsigned i = 0; i < reps; i++){
         randomize(v,len);
@@ -372,6 +374,8 @@ void insert_AVL_AB(int len, int reps, BinTree t, Avl t2, const char* name){
 
         time_AVL = ((double)(end-beg))/CLOCKS_PER_SEC;
 
+        sum_AVL += time_AVL;
+
         height_avl = avl_height(t2);
        
 
@@ -383,10 +387,26 @@ void insert_AVL_AB(int len, int reps, BinTree t, Avl t2, const char* name){
 
         time_arvbin = ((double)(end-beg))/CLOCKS_PER_SEC;
 
+        sum_arvbin += time_arvbin;
+
         height_ab = height_binTree(t);
 
         fprintf(file,"%d,    %.7f,    %d,    %.7f,    %d\n", i+1, time_AVL, height_avl, time_arvbin, height_ab);
+
+        delete_AVL(t2);
+
+        t2 = new_avl();
+
+        delete_BST(t);
+
+        t = new_bintree();
     }
+
+    double media_AVL = sum_AVL/reps;
+    double media_arvbin = sum_arvbin/reps;
+    fprintf(file,"\nmédia AVL: %f\n", media_AVL);
+    fprintf(file,"média arvbin: %f\n", media_arvbin);
+
 
 
     fclose(file);
@@ -429,6 +449,9 @@ void AB_AVL_bin(int len, int reps, BinTree t, Avl t2, const char* name){
     double time_arvbin;
     double sum_vec = 0.0;
     double sum_arvbin = 0.0;
+   
+
+    
 
     for(unsigned i = 0; i < reps; i++){
         int key = keys[i];  
@@ -437,8 +460,12 @@ void AB_AVL_bin(int len, int reps, BinTree t, Avl t2, const char* name){
         avl_search(t2,key); // busca binária no vetor
         end = clock();
 
+
+
         time_vec = ((double)(end-beg))/CLOCKS_PER_SEC;
         sum_vec += time_vec;
+
+
 
         beg = clock();
         arvbin_Search(t,key); // busca na árvore binária
@@ -446,13 +473,20 @@ void AB_AVL_bin(int len, int reps, BinTree t, Avl t2, const char* name){
 
         time_arvbin = ((double)(end-beg))/CLOCKS_PER_SEC;
         sum_arvbin += time_arvbin;
+        
+        
+      
 
-        fprintf(file,"%d,    %d,    %d,    %.7f,    %.7f\n", i+1, key, v[key], time_vec, time_arvbin);
+
+
+        fprintf(file,"%d,    %d,    %d,     %.7f,       %.7f\n", i+1, key, v[key], time_vec, time_arvbin);
     }
     double media_vec = sum_vec/reps;
     double media_arvbin = sum_arvbin/reps;
     fprintf(file,"\nmédia AVL: %f\n", media_vec);
     fprintf(file,"média arvbin: %f\n", media_arvbin);
+    fprintf(file,"altura AVL: %d\n", avl_height(t2));
+    fprintf(file,"altura arvbin: %d\n", height_binTree(t));
     fclose(file);
     printf("arquivo salvo");
 
@@ -493,21 +527,22 @@ void AB_AVL_bin_sorted(int len, int reps, BinTree t, Avl t2, const char* name){
     double time_arvbin;
     double sum_vec = 0.0;
     double sum_arvbin = 0.0;
+    
+
 
     for(unsigned i = 0; i < reps; i++){
-
-        sorted_arr(v,len);
-        s_keys(keys,len,reps);
-
-
         int key = keys[i];  
         
         beg = clock();
         avl_search(t2,key); // busca binária no vetor
         end = clock();
 
+
+
         time_vec = ((double)(end-beg))/CLOCKS_PER_SEC;
         sum_vec += time_vec;
+
+        
 
         beg = clock();
         arvbin_Search(t,key); // busca na árvore binária
@@ -516,13 +551,18 @@ void AB_AVL_bin_sorted(int len, int reps, BinTree t, Avl t2, const char* name){
         time_arvbin = ((double)(end-beg))/CLOCKS_PER_SEC;
         sum_arvbin += time_arvbin;
 
-        fprintf(file,"%d,    %d,    %d,    %.7f,    %.7f\n", i+1, key, v[key], time_vec, time_arvbin);
+       
 
+        fprintf(file,"%d,    %d,    %d,     %.7f,      %.7f\n", i+1, key, v[key], time_vec, time_arvbin);
     }
+
+
     double media_vec = sum_vec/reps;
     double media_arvbin = sum_arvbin/reps;
     fprintf(file,"\nmédia AVL: %f\n", media_vec);
     fprintf(file,"média arvbin: %f\n", media_arvbin);
+    fprintf(file,"altura AVL: %d\n", avl_height(t2));
+    fprintf(file,"altura arvbin: %d\n", height_binTree(t));
     fclose(file);
     printf("arquivo salvo");
 

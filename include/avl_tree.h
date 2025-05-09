@@ -45,4 +45,7 @@ void avl_print(Avl t, char print_mode);
 //Passa valores de um vetor para uma AVL
 Avl avl_vec(Avl root, Vector v, size_t t);
 
+//Esvazia a AVL
+void delete_AVL(Avl t);
+
 #endif // _AVL_TREE_H

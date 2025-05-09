@@ -50,5 +50,10 @@ int count_nodes(BinTree root);
 //Altura da Arvore
 
 int height_binTree(BinTree root);
+int height_binTree(BinTree root);
+
+//Esvazia a BST
+
+void delete_BST(BinTree t);
 
 #endif // _BINARY_TREE_H 
