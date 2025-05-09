@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -O3 -ffast-math
 LDFLAGS = -lm
-OBJDIR = obj/
+OBJDIR = obj
 OBJ = $(OBJDIR)/list.o $(OBJDIR)/vector.o $(OBJDIR)/avl_tree.o $(OBJDIR)/binary_tree.o $(OBJDIR)/benchmark.o 
 QUESTS = quest1 quest2 quest3 quest4
 
@@ -17,4 +17,4 @@ $(QUESTS): %: %.c $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $< -o $@ $(LDFLAGS)
 
 clean:
-	rm -f $(QUESTS) $(OBJ)
+	rm -f $(QUESTS) $(OBJ) *.txt *.bin
