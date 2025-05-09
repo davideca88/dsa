@@ -4,11 +4,18 @@
 #include "include/vector.h"
 #include "include/binary_tree.h"
 
-#define LEN 30
+#define LEN 262143
 #define DISORDER 20
-#define DUPLICATE 10
+#define DUPLICATE 5
+#define MAX_ID ((1 << 18)-1)
 
 int main(){
+    if (LEN > MAX_ID)
+    {
+        printf("The number of packets exceeds the 18-bit limit! (262143 packets)\n");
+        return 0;
+    }
+    
     set_time();
 
     Vector packages = new_vector(LEN);
@@ -16,20 +23,21 @@ int main(){
 
     printf("IMPORTANT INFORMATION\nPACKETS: IDENTIFIER (18 BITS) + DATA (14 BITS)\nDISORDER: %d%%  DUPLICATE: %d%%\n",DISORDER, DUPLICATE);
     printf("**-------------------------------------------**\n");
-    puts("RECEIVED DATA PACKETS:\n");
+    puts("#I1\nRECEIVED DATA PACKETS:\n");
     gen_packages(packages, LEN, DISORDER, DUPLICATE);
     clock_t beg = clock();
     root = arvbin_vec(root,packages,LEN,1);
     clock_t end = clock();
     double time = ((double)(end-beg))/CLOCKS_PER_SEC;
     int total_nodes = count_nodes(root);
+    uint8_t height = height_binTree(root);
 
     printf("\n**-------------------------------------------**\n");
-    puts("BINARY SEARCH TREE:\n");
+    puts("#I2\nBINARY SEARCH TREE:\n");
     puts("IN-ODRDER:\n");
     print_tree(root,1, INORDER);
     printf("**-------------------------------------------**\n");
-    printf("TOTAL: %d PACKETS\nBST SIZE: %lu BYTES\nPACKAGE SIZE: %lu BYTES\nPACKAGE RECEIVE TIME: %.7lf SEC\n",total_nodes,sizeof(root)*total_nodes,total_nodes*sizeof(packages[0]),time);
+    printf("#R2\nTOTAL: %d PACKETS\nBST SIZE: %lu BYTES\nPACKAGE SIZE: %lu BYTES\nPACKAGE RECEIVE TIME: %.7lf SEC\nBST HEIGHT:%d\n",total_nodes,sizeof(root)*total_nodes,total_nodes*sizeof(packages[0]),time,height);
     printf("**-------------------------------------------**\n");
 
     FILE *fd = fopen("packages.bin","wb");
@@ -43,7 +51,7 @@ int main(){
     printf("**-------------------------------------------**\n");
     fclose(fd);
 
-    puts("PACKAGE.BIN DATA (FROM BINARY ARCHIVE):\n");
+    puts("#I3\nPACKAGE.BIN DATA (FROM BINARY ARCHIVE):\n");
     rpfile("packages.bin");
     printf("**---------------------END--------------------**\n");
 

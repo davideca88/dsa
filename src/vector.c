@@ -279,15 +279,15 @@ Cada pacote é composto: Identificador(18 bits) + dado(14 bits);
 int gen_packages(Vector packages, int len, int dis, int dup){
     if(len>MAX_ID)return 0;
     int disorder = (dis * len) / 100;
-    int id = 0;
+    uint32_t id = 0;
     int count = 0;
     clock_t beg,end;
 
     beg = clock();
     for (int i = 0; i < len; i++) {
-        int info = rand() % (MAX_DATA + 1);
+        uint32_t info = rand() % (MAX_DATA + 1);
 
-        uint32_t package = (id << 14) | (info & MAX_DATA);
+        uint32_t package = ((id & MAX_ID) << 14) | (info & MAX_DATA);
         packages[i] = package;
         id++;
 
@@ -315,6 +315,7 @@ int gen_packages(Vector packages, int len, int dis, int dup){
     }
 
     printf("**-------------------------------------------**\n");
+    printf("#R1\n");
     printf("TOTAL: %d PACKETS\nSIZE: %lu BYTES\nRETRANSMISSION: %d PACKETS\nPACKAGE TRANSMISSION TIME: %.7lf SEC",len,len*sizeof(packages[0]),count,time);
 
     

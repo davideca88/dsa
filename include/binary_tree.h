@@ -49,6 +49,6 @@ int count_nodes(BinTree root);
 
 //Altura da Arvore
 
-uint8_t height_binTree(BinTree root);
+int height_binTree(BinTree root);
 
 #endif // _BINARY_TREE_H 

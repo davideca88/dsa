@@ -147,7 +147,7 @@ void print_tree(BinTree t,char option, char print_mode) {
 }
 
 void node_to_file(BinTree t, size_t n, va_list ap) {
-    fwrite(&(t->data), sizeof(int), 1, va_arg(ap, FILE*));
+    fwrite(&(t->data), sizeof(uint32_t), 1, va_arg(ap, FILE*));
 }
 
 void tree_to_file(BinTree t, FILE *fd) {
@@ -161,7 +161,7 @@ void rpfile(const char* filename) {
         return;
     }
 
-    int val;
+    uint32_t val;
     while (fread(&val, sizeof(int), 1, f) == 1) {
         printf("ID: %d DATA: %d\n", val>>14, val & MAX_DATA);
     }
@@ -213,7 +213,7 @@ int count_nodes(BinTree root) {
 }
 
 
-uint8_t height_binTree(BinTree root) {
+int height_binTree(BinTree root) {
     if (root == NULL) {
         return -1; // Árvore vazia tem altura -1 (ou 0, se considerar folha como altura 1)
     } else {
