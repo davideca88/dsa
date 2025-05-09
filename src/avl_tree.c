@@ -1,10 +1,11 @@
 #include "../include/avl_tree.h"
 
+// Nó sentinela para reduzir as comparações
 AvlNode _NullNode = {
     NULL,
     NULL,
     0,
-    -1
+    -1 // facilita cálculo da altura
 };
 
 Avl NullNode = &_NullNode;
@@ -159,14 +160,10 @@ Avl avl_vec(Avl root, Vector v, size_t t){
 
 }
 
-void delete_AVL(Avl t){
-
-    if(t == NullNode) return;
-
-    delete_AVL(t->l);
-    delete_AVL(t->r);
-
+void delete_avl_node(Avl t) {
     free(t);
+}
 
-
+void delete_AVL(Avl t){
+    avl_walk(t, delete_avl_node, POSTORDER);
 }

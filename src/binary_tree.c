@@ -226,15 +226,10 @@ int height_binTree(BinTree root) {
     }
 }
 
+void delete_node(BinTree t) {
+    free(t);
+}
 
 void delete_BST(BinTree t){
-
-    if(t == NULL) return;
-
-    delete_BST(t->l);
-    delete_BST(t->r);
-
-    free(t);
-
-
+    bwalk(t, delete_node, POSTORDER);
 }
