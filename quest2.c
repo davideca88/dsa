@@ -4,9 +4,9 @@
 #include "include/vector.h"
 #include "include/binary_tree.h"
 
-#define LEN 262143
-#define DISORDER 20
-#define DUPLICATE 5
+#define LEN 500
+#define DISORDER 0
+#define DUPLICATE 0
 #define MAX_ID ((1 << 18)-1)
 
 int main(){
@@ -30,7 +30,7 @@ int main(){
     clock_t end = clock();
     double time = ((double)(end-beg))/CLOCKS_PER_SEC;
     int total_nodes = count_nodes(root);
-    uint8_t height = height_binTree(root);
+    int height = height_binTree(root);
 
     printf("\n**-------------------------------------------**\n");
     puts("#I2\nBINARY SEARCH TREE:\n");
