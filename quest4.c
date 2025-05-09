@@ -20,6 +20,7 @@ int main(){
     printf("\n");
     
     AB_AVL_bin_sorted(160000,30,rootAB,rootAVL,"exercicio4part3.txt");
+    puts("\n");
 
 
 

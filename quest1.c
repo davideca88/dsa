@@ -25,6 +25,7 @@ int main(int argc, char* argv[]) {
 
     puts("\n\tPós-ordem:\n");
     print_tree(root,0, POSTORDER);
+    puts("\n");
 
     return 0;
 }

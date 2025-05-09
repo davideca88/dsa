@@ -22,6 +22,7 @@ int main(){
 
     // Questão 3: busca binária vetor x busca em árvore binária
     bm_vec_bin(v,LEN,keys,reps,root,"exercicio3.txt");
+    puts("\n");
     
 }
   
