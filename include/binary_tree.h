@@ -3,14 +3,21 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdarg.h>
 
-#include "node.h"
 #include "vector.h"
 
 #define PREORDER  0
 #define INORDER   1
 #define POSTORDER 2
+
+// Nó para árvores binárias
+typedef struct _node_s {
+    struct _node_s* l;
+    struct _node_s* r;
+    uint32_t data;
+} Node;
 
 typedef Node* BinTree;
 
