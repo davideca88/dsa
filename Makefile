@@ -17,4 +17,4 @@ $(QUESTS): %: %.c $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $< -o $@ $(LDFLAGS)
 
 clean:
-	rm -f $(QUESTS) $(OBJ) *.txt *.bin
+	rm -f $(QUESTS) $(OBJDIR) *.txt *.bin
