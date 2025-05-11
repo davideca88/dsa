@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -O3 -ffast-math
+CFLAGS = -Wall -Werror -O3 -ffast-math
 LDFLAGS = -lm
 OBJDIR = obj
 OBJ = $(OBJDIR)/list.o $(OBJDIR)/vector.o $(OBJDIR)/avl_tree.o $(OBJDIR)/binary_tree.o $(OBJDIR)/benchmark.o 
