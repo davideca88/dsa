@@ -26,15 +26,15 @@ typedef struct _data_s {
 } Data;
 
 // Nó para hash table com colisão de lista encadeada
-struct _htable_chaining_node_s {
+struct _hash_table_chaining_node_s {
     Data *data;
     Data *next;
 };
 
 // HashTable genérico com funções de inserir e buscar um elemento
-typedef struct _htable_s* HashTable;
-struct _htable_s {
-    void **table;
+typedef struct _hash_table_s* HashTable;
+struct _hash_table_s {
+    void *table;
     Data (*get)(HashTable ht, Key key); 
     char (*insert)(HashTable ht, Data data);
 };
@@ -50,12 +50,12 @@ Data chaining_get(HashTable ht, Key key);
 char overflow_area_insert(HashTable ht, Data data);
 Data oveflow_area_get(HashTable ht, Key key);
  
-HashTable new_htable(size_t len, char collision_mode) {
-    HashTable ht = (HashTable) malloc(sizeof(struct _htable_s));
+HashTable new_hash_table(size_t len, char collision_mode) {
+    HashTable ht = (HashTable) malloc(sizeof(struct _hash_table_s));
 
     switch (collision_mode) {
         case CHAINING:
-            ht->table = malloc(sizeof(struct _htable_chaining_node_s*) * len);
+            ht->table = malloc(sizeof(struct _hash_table_chaining_node_s*) * len);
             ht->get = chaining_get;
             ht->insert = chaining_insert;
         break; // CHAINING
@@ -90,7 +90,7 @@ int main() {
     };
     
     // hash table chaining com 10 células
-    HashTable ht = new_htable(10, CHAINING);
+    HashTable ht = new_hash_table(10, CHAINING);
         
     ht->insert(ht, data);
 
