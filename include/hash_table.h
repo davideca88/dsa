@@ -20,9 +20,14 @@
 
 // Tipos dado e chave (a definir). Aqui tem um exemplo bem simples
 typedef unsigned long Key;
+typedef char Name[64];
+typedef unsigned Price;
+
 typedef struct _data_s {
-    Key key;
-    int data;
+    Name name;
+    Key id;
+    Price price;
+    short quantity;
 } Data;
 
 // Nó para hash table com colisão de lista encadeada
@@ -40,7 +45,7 @@ struct _hash_table_s {
 };
 
 // Função de espalhamento. Deve ser chamado em todas as funções do tipo 'get'
-unsigned hash(Key key);
+unsigned hash(Key key, size_t ht_len);
 
 // Funções para hash table encadeado
 char chaining_insert(HashTable ht, Data data);
@@ -49,33 +54,9 @@ Data chaining_get(HashTable ht, Key key);
 // Funções para overflow area
 char overflow_area_insert(HashTable ht, Data data);
 Data oveflow_area_get(HashTable ht, Key key);
- 
-HashTable new_hash_table(size_t len, char collision_mode) {
-    HashTable ht = (HashTable) malloc(sizeof(struct _hash_table_s));
 
-    switch (collision_mode) {
-        case CHAINING:
-            ht->table = malloc(sizeof(struct _hash_table_chaining_node_s*) * len);
-            ht->get = chaining_get;
-            ht->insert = chaining_insert;
-        break; // CHAINING
-
-        case OVERFLOW_AREA:
-            ht->table = malloc(sizeof(Data*) * len);
-            ht->get = oveflow_area_get;
-            ht->insert = overflow_area_insert;
-        break; // OVERFLOW_AREA
-
-        // Outros casos devem ser implementados no futuro
-
-        default:
-            perror("Collision mode not recognized =(\n");
-            exit(EXIT_FAILURE);
-        break; // default
-    }
-
-    return ht;
-}
+// Cria tabela especificando tamanho e método de tratamento de colisão
+HashTable new_hash_table(size_t len, char collision_mode);
 
 #endif // _HASH_TABLE_H
 
