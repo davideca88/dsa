@@ -15,20 +15,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "product.h"
+
 #define CHAINING      0
 #define OVERFLOW_AREA 1
 
-// Tipos dado e chave (a definir). Aqui tem um exemplo bem simples
-typedef unsigned long Key;
-typedef char Name[64];
-typedef unsigned Price;
+#define PRIME 1572869
 
-typedef struct _data_s {
-    Name name;
-    Key id;
-    Price price;
-    short quantity;
-} Data;
 
 // Nó para hash table com colisão de lista encadeada
 struct _hash_table_chaining_node_s {
@@ -42,6 +35,7 @@ struct _hash_table_s {
     void *table;
     Data (*get)(HashTable ht, Key key); 
     char (*insert)(HashTable ht, Data data);
+    size_t len;
 };
 
 // Função de espalhamento. Deve ser chamado em todas as funções do tipo 'get'
