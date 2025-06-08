@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "product.h"
 
@@ -22,35 +23,45 @@
 
 #define PRIME 1572869
 
+typedef long int Offset;
+
+typedef struct _bucket_s{
+    Offset offset;
+    Key key;
+} Bucket;
 
 // Nó para hash table com colisão de lista encadeada
 struct _hash_table_chaining_node_s {
-    Data *data;
-    Data *next;
+    Bucket bucket;
+    struct _hash_table_chaining_node_s *next;
 };
 
 // HashTable genérico com funções de inserir e buscar um elemento
 typedef struct _hash_table_s* HashTable;
 struct _hash_table_s {
-    void *table;
-    Data (*get)(HashTable ht, Key key); 
-    char (*insert)(HashTable ht, Data data);
-    size_t len;
+    void    *table;
+    Offset (*get)(HashTable ht, Key key); 
+    bool   (*insert)(HashTable ht, Key key, size_t offset);
+    size_t  len;
+    char collision_mode;
 };
 
 // Função de espalhamento. Deve ser chamado em todas as funções do tipo 'get'
-unsigned hash(Key key, size_t ht_len);
+size_t hash(Key key, size_t len);
 
 // Funções para hash table encadeado
-char chaining_insert(HashTable ht, Data data);
-Data chaining_get(HashTable ht, Key key);
+bool    chaining_insert(HashTable ht, Key key, size_t offset);
+Offset chaining_get(HashTable ht, Key key);
 
 // Funções para overflow area
-char overflow_area_insert(HashTable ht, Data data);
-Data oveflow_area_get(HashTable ht, Key key);
+bool    overflow_area_insert(HashTable ht, Key key, size_t offset);
+Offset oveflow_area_get(HashTable ht, Key key);
 
 // Cria tabela especificando tamanho e método de tratamento de colisão
 HashTable new_hash_table(size_t len, char collision_mode);
+
+
+void print_hash_table(HashTable ht);
 
 #endif // _HASH_TABLE_H
 
@@ -59,7 +70,7 @@ HashTable new_hash_table(size_t len, char collision_mode);
 #include "include/hash_table.h"
 
 int main() {
-    Data data = {
+    Bucket data = {
                     123, // chave
                     10   // dado
     };
@@ -69,7 +80,7 @@ int main() {
         
     ht->insert(ht, data);
 
-    Data data2 = ht->get(ht, 123);
+    Bucket data2 = ht->get(ht, 123);
     
     return 0;
 }
