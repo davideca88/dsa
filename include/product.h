@@ -14,5 +14,17 @@ typedef struct _product_s {
     short quantity;
 } Product;
 
+//Para a AVL de Keys
+
+typedef struct keys_AVL{
+    unsigned indice;
+    Key id;
+} keys;
+
+//Para a AVL de Prices
+typedef struct products_AVL{
+    unsigned indice;
+    Price price;
+} prices;
 
 #endif // _PRODUCT_H
