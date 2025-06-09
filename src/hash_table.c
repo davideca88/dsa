@@ -76,8 +76,60 @@ Offset chaining_get(HashTable this, Key key) {
     return EOF;
 }
 
-bool overflow_area_insert(HashTable this, Key key, size_t offset);
-Offset oveflow_area_get(HashTable this, Key key);
+bool overflow_area_insert(HashTable this, Key key, size_t offset) {
+    if(!this) {
+        perror("Tabela inexistente =(\n");
+        return false;
+    }
+
+    size_t data_hash = hash(key, this->len);
+    Bucket *new_bucket = (Bucket*) malloc(sizeof(Bucket));
+    
+    if(!new_bucket) {
+        perror("Falha ao criar novo bucket =(\n");
+        return false;
+    }
+    
+    new_bucket->offset = offset;
+    new_bucket->key = key;
+
+    Bucket **table = (Bucket**) this->table;
+
+    if(table[data_hash] == NULL) {
+        table[data_hash] = new_bucket;
+        return true;
+    }
+
+    for(size_t i = this->len; i < (this->len + (this->len / 10)); i++) {
+        if(table[i] == NULL) {
+            table[i] = new_bucket;
+            return true;
+        }
+    }
+
+    perror("Tabela cheia =(\n"); // provavelmente devemos redimencionar a tabela, mas preguiça
+    return false;
+}
+
+Offset oveflow_area_get(HashTable this, Key key) {
+    size_t data_hash = hash(key, this->len);
+    Bucket **table = (Bucket**) this->table;
+
+    if(!table[data_hash])
+        return EOF;
+
+    if(table[data_hash]->key == key) {
+        return table[data_hash]->offset;
+    }
+
+    for(size_t i = this->len; i < (this->len + (this->len / 10)); i++) {
+        if(table[i]->key == key) {
+            return table[i]->offset;
+        }
+    }
+
+    return EOF;
+}
 
 
 HashTable new_hash_table(size_t len, char collision_mode) {
@@ -109,13 +161,13 @@ HashTable new_hash_table(size_t len, char collision_mode) {
             ht->get = chaining_get;
             ht->insert = chaining_insert;
         break; // CHAINING
-/*
+
         case OVERFLOW_AREA:
             ht->table = calloc(len + (len / 10), sizeof(Bucket*));
             ht->get = oveflow_area_get;
             ht->insert = overflow_area_insert;
         break; // OVERFLOW_AREA
-*/
+
         default:
             perror("Collision mode not recognized =(\n");
             return NULL;
@@ -150,5 +202,7 @@ void print_hash_table(HashTable ht) {
             }
             puts("]");
         break; // CHAINING
+        
+        // falta fazer isso pra overflow area
     }
 }
