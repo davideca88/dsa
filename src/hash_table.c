@@ -4,9 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Macro que pega o tamanho de um campo específico de uma struct sem instanciá-la
-// #define SIZEOF_FIELD(type, field) sizeof(((type*)0)->field)
-
 // pod-si-matá
 
 size_t hash(Key key, size_t len) {
