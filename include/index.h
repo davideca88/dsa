@@ -18,6 +18,12 @@
 #define AVL_EQ     4
 #define AVL_RANGE  5
 
+// Constantes para query()
+#define LT 10 // menor que
+#define LE 11 // menor ou igual que
+#define GT 12 // maior que
+#define GE 13 // maior ou igual que
+
 typedef struct _index_s* Index;
 
 struct _index_s {
@@ -25,14 +31,14 @@ struct _index_s {
     void*   idx_p;
     char    mode;
     Product (*search)(Index idx, Key key);
-    Product*(*query)(Index idx, const char* fint, Price fprice, const char* lint, Price lprice);
+    Product*(*query)(Index idx, char fint, Price fprice, char lint, Price lprice);
     bool    (*insert)(Index idx, Key key, Offset offset);
     bool    (*build)(Index idx);
     void    (*clear_query)(Product* query);
     void    (*print)(Index idx);
 };
 
-inline bool build(Index idx) {
+bool build(Index idx) {
     Product product;
     Offset offset = 0;
     rewind(idx->rec_fd);
@@ -75,11 +81,20 @@ inline Product avl_eq_search(Index idx, Key key);
 
 inline bool avl_insert(Index idx, Key key, Offset offset);
 
+Product* avl_query(Index idx, char fint, Price fprice, char lint, Price lprice);
+
 Index create_index(const char* rec_name, const char* key_mode, size_t len, ...) {
-    Index idx = (Index) malloc(sizeof(struct _index_s));
-    
     FILE* rec_fd = fopen(rec_name, "wb+");
+
+    if(!rec_fd) {
+        perror("Falha ao abrir arquivo de registros =(\n");
+        return NULL;
+    }
     
+    Index idx = (Index) malloc(sizeof(struct _index_s));
+
+    idx->rec_fd = rec_fd;
+    idx->query = avl_query;
     idx->build = build;
     
     if(!strcmp(key_mode, "price")) {
@@ -88,7 +103,7 @@ Index create_index(const char* rec_name, const char* key_mode, size_t len, ...) 
 
     if(!strcmp(key_mode, "id")) {
         va_list ap;
-        va_start(ap, 1);
+        va_start(ap, len);
         int arg = va_arg(ap, int);
         
         switch(arg) {
@@ -103,19 +118,20 @@ Index create_index(const char* rec_name, const char* key_mode, size_t len, ...) 
                 
             break; // AVL
             
-            fclose(rec_fd);
-            return idx;
+            default:
+                perror("Tipo de índice por \"id\" não reconhecido=(\n");
+                free(idx);
+                return NULL;
+            break;
         }
         
         va_end(ap);
         
-        fclose(rec_fd);
         return idx;
     }
     
-    fclose(rec_fd);
-    
-    perror("Key not recognized =(\n");
+    perror("Modo de indexação não reconhecido =(\n");
+    free(idx);
     return NULL;
 }
 #endif // _INDEX_H
