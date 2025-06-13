@@ -237,7 +237,7 @@ Range new_range() {
     return new;
 }
 
-void rinsert(Range r, Prices prices) {
+void rappend(Range r, Prices prices) {
     RangeNode *new = (RangeNode*) malloc(sizeof(RangeNode));
     new->data = prices;
     new->next = NULL;

@@ -105,6 +105,7 @@ void avl_prices_walk2(AvlPrices t, void(*visit)(AvlPrices t), char walk_mode);
 void avl_prices_print(const char* nomeArquivo, AvlPrices t, char print_mode);
 
 
+void avl_prices_make_range(AvlPrices t, Range r, unsigned min, unsigned max, bool includeMin, bool includeMax);
 
 
 void delete_AVL_prices(AvlPrices t);

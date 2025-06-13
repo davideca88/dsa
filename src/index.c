@@ -70,8 +70,18 @@ bool avl_eq_insert(Index idx, Product product) {
     return true;
 }
 
-Range avl_rquery(Index idx, char fint, Price fprice, char lint, Price lprice) {
-    
+bool avl_range_insert(Index idx, Product product);
+
+Product avl_range_search(Index idx, Price price);
+
+bool avl_rquery(Index idx, char fint, Price fprice, char lint, Price lprice) {
+    if(idx->mode != AVL_RANGE) {
+        puts("Only price indexing has range query");
+        return false;
+    }
+    clear_range(idx->last_rquery);
+    avl_prices_make_range(idx->idx_p, idx->last_rquery, fprice, lprice, fint, lint);
+    return true;
 }
 
 Index create_index(const char* rec_name, size_t len, const char* key_mode, ...) {
@@ -90,7 +100,7 @@ Index create_index(const char* rec_name, size_t len, const char* key_mode, ...) 
     Index idx = (Index) malloc(sizeof(struct _index_s));
 
     idx->rec_fd = rec_fd;
-//    idx->rquery = avl_query;
+    idx->rquery = avl_rquery;
     idx->load = load;
     
     if(!strcmp(key_mode, "price")) {

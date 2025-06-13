@@ -23,14 +23,12 @@ typedef struct _index_s* Index;
 struct _index_s {
     FILE*    rec_fd;
     void*    idx_p;
-    Product* last_rquery;
-    size_t   last_rquery_len;
+    Range last_rquery;
     char     mode;
     Product  (*search)(Index idx, Key key);
-    Product* (*rquery)(Index idx, char fint, Price fprice, char lint, Price lprice);
+    bool  (*rquery)(Index idx, char fint, Price fprice, char lint, Price lprice);
     bool     (*insert)(Index idx, Product product);
     bool     (*load)(Index idx);
-    void     (*clear_query)(Index idx);
     void     (*print)(Index idx);
 };
 
