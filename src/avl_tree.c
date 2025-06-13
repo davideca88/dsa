@@ -462,19 +462,18 @@ void avl_prices_walk(AvlPrices t,const char* nomeArquivo, char walk_mode) {
     }
 }
 
-AvlPrices avl_prices_search(const char* nomeArquivo, AvlPrices t, Price price) {
+AvlPrices avl_prices_search(AvlPrices t, Price price) {
     if(t == NullNodeP)
         return NULL;
 
     if(price < t->data.price) {
-        return avl_prices_search(nomeArquivo,t->l, price);
+        return avl_prices_search(t->l, price);
     }
     else if(price > t->data.price) {
-        return avl_prices_search(nomeArquivo,t->r, price);
+        return avl_prices_search(t->r, price);
     }
 
     else {
-        avl_prices_print_node(nomeArquivo, t);
         return t;
     }
 }
@@ -592,11 +591,11 @@ AvlPrices criarAVLDeIndicesPrices(const char* nomeArquivo, AvlPrices t) {
 //Funções para maior menor
 
 
-void printInOrderWithConditions(const char* nomeArquivo, AvlPrices t, unsigned min, unsigned max, bool includeMin, bool includeMax) {
+void printInOrderWithConditions(AvlPrices t, Range r, unsigned min, unsigned max, bool includeMin, bool includeMax) {
     if (t == NullNodeP) return;
    
     if (t->data.price > min || (includeMin && t->data.price == min)) {
-        printInOrderWithConditions(nomeArquivo, t->l, min, max, includeMin, includeMax);
+        printInOrderWithConditions(t->l, r, min, max, includeMin, includeMax);
     }
     
   
@@ -604,12 +603,33 @@ void printInOrderWithConditions(const char* nomeArquivo, AvlPrices t, unsigned m
     bool satisfiesMax = includeMax ? (t->data.price <= max) : (t->data.price < max);
     
     if (satisfiesMin && satisfiesMax) {
-        avl_prices_print_node(nomeArquivo, t); 
+//        avl_prices_print_node(nomeArquivo, t); 
     }
     
     
     if (t->data.price < max || (includeMax && t->data.price == max)) {
-        printInOrderWithConditions(nomeArquivo, t->r, min, max, includeMin, includeMax);
+        printInOrderWithConditions(t->r, r, min, max, includeMin, includeMax);
+    }
+}
+
+void avl_prices_make_range(AvlPrices t, Range r, unsigned min, unsigned max, bool includeMin, bool includeMax) {
+    if (t == NullNodeP) return;
+   
+    if (t->data.price > min || (includeMin && t->data.price == min)) {
+        printInOrderWithConditions(t->l, r, min, max, includeMin, includeMax);
+    }
+    
+  
+    bool satisfiesMin = includeMin ? (t->data.price >= min) : (t->data.price > min);
+    bool satisfiesMax = includeMax ? (t->data.price <= max) : (t->data.price < max);
+    
+    if (satisfiesMin && satisfiesMax) {
+        rappend(r, t->data);
+    }
+    
+    
+    if (t->data.price < max || (includeMax && t->data.price == max)) {
+        printInOrderWithConditions(t->r, r, min, max, includeMin, includeMax);
     }
 }
 

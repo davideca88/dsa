@@ -82,7 +82,7 @@ typedef struct _range_s* Range;
 
 Range new_range();
 
-void rinsert(Range r, Prices prices);
+void rappend(Range r, Prices prices);
 
 Prices range_index(Range r, size_t index);
 
@@ -93,7 +93,7 @@ AvlPrices new_avl_Prices();
 
 AvlPrices avl_prices_insert(AvlPrices t, Prices data);
 
-AvlPrices avl_prices_search(const char* nomeArquivo, AvlPrices t, Price price);
+AvlPrices avl_prices_search(AvlPrices t, Price price);
 
 int8_t avl_prices_height(AvlPrices t);
 
@@ -114,7 +114,7 @@ Avl criarAVLDeIndicesKey(const char* nomeArquivo, Avl t);
 
 AvlPrices criarAVLDeIndicesPrices(const char* nomeArquivo, AvlPrices t);
 
-void printInOrderWithConditions(const char* nomeArquivo, AvlPrices t, unsigned min, unsigned max, bool includeMin, bool includeMax);
+void printInOrderWithConditions(AvlPrices t, Range r,unsigned min, unsigned max, bool includeMin, bool includeMax);
 
 void printRange(const char* nomeArquivo, AvlPrices t, unsigned min, unsigned max, bool includeMin, bool includeMax);
 

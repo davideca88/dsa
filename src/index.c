@@ -70,7 +70,9 @@ bool avl_eq_insert(Index idx, Product product) {
     return true;
 }
 
-Product* avl_rquery(Index idx, char fint, Price fprice, char lint, Price lprice);
+Range avl_rquery(Index idx, char fint, Price fprice, char lint, Price lprice) {
+    
+}
 
 Index create_index(const char* rec_name, size_t len, const char* key_mode, ...) {
     FILE* rec_fd = fopen(rec_name, "rb+");
