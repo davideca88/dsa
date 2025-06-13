@@ -1,15 +1,15 @@
 #ifndef _INDEX_H
 #define _INDEX_H
 
-#include "hash_table.h"
-#include "product.h"
-//#include "avl_tree.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdarg.h>
 #include <string.h>
+
+#include "hash_table.h"
+#include "product.h"
+//#include "avl_tree.h"
 
 // Macro que pega o tamanho de um campo específico de uma struct sem instanciá-la
 #define SIZEOF_FIELD(type, field) sizeof(((type*)0)->field)
@@ -18,7 +18,7 @@
 #define AVL_EQ     4
 #define AVL_RANGE  5
 
-// Constantes para query()
+// Constantes para rquery()
 #define LT 10 // menor que
 #define LE 11 // menor ou igual que
 #define GT 12 // maior que
@@ -29,16 +29,18 @@ typedef struct _index_s* Index;
 struct _index_s {
     FILE*   rec_fd;
     void*   idx_p;
+    Product* last_rquery;
+    size_t last_rquery_len;
     char    mode;
     Product (*search)(Index idx, Key key);
-    Product*(*query)(Index idx, char fint, Price fprice, char lint, Price lprice);
-    bool    (*insert)(Index idx, Key key, Offset offset);
-    bool    (*build)(Index idx);
-    void    (*clear_query)(Product* query);
+    Product*(*rquery)(Index idx, char fint, Price fprice, char lint, Price lprice);
+    bool    (*insert)(Index idx, Product product);
+    bool    (*load)(Index idx);
+    void    (*clear_query)(Index idx);
     void    (*print)(Index idx);
 };
 
-bool build(Index idx) {
+bool load(Index idx) {
     Product product;
     Offset offset = 0;
     rewind(idx->rec_fd);
@@ -58,8 +60,9 @@ bool build(Index idx) {
     return false;
 }
 
-inline bool hash_table_insert(Index idx, Key key, Offset offset) {
-    return ((HashTable) idx->idx_p)->insert(idx->idx_p, key, offset);
+inline bool hash_table_insert(Index idx, Product product) {
+    fseek(idx->rec_fd, 0, SEEK_END);
+    return ((HashTable) idx->idx_p)->insert(idx->idx_p, product.id, ftell(idx->rec_fd));
 }
 
 inline Product hash_table_search(Index idx, Key key) {
@@ -71,15 +74,18 @@ inline Product hash_table_search(Index idx, Key key) {
         .price = 0,
         .quantity = 0
     };
-    
-    fread(&product, sizeof(Product), 1, idx->rec_fd);
+
+    if(offset != EOF) {
+        fseek(idx->rec_fd, offset, SEEK_SET);
+        fread(&product, sizeof(Product), 1, idx->rec_fd);
+    }
     
     return product;
 }
 
 inline Product avl_eq_search(Index idx, Key key);
 
-inline bool avl_insert(Index idx, Key key, Offset offset);
+inline bool avl_insert(Index idx, Product product, Offset offset);
 
 Product* avl_query(Index idx, char fint, Price fprice, char lint, Price lprice);
 
@@ -94,8 +100,8 @@ Index create_index(const char* rec_name, const char* key_mode, size_t len, ...) 
     Index idx = (Index) malloc(sizeof(struct _index_s));
 
     idx->rec_fd = rec_fd;
-    idx->query = avl_query;
-    idx->build = build;
+    idx->rquery = avl_query;
+    idx->load = load;
     
     if(!strcmp(key_mode, "price")) {
         
