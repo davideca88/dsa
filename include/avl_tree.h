@@ -20,7 +20,7 @@
 typedef struct _avl_node_s {
     struct _avl_node_s* l;
     struct _avl_node_s* r;
-    keys data;
+    Keys data;
     int8_t height;
 } AvlNode;
 
@@ -30,10 +30,10 @@ typedef AvlNode* Avl;
 Avl new_avl();
 
 // Insere na árvore avl
-Avl avl_insert(Avl t, keys data);
+Avl avl_insert(Avl t, Keys data);
 
 // Busca a subárvore que possui data
-Avl avl_search(const char* nomeArquivo, Avl t, Key id);
+Avl avl_search(Avl t, Key id);
 
 // Retorna o tamanho da árvore
 int8_t avl_height(Avl t);
@@ -59,17 +59,39 @@ typedef struct _avl_node_price_s {
     struct _avl_node_price_s* l;
     struct _avl_node_price_s* r;
     struct _avl_node_price_s* d;
-    prices data;
+    Prices data;
     int8_t height;
 } AvlNodePrices;
 
 typedef AvlNodePrices* AvlPrices;
 
+typedef struct _range_node_s {
+    Prices data;
+    struct _range_node_s* next;
+} RangeNode;
+
+struct _range_s {
+    RangeNode *head;
+    RangeNode *tail;
+    size_t len;
+};
+
+typedef struct _range_s* Range;
+
 //Cria uma AVL de prices
+
+Range new_range();
+
+void rinsert(Range r, Prices prices);
+
+Prices range_index(Range r, size_t index);
+
+void clear_range(Range r);
+
 AvlPrices new_avl_Prices();
 
 
-AvlPrices avl_prices_insert(AvlPrices t, prices data);
+AvlPrices avl_prices_insert(AvlPrices t, Prices data);
 
 AvlPrices avl_prices_search(const char* nomeArquivo, AvlPrices t, Price price);
 

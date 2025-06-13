@@ -9,7 +9,7 @@
 
 #include "hash_table.h"
 #include "product.h"
-//#include "avl_tree.h"
+#include "avl_tree.h"
 
 // Macro que pega o tamanho de um campo específico de uma struct sem instanciá-la
 #define SIZEOF_FIELD(type, field) sizeof(((type*)0)->field)
@@ -18,126 +18,35 @@
 #define AVL_EQ     4
 #define AVL_RANGE  5
 
-// Constantes para rquery()
-#define LT 10 // menor que
-#define LE 11 // menor ou igual que
-#define GT 12 // maior que
-#define GE 13 // maior ou igual que
-
 typedef struct _index_s* Index;
 
 struct _index_s {
-    FILE*   rec_fd;
-    void*   idx_p;
+    FILE*    rec_fd;
+    void*    idx_p;
     Product* last_rquery;
-    size_t last_rquery_len;
-    char    mode;
-    Product (*search)(Index idx, Key key);
-    Product*(*rquery)(Index idx, char fint, Price fprice, char lint, Price lprice);
-    bool    (*insert)(Index idx, Product product);
-    bool    (*load)(Index idx);
-    void    (*clear_query)(Index idx);
-    void    (*print)(Index idx);
+    size_t   last_rquery_len;
+    char     mode;
+    Product  (*search)(Index idx, Key key);
+    Product* (*rquery)(Index idx, char fint, Price fprice, char lint, Price lprice);
+    bool     (*insert)(Index idx, Product product);
+    bool     (*load)(Index idx);
+    void     (*clear_query)(Index idx);
+    void     (*print)(Index idx);
 };
 
-bool load(Index idx) {
-    Product product;
-    Offset offset = 0;
-    rewind(idx->rec_fd);
-    
-    switch(idx->mode) {
-        case HASH_TABLE:
-            HashTable ht = (HashTable) idx->idx_p;
 
-            while(fread(&product, sizeof(Product), 1, idx->rec_fd)) {
-                ht->insert(ht, product.id, offset);
-                offset = ftell(idx->rec_fd);
-            }
+bool load(Index idx);
 
-            return true;
-        break; // HASH_TABLE
-    }
-    return false;
-}
+bool hash_table_insert(Index idx, Product product);
 
-inline bool hash_table_insert(Index idx, Product product) {
-    fseek(idx->rec_fd, 0, SEEK_END);
-    return ((HashTable) idx->idx_p)->insert(idx->idx_p, product.id, ftell(idx->rec_fd));
-}
+Product hash_table_search(Index idx, Key key);
 
-inline Product hash_table_search(Index idx, Key key) {
-    Offset offset = ((HashTable)idx->idx_p)->get(idx->idx_p, key);
-    Product product = {
-        .description = '\0',
-        .name = '\0',
-        .id = 0,
-        .price = 0,
-        .quantity = 0
-    };
+//inline Product avl_eq_search(Index idx, Key key);
 
-    if(offset != EOF) {
-        fseek(idx->rec_fd, offset, SEEK_SET);
-        fread(&product, sizeof(Product), 1, idx->rec_fd);
-    }
-    
-    return product;
-}
+//inline bool avl_insert(Index idx, Product product, Offset offset);
 
-inline Product avl_eq_search(Index idx, Key key);
+//Product* avl_query(Index idx, char fint, Price fprice, char lint, Price lprice);
 
-inline bool avl_insert(Index idx, Product product, Offset offset);
+Index create_index(const char* rec_name, size_t len, const char* key_mode, ...);
 
-Product* avl_query(Index idx, char fint, Price fprice, char lint, Price lprice);
-
-Index create_index(const char* rec_name, const char* key_mode, size_t len, ...) {
-    FILE* rec_fd = fopen(rec_name, "wb+");
-
-    if(!rec_fd) {
-        perror("Falha ao abrir arquivo de registros =(\n");
-        return NULL;
-    }
-    
-    Index idx = (Index) malloc(sizeof(struct _index_s));
-
-    idx->rec_fd = rec_fd;
-    idx->rquery = avl_query;
-    idx->load = load;
-    
-    if(!strcmp(key_mode, "price")) {
-        
-    }
-
-    if(!strcmp(key_mode, "id")) {
-        va_list ap;
-        va_start(ap, len);
-        int arg = va_arg(ap, int);
-        
-        switch(arg) {
-            case HASH_TABLE:
-                idx->idx_p = new_hash_table(len, CHAINING);
-                idx->mode = HASH_TABLE;
-                idx->search = hash_table_search;
-                idx->insert = hash_table_insert;
-                
-            break; // HASH_TABLE
-            case AVL_EQ:
-                
-            break; // AVL
-            
-            default:
-                perror("Tipo de índice por \"id\" não reconhecido=(\n");
-                free(idx);
-                return NULL;
-            break;
-        }
-        
-        va_end(ap);
-        
-        return idx;
-    }
-    
-    perror("Modo de indexação não reconhecido =(\n");
-    free(idx);
-    return NULL;
-}
 #endif // _INDEX_H

@@ -1,11 +1,11 @@
 CC = gcc
-CFLAGS = -Wall -Werror -O3 -ffast-math
+CFLAGS = -Wall  -O3 -ffast-math
 LDFLAGS = -lm
 LIBDIR = lib
-LIB = $(LIBDIR)/list.o $(LIBDIR)/vector.o $(LIBDIR)/avl_tree.o $(LIBDIR)/binary_tree.o $(LIBDIR)/benchmark.o 
+LIB = $(LIBDIR)/list.o $(LIBDIR)/vector.o $(LIBDIR)/avl_tree.o $(LIBDIR)/binary_tree.o $(LIBDIR)/benchmark.o $(LIBDIR)/hash_table.o $(LIBDIR)/index.o
 QUESTS = quest1 quest2 quest3 quest4
 
-all: $(QUESTS)
+all: $(LIB)
 
 $(LIBDIR):
 	mkdir $@

@@ -77,7 +77,7 @@ Avl avl_balance(Avl t) {
     return t;
 }
 
-Avl avl_insert(Avl t, keys data) {
+Avl avl_insert(Avl t, Keys data) {
     if(t == NullNode) {
         Avl new = (Avl) malloc(sizeof(AvlNode));
         new->l = NullNode;
@@ -113,7 +113,7 @@ void avl_print_node(const char* nomeArquivo, Avl t) {
         return;
     }
 
-    if (fseek(file,t->data.indice, SEEK_SET) != 0) {
+    if (fseek(file,t->data.offset, SEEK_SET) != 0) {
         perror("Erro ao tentar posicionar no arquivo");
         return;
     }
@@ -122,7 +122,7 @@ void avl_print_node(const char* nomeArquivo, Avl t) {
 
 
     if (fread(&produtoLido, sizeof(Product), 1, file) != 1) {
-        fprintf(stderr, "Erro: Não foi possível ler o produto no registro %u\n", t->data.indice);
+        fprintf(stderr, "Erro: Não foi possível ler o produto no registro %lu\n", t->data.offset);
         return;
     }
 
@@ -132,19 +132,18 @@ void avl_print_node(const char* nomeArquivo, Avl t) {
 
 }
 
-Avl avl_search(const char* nomeArquivo, Avl t, Key id) {
+Avl avl_search(Avl t, Key id) {
     if(t == NullNode)
         return NULL;
 
     if(id < t->data.id) {
-        return avl_search(nomeArquivo,t->l, id);
+        return avl_search(t->l, id);
     }
     else if(id > t->data.id) {
-        return avl_search(nomeArquivo,t->r, id);
+        return avl_search(t->r, id);
     }
 
     else {
-        avl_print_node(nomeArquivo, t);
         return t;
     }
 }
@@ -228,6 +227,57 @@ void delete_AVL(Avl t){
 //Funções para a AVL de Prices
 
 
+
+Range new_range() {
+    Range new = (Range) malloc(sizeof(struct _range_node_s));
+    new->head = NULL;
+    new->tail = NULL;
+    new->len = 0;
+
+    return new;
+}
+
+void rinsert(Range r, Prices prices) {
+    RangeNode *new = (RangeNode*) malloc(sizeof(RangeNode));
+    new->data = prices;
+    new->next = NULL;
+    
+    if(r->tail) {
+        r->tail->next = new;
+    } else {
+        r->head = new;
+    }
+    r->tail = new;
+    
+    r->len++;
+}
+
+Prices range_index(Range r, size_t index) {
+RangeNode *node = r->head;
+    size_t pos = 0;
+
+    while(pos < index) {
+        node = node->next;
+        pos++;
+    }
+    
+    return node->data;
+}
+
+void clear_range(Range r) {
+    RangeNode *node = r->head;
+    RangeNode *next;
+
+    while(node) {
+        next = node->next;
+        free(node);
+        node = next;
+    }
+    r->head = NULL;
+    r->tail = NULL;
+    r->len = 0;
+}
+
 // Nó sentinela para reduzir as comparações (AVL_Prices)
 AvlNodePrices _NullNodeP = {
     NULL,
@@ -307,7 +357,7 @@ AvlPrices avl_prices_balance(AvlPrices t) {
 }
 
 
-AvlPrices avl_prices_insert(AvlPrices t, prices data) {
+AvlPrices avl_prices_insert(AvlPrices t, Prices data) {
     if(t == NullNodeP) {
         AvlPrices new = (AvlPrices) malloc(sizeof(AvlNodePrices));
         new->l = NullNodeP;
@@ -352,21 +402,21 @@ void avl_prices_print_node(const char* nomeArquivo, AvlPrices t) {
 
     while(aux != NullNodeP) {
     
-        if (aux->data.indice >= file_size) {
-            fprintf(stderr, "Aviso: Índice %u inválido (arquivo tem apenas %ld bytes)\n", 
-                   aux->data.indice, file_size);
+        if (aux->data.offset >= file_size) {
+            fprintf(stderr, "Aviso: Índice %lu inválido (arquivo tem apenas %ld bytes)\n", 
+                   aux->data.offset, file_size);
             aux = aux->d;
             continue;
         }
 
-        if (fseek(file, aux->data.indice, SEEK_SET) != 0) {
+        if (fseek(file, aux->data.offset, SEEK_SET) != 0) {
             perror("Erro ao posicionar no arquivo");
             break;
         }
 
         Product produtoLido;
         if (fread(&produtoLido, sizeof(Product), 1, file) != 1) {
-            fprintf(stderr, "Erro ao ler produto no índice %u\n", aux->data.indice);
+            fprintf(stderr, "Erro ao ler produto no índice %lu\n", aux->data.offset);
             break;
         }
 
@@ -488,11 +538,11 @@ Avl criarAVLDeIndicesKey(const char* nomeArquivo, Avl t) {
 
    
     Product produtoTemp;
-    keys keysAVL;
+    Keys keysAVL;
     unsigned i = 0;
     while(fread(&produtoTemp, sizeof(Product), 1, file) == 1){
 
-        keysAVL.indice = i*(sizeof(Product));
+        keysAVL.offset = i*(sizeof(Product));
         keysAVL.id = produtoTemp.id;
 
         t = avl_insert(t,keysAVL);
@@ -517,7 +567,7 @@ AvlPrices criarAVLDeIndicesPrices(const char* nomeArquivo, AvlPrices t) {
     }
 
     Product produtoTemp;
-    prices PriceAVL;
+    Prices PriceAVL;
     unsigned i = 0;
     
    
@@ -527,7 +577,7 @@ AvlPrices criarAVLDeIndicesPrices(const char* nomeArquivo, AvlPrices t) {
     unsigned max_records = file_size / sizeof(Product);
 
     while(fread(&produtoTemp, sizeof(Product), 1, file) == 1 && i < max_records) {
-        PriceAVL.indice = i * sizeof(Product);
+        PriceAVL.offset = i * sizeof(Product);
         PriceAVL.price = produtoTemp.price;
 
         t = avl_prices_insert(t, PriceAVL);
