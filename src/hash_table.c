@@ -1,10 +1,4 @@
-//#include <math.h>
 #include "../include/hash_table.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-// pod-si-matá
 
 size_t hash(Key key, size_t len) {
     return (key * key * PRIME) % len;
@@ -13,7 +7,7 @@ size_t hash(Key key, size_t len) {
 bool chaining_insert(HashTable this, Key key, size_t offset) {
 
     if(!this) {
-        perror("Tabela inexistente =(\n");
+        puts("Tabela inexistente =(");
         return false;
     }
     
@@ -23,17 +17,10 @@ bool chaining_insert(HashTable this, Key key, size_t offset) {
                     malloc(sizeof(struct _hash_table_chaining_node_s));
     
     if(!new_bucket_node) {
-        perror("Falha ao criar novo bucket =(\n");
+        puts("Falha ao criar novo bucket =(");
         return false;
     }
     
-/* o índice faz isso
-    strncpy(new_product->description, data.description, SIZEOF_FIELD(Offset, description));
-    strncpy(new_product->name, data.name, SIZEOF_FIELD(Offset, name));
-    new_product->id = data.id;
-    new_product->price = data.price;
-    new_product->quantity = data.quantity;
-*/
     new_bucket_node->bucket.key = key;
     new_bucket_node->bucket.offset = offset;
     new_bucket_node->next = NULL; 
@@ -75,7 +62,7 @@ Offset chaining_get(HashTable this, Key key) {
 
 bool overflow_area_insert(HashTable this, Key key, size_t offset) {
     if(!this) {
-        perror("Tabela inexistente =(\n");
+        puts("Tabela inexistente =(");
         return false;
     }
 
@@ -83,7 +70,7 @@ bool overflow_area_insert(HashTable this, Key key, size_t offset) {
     Bucket *new_bucket = (Bucket*) malloc(sizeof(Bucket));
     
     if(!new_bucket) {
-        perror("Falha ao criar novo bucket =(\n");
+        puts("Falha ao criar novo bucket =(");
         return false;
     }
     
@@ -104,7 +91,7 @@ bool overflow_area_insert(HashTable this, Key key, size_t offset) {
         }
     }
 
-    perror("Tabela cheia =(\n"); // provavelmente devemos redimencionar a tabela, mas preguiça
+    puts("Tabela cheia =("); // provavelmente devemos redimencionar a tabela, mas preguiça
     return false;
 }
 
@@ -131,23 +118,6 @@ Offset oveflow_area_get(HashTable this, Key key) {
 
 HashTable new_hash_table(size_t len, char collision_mode) {
     HashTable ht = (HashTable) malloc(sizeof(struct _hash_table_s));
-/*  trabalho do índice
-    FILE *hash_table_index_fd = fopen("idxs/id.idx", "w");
-    FILE *products_rec_fd     = fopen("products.rec", "ab+");
-    
-    
-    if(!products_rec_fd) {
-        perror("Falha ao abrir arquivo de registros =(\n");
-        return NULL;
-    }
-
-    if(!hash_table_index_fd) {
-        perror("Falha ao abrir arquivo de índice por ID =(\n");
-        return NULL;
-    }
-    
-    fseek(products_rec_fd, 0, SEEK_END);
-*/
 
     ht->len = len;
     ht->collision_mode = collision_mode;
@@ -166,7 +136,7 @@ HashTable new_hash_table(size_t len, char collision_mode) {
         break; // OVERFLOW_AREA
 
         default:
-            perror("Collision mode not recognized =(\n");
+            puts("Collision mode not recognized =(");
             return NULL;
         break; // default
     }
@@ -174,32 +144,3 @@ HashTable new_hash_table(size_t len, char collision_mode) {
     return ht;
 }
 
-void print_hash_table(HashTable ht) {
-    switch (ht->collision_mode) {
-        case CHAINING:
-            struct _hash_table_chaining_node_s **table = \
-                    (struct _hash_table_chaining_node_s**) ht->table;
-            putchar('[');
-            
-            struct _hash_table_chaining_node_s *aux = table[0];
-            size_t i = 0;
-            
-            for(; i < ht->len; i++, aux = table[i]) {
-                if(aux) {
-                    printf("%lu: %ld", aux->bucket.key, aux->bucket.offset);
-                    aux = aux->next;
-                    break;
-                } 
-            }
-            for(; i < ht->len; i++, aux = table[i]) {
-                while(aux) {
-                    printf(",\n %lu: %ld", aux->bucket.key, aux->bucket.offset);
-                    aux = aux->next;
-                }
-            }
-            puts("]");
-        break; // CHAINING
-        
-        // falta fazer isso pra overflow area
-    }
-}

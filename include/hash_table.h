@@ -1,14 +1,3 @@
-/*
- * Funções ficarão brevemente por aqui por questões de facilidade
- * depois haverá um .c separado para elas
- *
- * fazendo só pra dar uma adiantada e vocês entenderem como vai ser
- * a arquitetura do trabalho
- * 
- *
- * no final tem um pequeno código de exemplo
-*/
-
 #ifndef _HASH_TABLE_H
 #define _HASH_TABLE_H
 
@@ -22,8 +11,6 @@
 #define OVERFLOW_AREA 1
 
 #define PRIME 1572869
-
-typedef long int Offset;
 
 typedef struct _bucket_s{
     Offset offset;
@@ -59,9 +46,6 @@ Offset oveflow_area_get(HashTable ht, Key key);
 
 // Cria tabela especificando tamanho e método de tratamento de colisão
 HashTable new_hash_table(size_t len, char collision_mode);
-
-
-void print_hash_table(HashTable ht);
 
 #endif // _HASH_TABLE_H
 
