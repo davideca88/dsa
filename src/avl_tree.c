@@ -4,7 +4,7 @@
 AvlNode _NullNode = {
     NULL,
     NULL,
-    0,
+    {EOF, 0},
     -1 // facilita cálculo da altura
 };
 
@@ -214,12 +214,14 @@ void avl_walk2(Avl t,const char* nomeArquivo, char walk_mode) {
 
 //}
 
-void delete_avl_node(Avl t) {
-    free(t);
-}
 
 void delete_AVL(Avl t){
-    avl_walk(t, delete_avl_node, POSTORDER);
+    if(t == NullNode) {
+        return;
+    }
+    delete_AVL(t->l);
+    delete_AVL(t->r);
+    free(t);
 }
 
 
@@ -228,62 +230,13 @@ void delete_AVL(Avl t){
 
 
 
-Range new_range() {
-    Range new = (Range) malloc(sizeof(struct _range_node_s));
-    new->head = NULL;
-    new->tail = NULL;
-    new->len = 0;
-
-    return new;
-}
-
-void rappend(Range r, Prices prices) {
-    RangeNode *new = (RangeNode*) malloc(sizeof(RangeNode));
-    new->data = prices;
-    new->next = NULL;
-    
-    if(r->tail) {
-        r->tail->next = new;
-    } else {
-        r->head = new;
-    }
-    r->tail = new;
-    
-    r->len++;
-}
-
-Prices range_index(Range r, size_t index) {
-RangeNode *node = r->head;
-    size_t pos = 0;
-
-    while(pos < index) {
-        node = node->next;
-        pos++;
-    }
-    
-    return node->data;
-}
-
-void clear_range(Range r) {
-    RangeNode *node = r->head;
-    RangeNode *next;
-
-    while(node) {
-        next = node->next;
-        free(node);
-        node = next;
-    }
-    r->head = NULL;
-    r->tail = NULL;
-    r->len = 0;
-}
 
 // Nó sentinela para reduzir as comparações (AVL_Prices)
 AvlNodePrices _NullNodeP = {
     NULL,
     NULL,
     NULL,
-    0,
+    {EOF, 0},
     -1 // facilita cálculo da altura
 };
 
@@ -487,21 +440,24 @@ void avl_prices_walk2(AvlPrices t, void(*visit)(AvlPrices t), char walk_mode) {
         return;
     
     switch (walk_mode){
-        case INORDER:
+        case INORDER: {
             avl_prices_walk2(t->l, visit, walk_mode);
             (*visit)(t);
             avl_prices_walk2(t->r, visit, walk_mode);
             break;
-        case PREORDER:
+        }
+        case PREORDER: {
             (*visit)(t);
             avl_prices_walk2(t->l, visit, walk_mode);
             avl_prices_walk2(t->r, visit, walk_mode);
             break;
-        case POSTORDER:
+        }
+        case POSTORDER: {
             avl_prices_walk2(t->l, visit, walk_mode);
             avl_prices_walk2(t->r, visit, walk_mode);
             (*visit)(t);
             break;
+        }
     }
 }
 
@@ -511,12 +467,14 @@ void avl_prices_walk2(AvlPrices t, void(*visit)(AvlPrices t), char walk_mode) {
 
 
 
-void delete_avl_prices_node(AvlPrices t) {
-    free(t);
-}
 
 void delete_AVL_prices(AvlPrices t){
-    avl_prices_walk2(t, delete_avl_prices_node, POSTORDER);
+    if(t == NullNodeP) {
+        return;
+    }
+    delete_AVL_prices(t->l);
+    delete_AVL_prices(t->r);
+    free(t);
 }
 
 
@@ -590,7 +548,7 @@ AvlPrices criarAVLDeIndicesPrices(const char* nomeArquivo, AvlPrices t) {
 
 //Funções para maior menor
 
-
+/*
 void printInOrderWithConditions(AvlPrices t, Range r, unsigned min, unsigned max, bool includeMin, bool includeMax) {
     if (t == NullNodeP) return;
    
@@ -611,12 +569,65 @@ void printInOrderWithConditions(AvlPrices t, Range r, unsigned min, unsigned max
         printInOrderWithConditions(t->r, r, min, max, includeMin, includeMax);
     }
 }
+*/
 
-void avl_prices_make_range(AvlPrices t, Range r, unsigned min, unsigned max, bool includeMin, bool includeMax) {
+
+
+PriceRange new_prange() {
+    PriceRange new = (PriceRange) malloc(sizeof(struct _price_range_node_s));
+    new->head = NULL;
+    new->tail = NULL;
+    new->len = 0;
+
+    return new;
+}
+
+void prappend(PriceRange r, Prices price) {
+    PriceRangeNode *new = (PriceRangeNode*) malloc(sizeof(PriceRangeNode));
+    new->data = price;
+    new->next = NULL;
+    
+    if(r->tail) {
+        r->tail->next = new;
+    } else {
+        r->head = new;
+    }
+    r->tail = new;
+    
+    r->len++;
+}
+/*
+Product range_index(Range r, size_t index) {
+RangeNode *node = r->head;
+    size_t pos = 0;
+
+    while(pos < index) {
+        node = node->next;
+        pos++;
+    }
+    
+    return node->data;
+}
+*/
+PriceRange delete_prange(PriceRange r) {
+    PriceRangeNode *node = r->head;
+    PriceRangeNode *next;
+
+    while(node) {
+        next = node->next;
+        free(node);
+        node = next;
+    }
+
+    free(r);
+    return NULL;
+}
+
+void avl_prices_make_range(AvlPrices t, PriceRange r, unsigned min, unsigned max, bool includeMin, bool includeMax) {
     if (t == NullNodeP) return;
    
     if (t->data.price > min || (includeMin && t->data.price == min)) {
-        printInOrderWithConditions(t->l, r, min, max, includeMin, includeMax);
+        avl_prices_make_range(t->l, r, min, max, includeMin, includeMax);
     }
     
   
@@ -624,15 +635,15 @@ void avl_prices_make_range(AvlPrices t, Range r, unsigned min, unsigned max, boo
     bool satisfiesMax = includeMax ? (t->data.price <= max) : (t->data.price < max);
     
     if (satisfiesMin && satisfiesMax) {
-        rappend(r, t->data);
+        prappend(r, t->data);
     }
     
     
     if (t->data.price < max || (includeMax && t->data.price == max)) {
-        printInOrderWithConditions(t->r, r, min, max, includeMin, includeMax);
+        avl_prices_make_range(t->r, r, min, max, includeMin, includeMax);
     }
 }
-
+/*
 void printRange(const char* nomeArquivo, AvlPrices t, unsigned min, unsigned max, bool includeMin, bool includeMax) {
     printf("Valores na arvore que sao ");
     printf(includeMin ? "maiores ou iguais a %u" : "maiores que %u", min);
@@ -642,3 +653,4 @@ void printRange(const char* nomeArquivo, AvlPrices t, unsigned min, unsigned max
     printInOrderWithConditions(nomeArquivo, t, min, max, includeMin, includeMax);
     printf("\n\n");
 }
+*/

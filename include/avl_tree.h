@@ -65,28 +65,28 @@ typedef struct _avl_node_price_s {
 
 typedef AvlNodePrices* AvlPrices;
 
-typedef struct _range_node_s {
-    Prices data;
-    struct _range_node_s* next;
-} RangeNode;
 
-struct _range_s {
-    RangeNode *head;
-    RangeNode *tail;
+// Range de Prices
+typedef struct _price_range_node_s {
+    Prices data;
+    struct _price_range_node_s* next;
+} PriceRangeNode;
+
+struct _price_range_s {
+    PriceRangeNode *head;
+    PriceRangeNode *tail;
     size_t len;
 };
 
-typedef struct _range_s* Range;
+typedef struct _price_range_s* PriceRange;
 
-//Cria uma AVL de prices
+PriceRange new_prange();
 
-Range new_range();
+void prappend(PriceRange r, Prices price);
 
-void rappend(Range r, Prices prices);
+PriceRange delete_prange(PriceRange r);
 
-Prices range_index(Range r, size_t index);
 
-void clear_range(Range r);
 
 AvlPrices new_avl_Prices();
 
@@ -105,7 +105,7 @@ void avl_prices_walk2(AvlPrices t, void(*visit)(AvlPrices t), char walk_mode);
 void avl_prices_print(const char* nomeArquivo, AvlPrices t, char print_mode);
 
 
-void avl_prices_make_range(AvlPrices t, Range r, unsigned min, unsigned max, bool includeMin, bool includeMax);
+void avl_prices_make_range(AvlPrices t, PriceRange r, unsigned min, unsigned max, bool includeMin, bool includeMax);
 
 
 void delete_AVL_prices(AvlPrices t);

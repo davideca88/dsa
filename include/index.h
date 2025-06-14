@@ -11,27 +11,23 @@
 #include "product.h"
 #include "avl_tree.h"
 
-// Macro que pega o tamanho de um campo específico de uma struct sem instanciá-la
-#define SIZEOF_FIELD(type, field) sizeof(((type*)0)->field)
 
 #define HASH_TABLE 3
-#define AVL_EQ     4
-#define AVL_RANGE  5
+#define AVL_ID     4
+#define AVL_PRICE  5
 
 typedef struct _index_s* Index;
-
 struct _index_s {
     FILE*    rec_fd;
     void*    idx_p;
-    Range last_rquery;
-    char     mode;
+    Range    last_rquery;
     Product  (*search)(Index idx, Key key);
-    bool  (*rquery)(Index idx, char fint, Price fprice, char lint, Price lprice);
+    Range     (*rquery)(Index idx, char fint, Price fprice, char lint, Price lprice);
     bool     (*insert)(Index idx, Product product);
     bool     (*load)(Index idx);
     void     (*print)(Index idx);
+    char     mode;
 };
-
 
 bool load(Index idx);
 
@@ -39,12 +35,12 @@ bool hash_table_insert(Index idx, Product product);
 
 Product hash_table_search(Index idx, Key key);
 
-//inline Product avl_eq_search(Index idx, Key key);
+Product avl_eq_search(Index idx, Key key);
 
-//inline bool avl_insert(Index idx, Product product, Offset offset);
+bool avl_eq_insert(Index idx, Product product);
 
-//Product* avl_query(Index idx, char fint, Price fprice, char lint, Price lprice);
+Range avl_rquery(Index idx, char fint, Price fprice, char lint, Price lprice);
 
-Index create_index(const char* rec_name, size_t len, const char* key_mode, ...);
+Index create_index(const char* rec_name, const char* key_mode, ...);
 
 #endif // _INDEX_H
