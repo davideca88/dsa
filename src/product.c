@@ -1,11 +1,12 @@
 #include "../include/product.h"
 
-int file_ssearch(const char* file, Key id){
+Product file_ssearch(const char* file, Key id){
     FILE *fd = fopen(file, "rb");
     if (!fd)
     {
         printf("Error creating file\n");
-        return 0;
+        Product error = {0};
+        return error;
     }
 
     Product p;
@@ -14,16 +15,17 @@ int file_ssearch(const char* file, Key id){
     {
         if (p.id == id)
         {
-            printf("Position: %d\nID: %lu\nName: %s\nDescription: %s\nPrice: %u\nQuantity: %hd\n",pos, p.id, p.name, p.description, p.price, p.quantity);
             fclose(fd);
-            return 1;
+            printf("Position: %d\n", pos);
+            return p;
         }
         pos++;
     }
     
     printf("Product ID %lu not found\n", id);
     fclose(fd);
-    return 0;
+    Product error = {0};
+    return error;
 }
 
 void print_product(Product product) {

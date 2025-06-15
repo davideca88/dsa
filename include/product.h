@@ -33,6 +33,8 @@ struct _range_s {
     size_t len;
 };
 
+Product file_ssearch(const char* file, Key id);
+
 void print_product(Product product);
 void print_range(Range range);
 
