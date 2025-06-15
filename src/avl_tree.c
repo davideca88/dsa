@@ -134,7 +134,7 @@ void avl_print_node(const char* nomeArquivo, Avl t) {
 
 Avl avl_search(Avl t, Key id) {
     if(t == NullNode)
-        return NULL;
+        return NullNode;
 
     if(id < t->data.id) {
         return avl_search(t->l, id);
@@ -417,7 +417,7 @@ void avl_prices_walk(AvlPrices t,const char* nomeArquivo, char walk_mode) {
 
 AvlPrices avl_prices_search(AvlPrices t, Price price) {
     if(t == NullNodeP)
-        return NULL;
+        return NullNodeP;
 
     if(price < t->data.price) {
         return avl_prices_search(t->l, price);
@@ -625,7 +625,7 @@ PriceRange delete_prange(PriceRange r) {
 
 void avl_prices_make_range(AvlPrices t, PriceRange r, unsigned min, unsigned max, bool includeMin, bool includeMax) {
     if (t == NullNodeP) return;
-   
+
     if (t->data.price > min || (includeMin && t->data.price == min)) {
         avl_prices_make_range(t->l, r, min, max, includeMin, includeMax);
     }
@@ -636,6 +636,7 @@ void avl_prices_make_range(AvlPrices t, PriceRange r, unsigned min, unsigned max
     
     if (satisfiesMin && satisfiesMax) {
         prappend(r, t->data);
+        avl_prices_make_range(t->d, r, min, max, includeMin, includeMax);
     }
     
     

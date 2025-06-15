@@ -22,7 +22,7 @@ struct _index_s {
     void*    idx_p;
     Range    last_rquery;
     Product  (*search)(Index idx, Key key);
-    Range     (*rquery)(Index idx, char fint, Price fprice, char lint, Price lprice);
+    Range    (*rquery)(Index idx, char fint, Price fprice, char lint, Price lprice);
     bool     (*insert)(Index idx, Product product);
     bool     (*load)(Index idx);
     void     (*print)(Index idx);

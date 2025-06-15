@@ -1,5 +1,4 @@
 #include "../include/index.h"
-#include <stdio.h>
 
 bool load(Index idx) {
     Product product;
@@ -36,12 +35,21 @@ bool load(Index idx) {
     return false;
 }
 
+void print(Index idx) {
+    Product prod;
+    rewind(idx->rec_fd);
+    while(fread(&prod, sizeof(Product), 1, idx->rec_fd)) {
+        print_product(prod);
+    } 
+}
+
 // Hash table #####################################################################################################################################################
 
 bool hash_table_insert(Index idx, Product product) {
     fseek(idx->rec_fd, 0, SEEK_END);
+    Offset offset = ftell(idx->rec_fd);
     fwrite(&product, sizeof(Product), 1, idx->rec_fd);
-    return ((HashTable) idx->idx_p)->insert(idx->idx_p, product.id, ftell(idx->rec_fd));
+    return ((HashTable) idx->idx_p)->insert(idx->idx_p, product.id, offset);
 }
 
 Product hash_table_search(Index idx, Key key) {
@@ -85,8 +93,9 @@ Product avl_id_search(Index idx, Key key) {
 
 bool avl_id_insert(Index idx, Product product) {
     fseek(idx->rec_fd, 0, SEEK_END);
+    Offset offset = ftell(idx->rec_fd);
     fwrite(&product, sizeof(Product), 1, idx->rec_fd);
-    idx->idx_p = avl_insert((Avl) idx->idx_p, ((Keys){ftell(idx->rec_fd), product.id}));
+    idx->idx_p = avl_insert((Avl) idx->idx_p, ((Keys){offset, product.id}));
     return true;
 }
 
@@ -96,8 +105,9 @@ bool avl_id_insert(Index idx, Product product) {
 
 bool avl_range_insert(Index idx, Product product) {
     fseek(idx->rec_fd, 0, SEEK_END);
+    Offset offset = ftell(idx->rec_fd);
     fwrite(&product, sizeof(Product), 1, idx->rec_fd);
-    idx->idx_p = avl_prices_insert((AvlPrices) idx->idx_p, ((Prices){ftell(idx->rec_fd), product.price}));
+    idx->idx_p = avl_prices_insert((AvlPrices) idx->idx_p, ((Prices){offset, product.price}));
     return true; 
 }
 
@@ -164,7 +174,8 @@ Index create_index(const char* rec_name, const char* key_mode, ...) {
     idx->rquery = avl_rquery;
     idx->last_rquery = new_range();
     idx->load = load;
-    
+    idx->print = print;
+
     if(!strcmp(key_mode, "price")) {
         idx->idx_p = new_avl_Prices();
         idx->mode = AVL_PRICE;
@@ -209,5 +220,5 @@ Index create_index(const char* rec_name, const char* key_mode, ...) {
     
     puts("Modo de indexação não reconhecido =(");
     free(idx);
-    return NULL;
+    exit(EXIT_FAILURE);
 }
