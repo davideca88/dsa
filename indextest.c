@@ -18,21 +18,22 @@ int main() {
         .id = 420
     };
 
-    test = idx->search(idx, 69);
-    puts("Primeira ocorrência:");
+    test = idx->search(idx, 75);
+    puts("\nPrimeira ocorrência de busca por preço 75.00:\n");
     print_product(test);
-    puts("avl range");
+    puts("\navl range no intervalo [0-70]\n");
+    idx->rquery(idx, 1, 0, 1, 70);
     print_range(idx->last_rquery);
 
-    Index idx2 = create_index("products2.bin", "id", HASH_TABLE, 10007);
+    Index idx2 = create_index("products2.bin", "id", AVL_ID);
     idx2->load(idx2);
 
-    puts("avl id:");
+    puts("\navl id:\n");
     idx2->print(idx2);
     Index idx3 = create_index("products2.bin", "id", HASH_TABLE, 10007);
     idx3->load(idx3);
 
-    puts("hash_table:");
+    puts("\nhash_table:\n");
     idx3->print(idx3);
 
     return 0;
