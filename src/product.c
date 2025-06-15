@@ -12,34 +12,31 @@ int compare(Price value, Operator op, Price reference) {
     }
 }
 
-Product file_ssearch(const char* file, Key id){
-    FILE *fd = fopen(file, "rb");
-    if (!fd)
-    {
-        printf("Error opening file\n");
+Product file_ssearch(FILE *fd, Key id) {
+    if (!fd) {
+        printf("Invalid file!\n");
         Product error = {0};
         return error;
     }
 
+    rewind(fd);
+
     Product p;
-    while (fread(&p, sizeof(Product),1,fd)==1)
-    {
-        if (p.id == id)
-        {
-            fclose(fd);
+    while (fread(&p, sizeof(Product), 1, fd) == 1) {
+        if (p.id == id) {
             return p;
+            printf("Não é esse\n");
         }
     }
-    
+
     printf("Product ID %lu not found\n", id);
-    fclose(fd);
     Product error = {0};
     return error;
 }
 
-Range file_ssearch_range(const char* file, int use_low, int use_high, 
+
+Range file_ssearch_range(FILE *fd, int use_low, int use_high, 
     Operator op_low, Price low, Operator op_high, Price high){
-    FILE *fd = fopen(file, "rb");
     if (!fd)
     {
         printf("Error opening file\n");
@@ -74,8 +71,6 @@ Range file_ssearch_range(const char* file, int use_low, int use_high,
         fclose(fd);
         return error;
     }
-    
-    fclose(fd);
     return result;
 }
 

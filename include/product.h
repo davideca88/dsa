@@ -42,8 +42,8 @@ typedef enum {
     OP_NEQ   // !=
 } Operator;
 
-Product file_ssearch(const char* file, Key id);
-Range file_ssearch_range(const char* file, int use_low, int use_high, 
+Product file_ssearch(FILE *fd, Key id);
+Range file_ssearch_range(FILE *fd, int use_low, int use_high, 
     Operator op_low, Price low, Operator op_high, Price high);
 
 void print_product(Product product);

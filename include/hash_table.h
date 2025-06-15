@@ -10,7 +10,7 @@
 #define CHAINING      0
 #define OVERFLOW_AREA 1
 
-#define PRIME 1572869
+#define PRIME 11400714819323198485ULL
 
 typedef struct _bucket_s{
     Offset offset;
