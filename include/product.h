@@ -33,7 +33,18 @@ struct _range_s {
     size_t len;
 };
 
+typedef enum {
+    OP_GT,   // >
+    OP_GTE,  // >=
+    OP_LT,   // <
+    OP_LTE,  // <=
+    OP_EQ,   // ==
+    OP_NEQ   // !=
+} Operator;
+
 Product file_ssearch(const char* file, Key id);
+Range file_ssearch_range(const char* file, int use_low, int use_high, 
+    Operator op_low, Price low, Operator op_high, Price high);
 
 void print_product(Product product);
 void print_range(Range range);
