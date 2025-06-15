@@ -43,7 +43,6 @@ void print_product(Product product) {
     for(unsigned short i = gap, j = 0, k = 0; i < description_len + gap; i++, k++) {
         if(product.description[i - gap] == ' ') {
             for(j = 1; product.description[i - gap + j] != '\0' && product.description[i - gap + j] != ' '; j++);
-            printf(" %d ", j + gap + (k % ROWS));
             if((j + gap + (k % ROWS)) > ROWS) {
                 product.description[i - gap] = '\n';
                 k = 0;
