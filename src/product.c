@@ -1,31 +1,82 @@
 #include "../include/product.h"
 
+int compare(Price value, Operator op, Price reference) {
+    switch (op) {
+        case OP_GT:  return value > reference;
+        case OP_GTE: return value >= reference;
+        case OP_LT:  return value < reference;
+        case OP_LTE: return value <= reference;
+        case OP_EQ:  return value == reference;
+        case OP_NEQ: return value != reference;
+        default:     return 0;
+    }
+}
+
 Product file_ssearch(const char* file, Key id){
     FILE *fd = fopen(file, "rb");
     if (!fd)
     {
-        printf("Error creating file\n");
+        printf("Error opening file\n");
         Product error = {0};
         return error;
     }
 
     Product p;
-    int pos;
     while (fread(&p, sizeof(Product),1,fd)==1)
     {
         if (p.id == id)
         {
             fclose(fd);
-            printf("Position: %d\n", pos);
             return p;
         }
-        pos++;
     }
     
     printf("Product ID %lu not found\n", id);
     fclose(fd);
     Product error = {0};
     return error;
+}
+
+Range file_ssearch_range(const char* file, int use_low, int use_high, 
+    Operator op_low, Price low, Operator op_high, Price high){
+    FILE *fd = fopen(file, "rb");
+    if (!fd)
+    {
+        printf("Error opening file\n");
+        Range error = {0};
+        return error;
+    }
+
+    Range result = new_range();
+    Product p;
+    int found = 0;
+
+    while (fread(&p, sizeof(Product), 1, fd) == 1)
+    {
+        int match = 1;
+        if (use_low) {
+            match = match && compare(p.price, op_low, low);
+        }
+        if (use_high) {
+            match = match && compare(p.price, op_high, high);
+        }
+
+        if (match) {
+            rappend(result, p);
+            found++;
+        }
+    }
+
+    if (!found)
+    {
+        printf("No products found in range\n");
+        Range error = {0};
+        fclose(fd);
+        return error;
+    }
+    
+    fclose(fd);
+    return result;
 }
 
 void print_product(Product product) {
