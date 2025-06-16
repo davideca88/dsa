@@ -516,9 +516,7 @@ void bm_keyatributte(const char* in, const char* out, int rep){
     fclose(result);
 }
 
-
-void bm_avl_file_price(const char* file_bin, const char* name, unsigned reps, Vector keys){
-
+void bm_avl_file_price(const char* file_bin, const char* name, unsigned reps, Vector keys) {
     Product p;
     Product p2;
     FILE* arq = fopen(name, "w");
@@ -544,69 +542,55 @@ void bm_avl_file_price(const char* file_bin, const char* name, unsigned reps, Ve
     double sum_AVL = 0.0;
     double sum_file = 0.0;
 
-    fprintf(arq,"execução, tempo_AVL(s), tempo_arquivo(s)\n");
+    fprintf(arq, "Ord.     AVL(s)    File Search(s)    Range (cents)\n");
 
-    for(unsigned i = 0; i < reps; i++){
+    for(size_t i = 0; i < reps; i++) {
 
-        unsigned indice = rand() % 30;  // Calcula um indice aleatório de 0 a 29 para usar no vetor keys
-        unsigned pos = keys[indice];  // pega um valor do vetor keys que contém uma posição aleatória de um registro no arquivo. 
-        fseek(arq_bin, pos*sizeof(Product), SEEK_SET); // aponta para a posição do arquivo especificada.
-        fread(&p, sizeof(Product), 1, arq_bin); // armazena em p os dados do registro apontado.
+        unsigned indice = rand() % 30;
+        unsigned pos = keys[indice];
+        fseek(arq_bin, pos * sizeof(Product), SEEK_SET);
+        fread(&p, sizeof(Product), 1, arq_bin);
         
-         indice = rand() % 30; // calcula o indice mais uma vez.
-         pos = keys[indice]; // pega uma nova posição em keys.
-        fseek(arq_bin, pos*sizeof(Product), SEEK_SET);  // Vai até a posição (pos) do arquivo.
-        fread(&p2, sizeof(Product), 1, arq_bin); // armazena em p2 os dados do registro apontado
-        
-        while(p.price == p2.price){      // se o campo preço dos dois registros forem iguais então é calculada uma nova posição no arquivo até que o
-            indice = rand() % 30;        // campo price dos dois registros sejam diferentes.
+        do {
+            indice = rand() % 30;
             pos = keys[indice];
-            fseek(arq_bin, pos*sizeof(Product), SEEK_SET);
+            fseek(arq_bin, pos * sizeof(Product), SEEK_SET);
             fread(&p2, sizeof(Product), 1, arq_bin);
-        }
+        } while (p.price == p2.price);
         
-        if(p.price > p2.price){   
+        if (p.price > p2.price) {
             lim_inferior = p2.price;
             lim_superior = p.price;
-        }else{
+        } else {
             lim_inferior = p.price;
             lim_superior = p2.price;
         }
-        
-        beg = clock();
-        avl_rquery(AVL, 1, lim_inferior, 1, lim_superior);   // busca por maior, maior igual, menor ou menor igual na avl.
-        end = clock();
-        printf("teste\n");
-        AVL->clear_last_rquery(AVL);
-        
-        temp_AVL = ((double)(end-beg))/CLOCKS_PER_SEC;
 
-        
         beg = clock();
-        file_ssearch_range(arq_bin, 1, 1, OP_GTE, lim_inferior, OP_LTE, lim_superior);  //busca por maior, maior igual, menor ou menor igual no arquivo.
+        avl_rquery(AVL, 1, lim_inferior, 1, lim_superior);
         end = clock();
-        
-        temp_file = ((double)(end-beg))/CLOCKS_PER_SEC;
+        temp_AVL = ((double)(end - beg)) / CLOCKS_PER_SEC;
+
+        beg = clock();
+        file_ssearch_range(arq_bin, 1, 1, OP_GTE, lim_inferior, OP_LTE, lim_superior);
+        end = clock();
+        temp_file = ((double)(end - beg)) / CLOCKS_PER_SEC;
 
         sum_AVL += temp_AVL;
         sum_file += temp_file;
 
-       
-
-        fprintf(arq, "%d,   %.6f,  ,%.6f\n", i+1, temp_AVL, temp_file);
-        
+        fprintf(arq, "%4zu     %.6f      %.6f     [%u, %u]\n", i + 1, temp_AVL, temp_file, lim_inferior, lim_superior);
     }
-    
-    double media_AVL = sum_AVL/reps;
-    double media_file = sum_file/reps;
 
-    fprintf(arq,"\nMédia AVL: %f\n", media_AVL);
-    fprintf(arq,"Média busca_sequencial arquivo: %f\n", media_file);
-    
+    double media_AVL = sum_AVL / reps;
+    double media_file = sum_file / reps;
+
+    fprintf(arq, "\nMédia AVL: %f\n", media_AVL);
+    fprintf(arq, "Média busca_sequencial arquivo: %f\n", media_file);
+
     fclose(arq);
     fclose(arq_bin);
-    printf("arquivo salvo!");
-
+    printf("arquivo salvo!\n");
 }
 
 //Comentei o código de baixo pois eu mudei a forma de como faço o search.

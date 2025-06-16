@@ -1,7 +1,7 @@
 #include "../include/hash_table.h"
 
 size_t hash(Key key, size_t len) {
-    return (key * key * PRIME) % len;
+    return (key * PRIME) % len;
 }
 
 bool chaining_insert(HashTable this, Key key, size_t offset) {
