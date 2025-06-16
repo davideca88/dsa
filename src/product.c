@@ -44,6 +44,8 @@ Range file_ssearch_range(FILE *fd, int use_low, int use_high,
         return error;
     }
 
+    rewind(fd);
+
     Range result = new_range();
     Product p;
     int found = 0;

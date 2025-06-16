@@ -415,6 +415,94 @@ void insert_AVL_AB(int len, int reps, BinTree t, Avl t2, const char* name){
     v = delete_vector(v);
 }
 
+bool is_prime(size_t n) {
+    if (n < 2) return false;
+    if (n == 2) return true;
+    if (n % 2 == 0) return false;
+
+    for (size_t i = 3; i * i <= n; i += 2) {
+        if (n % i == 0)
+            return false;
+    }
+    return true;
+}
+
+size_t next_prime(size_t n) {
+    n = n+(n*1/3);
+    while (!is_prime(n)) {
+        n++;
+    }
+    return n;
+}
+
+size_t count_records(const char *filename, size_t record_size) {
+    FILE *file = fopen(filename, "rb");
+    if (!file) {
+        perror("Error opening file!");
+        return 0;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    fclose(file);
+
+    if (file_size < 0) return 0;
+
+    return file_size / record_size;
+}
+
+void bm_keyatributte(const char* in, const char* out, int rep){
+    FILE *result = fopen(out, "w");
+    if (!result)
+    {
+        printf("Error creating %s", out);
+        return;
+    }
+    
+    size_t len = next_prime(count_records(in, sizeof(Product)));
+
+    Index ht = create_index(in,"id",HASH_TABLE,len);
+    printf("index ht criado\n");
+    ht->load(ht);
+    printf("index ht carregado\n");
+    Index avl = create_index(in,"id",AVL_ID);
+    printf("index avl criado\n");
+    avl->load(avl);
+    printf("index avl carregado\n");
+
+    Vector Keys = new_vector(len);
+    s_keys(Keys, len, rep);
+
+    clock_t beg, end;
+    double time_ht;
+    double time_avl;
+    double time_file;
+
+    fprintf(result, "Ord.    Key    Hash Table    AVL    File Search");
+
+    for (size_t i = 0; i < rep; i++)
+    {
+        beg = clock();
+        ht->search(ht, Keys[i]);
+        end = clock();
+        time_ht = ((double)(end-beg))/CLOCKS_PER_SEC;
+
+        beg = clock();
+        avl->search(avl,Keys[i]);
+        end = clock();
+        time_avl = ((double)(end-beg))/CLOCKS_PER_SEC;
+
+        beg = clock();
+        file_ssearch(ht->rec_fd, Keys[i]);
+        end = clock();
+        time_file = ((double)(end-beg))/CLOCKS_PER_SEC;
+
+        fprintf(result, "%4zu    %5d    %10lf    %8lf    %11lf\n", 
+            i + 1, Keys[i], time_ht, time_avl, time_file);
+    }
+    fclose(result);
+}
+
 
 //Comentei o código de baixo pois eu mudei a forma de como faço o search.
 
