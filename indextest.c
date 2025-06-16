@@ -5,27 +5,32 @@
 
 int main() {
 
-    Index idx = create_index("products2.bin", "price");
+    Index idx = create_index("./un10k_products.bin", "price");
     idx->load(idx);
     
 //    print_product(idx->search(idx, 900));
 
-    Product test = {
-        .name = "Produto novo ultra mega power clone do clone caro e 3",
-        .description = "Descrição super mega hiper detalhada gigantesca unica e exclusivamente feita para testar a minha função de imprimir produto que quebra as linhas automaticamente assim que o paragrafo atinge o limite de 80 colunas wooow. pra testar duplicata de novoo",
-        .quantity = 60,
-        .price = 6900,
-        .id = 420
-    };
-
-    test = idx->search(idx, 75);
-    puts("\nPrimeira ocorrência de busca por preço 75.00:\n");
-    print_product(test);
-    puts("\navl range no intervalo [0-70]\n");
-    idx->rquery(idx, 1, 0, 1, 70);
+    puts("\navl range no intervalo [0-250]\n");
+    idx->rquery(idx, 1, 0, 1, 250);
     print_range(idx->last_rquery);
 
-    Index idx2 = create_index("products2.bin", "id", AVL_ID);
+    printf("qtd 1: %ld\n", idx->last_rquery->len);
+    idx->clear_last_rquery(idx);
+    printf("qtd 2: %ld\n", idx->last_rquery->len);
+   
+    getchar();
+    
+    puts("\navl range no intervalo [500-800]\n");
+    idx->rquery(idx, 1, 0, 1, 1100);
+    print_range(idx->last_rquery);
+    printf("qtd 3: %ld\n", idx->last_rquery->len);
+    idx->clear_last_rquery(idx);
+
+    idx->rquery(idx, 1, 0, 1, 250);
+    print_range(idx->last_rquery);
+
+    printf("qtd 1: %ld\n", idx->last_rquery->len);
+/*    Index idx2 = create_index("products2.bin", "id", AVL_ID);
     idx2->load(idx2);
 
     puts("\navl id:\n");
@@ -35,6 +40,6 @@ int main() {
 
     puts("\nhash_table:\n");
     idx3->print(idx3);
-
+*/
     return 0;
 }

@@ -161,14 +161,12 @@ Product avl_range_search(Index idx, Key price) {
     return product;
 }
 
-Range idx_clear_range(Index idx) {
+void idx_clear_range(Index idx) {
     if(idx->mode != AVL_PRICE) {
         puts("Only \"price\" indexing has this operation");
-        return idx->last_rquery;
+        return;
     }
     clear_range(idx->last_rquery);
-    idx->last_rquery = NULL;
-    return NULL;
 }
 
 // ################################################################################################################################################################
