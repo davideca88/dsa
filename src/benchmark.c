@@ -579,7 +579,7 @@ void bm_avl_file_price(const char* file_bin, const char* name, unsigned reps, Ve
         printf("teste\n");
         AVL->clear_last_rquery(AVL);
         
-        temp_AVL = ((double)(end-beg))/CLOCKS_PER_SEC * 0.05;
+        temp_AVL = ((double)(end-beg))/CLOCKS_PER_SEC;
 
         
         beg = clock();
