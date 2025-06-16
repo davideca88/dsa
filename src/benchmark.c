@@ -471,8 +471,9 @@ void bm_keyatributte(const char* in, const char* out, int rep){
     avl->load(avl);
     printf("index avl carregado\n");
 
-    Vector Keys = new_vector(len1);
+    Vector Keys = new_vector(rep);
     s_keys(Keys, len1, rep);
+    Keys[rep-1] = -1;
 
     clock_t beg, end;
     double time_ht, time_avl, time_file;
