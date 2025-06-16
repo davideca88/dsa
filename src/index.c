@@ -140,7 +140,7 @@ Range avl_rquery(Index idx, char fint, Price fprice, char lint, Price lprice) {
         aux = aux->next;
         free(prev);
     }
-
+    free(prange);
     return idx->last_rquery;
 }
 
