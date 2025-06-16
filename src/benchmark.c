@@ -452,14 +452,15 @@ size_t count_records(const char *filename, size_t record_size) {
 }
 
 void bm_keyatributte(const char* in, const char* out, int rep){
-    FILE *result = fopen(out, "w");
+    FILE *result = fopen(out, "wb");
     if (!result)
     {
         printf("Error creating %s", out);
         return;
     }
     
-    size_t len = next_prime(count_records(in, sizeof(Product)));
+    size_t len1 = count_records(in, sizeof(Product));
+    size_t len = next_prime(len1);
 
     Index ht = create_index(in,"id",HASH_TABLE,len);
     printf("index ht criado\n");
@@ -470,15 +471,14 @@ void bm_keyatributte(const char* in, const char* out, int rep){
     avl->load(avl);
     printf("index avl carregado\n");
 
-    Vector Keys = new_vector(len);
-    s_keys(Keys, len, rep);
+    Vector Keys = new_vector(len1);
+    s_keys(Keys, len1, rep);
 
     clock_t beg, end;
-    double time_ht;
-    double time_avl;
-    double time_file;
+    double time_ht, time_avl, time_file;
+    double sum_ht = 0.0, sum_avl = 0.0, sum_file = 0.0;
 
-    fprintf(result, "Ord.    Key    Hash Table    AVL    File Search");
+    fprintf(result, "Ord.    Key    Hash Table    AVL    File Search\n");
 
     for (size_t i = 0; i < rep; i++)
     {
@@ -496,10 +496,21 @@ void bm_keyatributte(const char* in, const char* out, int rep){
         file_ssearch(ht->rec_fd, Keys[i]);
         end = clock();
         time_file = ((double)(end-beg))/CLOCKS_PER_SEC;
+        
+        sum_ht += time_ht;
+        sum_avl += time_avl;
+        sum_file += time_file;
 
-        fprintf(result, "%4zu    %5d    %10lf    %8lf    %11lf\n", 
+        fprintf(result, "%4zu    %5d    %.7lf    %.7lf    %.7lf\n", 
             i + 1, Keys[i], time_ht, time_avl, time_file);
     }
+    double avg_ht = sum_ht / rep;
+    double avg_avl = sum_avl / rep;
+    double avg_file = sum_file / rep;
+
+    fprintf(result, "-----------------------------------------------\n");
+    fprintf(result, "Average:         %.7lf    %.7lf    %.7lf\n", avg_ht, avg_avl, avg_file);
+    printf("%s saved successfully\n", out);
     fclose(result);
 }
 

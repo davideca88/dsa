@@ -51,4 +51,5 @@ void AB_AVL_bin(int len, int reps, BinTree t, Avl t2, const char* name);
 //Busca Binária AVL e BST, inserindo de forma ordenada
 void AB_AVL_bin_sorted(int len, int reps, BinTree t, Avl t2, const char* name);
 
+//Busca para Tabela Hash, Avl e arquivo por atributo chave
 void bm_keyatributte(const char* in, const char* out, int rep);
