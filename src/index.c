@@ -182,7 +182,6 @@ Index create_index(const char* rec_name, const char* key_mode, ...) {
 
     idx->rec_fd = rec_fd;
     idx->rquery = avl_rquery;
-    idx->clear_last_rquery = idx_clear_range;
     idx->last_rquery = new_range();
     idx->load = load;
     idx->print = print;
