@@ -127,6 +127,8 @@ Range avl_rquery(Index idx, char fint, Price fprice, char lint, Price lprice) {
     PriceRangeNode *aux, *prev;
     
     Product product;
+
+    clear_range(idx->last_rquery);
     
     avl_prices_make_range(idx->idx_p, prange, fprice * 100, lprice * 100, fint, lint);
     aux = prange->head;
@@ -159,14 +161,6 @@ Product avl_range_search(Index idx, Key price) {
     }
     
     return product;
-}
-
-void idx_clear_range(Index idx) {
-    if(idx->mode != AVL_PRICE) {
-        puts("Only \"price\" indexing has this operation");
-        return;
-    }
-    clear_range(idx->last_rquery);
 }
 
 // ################################################################################################################################################################

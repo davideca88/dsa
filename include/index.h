@@ -21,7 +21,6 @@ struct _index_s {
     FILE*    rec_fd; // guarda o arquivo de registros
     void*    idx_p;  // tem o ponteiro da estrutura utilizada (Avl ou HashTable)
     Range    last_rquery; // guarda a última consulta por intervalo
-    void     (*clear_last_rquery)(Index idx); // limpa a última consulta por intervalo (precisa ser rodado antes de uma nova consulta do tipo)
     Product  (*search)(Index idx, Key key); // busca por igualdade (cria um intervalo com todas as ocorrências. retorna aprimeira ocorrência)
     Range    (*rquery)(Index idx, char fint, Price fprice, char lint, Price lprice); // busca por intervalo (define last_rquery e depois retorna last_rquery)
     bool     (*insert)(Index idx, Product product); // insere (tanto no índice quanto em append no arquivo)
