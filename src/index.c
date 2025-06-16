@@ -1,5 +1,12 @@
 #include "../include/index.h"
 
+bool load(Index idx);
+bool hash_table_insert(Index idx, Product product);
+Product hash_table_search(Index idx, Key key);
+Product avl_eq_search(Index idx, Key key);
+bool avl_eq_insert(Index idx, Product product);
+Range avl_rquery(Index idx, char fint, Price fprice, char lint, Price lprice);
+
 bool load(Index idx) {
     Product product;
     Offset offset = 0;
@@ -117,9 +124,9 @@ Range avl_rquery(Index idx, char fint, Price fprice, char lint, Price lprice) {
         return NULL;
     }
     PriceRange prange = new_prange();
+    PriceRangeNode *aux, *prev;
+    
     Product product;
-    PriceRangeNode *aux;
-    clear_range(idx->last_rquery);
     
     avl_prices_make_range(idx->idx_p, prange, fprice * 100, lprice * 100, fint, lint);
     aux = prange->head;
@@ -129,10 +136,11 @@ Range avl_rquery(Index idx, char fint, Price fprice, char lint, Price lprice) {
         if(fread(&product, sizeof(Product), 1, idx->rec_fd)) {
             rappend(idx->last_rquery, product);
         }
+        prev = aux;
         aux = aux->next;
+        free(prev);
     }
 
-    delete_prange(prange);
     return idx->last_rquery;
 }
 
@@ -151,6 +159,16 @@ Product avl_range_search(Index idx, Key price) {
     }
     
     return product;
+}
+
+Range idx_clear_range(Index idx) {
+    if(idx->mode != AVL_PRICE) {
+        puts("Only \"price\" indexing has this operation");
+        return idx->last_rquery;
+    }
+    clear_range(idx->last_rquery);
+    idx->last_rquery = NULL;
+    return NULL;
 }
 
 // ################################################################################################################################################################
@@ -172,6 +190,7 @@ Index create_index(const char* rec_name, const char* key_mode, ...) {
 
     idx->rec_fd = rec_fd;
     idx->rquery = avl_rquery;
+    idx->clear_last_rquery = idx_clear_range;
     idx->last_rquery = new_range();
     idx->load = load;
     idx->print = print;

@@ -18,28 +18,17 @@
 
 typedef struct _index_s* Index;
 struct _index_s {
-    FILE*    rec_fd;
-    void*    idx_p;
-    Range    last_rquery;
-    Product  (*search)(Index idx, Key key);
-    Range    (*rquery)(Index idx, char fint, Price fprice, char lint, Price lprice);
-    bool     (*insert)(Index idx, Product product);
-    bool     (*load)(Index idx);
-    void     (*print)(Index idx);
-    char     mode;
+    FILE*    rec_fd; // guarda o arquivo de registros
+    void*    idx_p;  // tem o ponteiro da estrutura utilizada (Avl ou HashTable)
+    Range    last_rquery; // guarda a última consulta por intervalo
+    Range    (*clear_last_rquery)(Index idx); // limpa a última consulta por intervalo (precisa ser rodado antes de uma nova consulta do tipo)
+    Product  (*search)(Index idx, Key key); // busca por igualdade (cria um intervalo com todas as ocorrências. retorna aprimeira ocorrência)
+    Range    (*rquery)(Index idx, char fint, Price fprice, char lint, Price lprice); // busca por intervalo (define last_rquery e depois retorna last_rquery)
+    bool     (*insert)(Index idx, Product product); // insere (tanto no índice quanto em append no arquivo)
+    bool     (*load)(Index idx); // carrega os registros no índice (é chamada após criar o índice)
+    void     (*print)(Index idx); // printa os registros
+    char     mode; // modo de indexação (HASH_TABLE, AVL_ID ou AVL_PRICE)
 };
-
-bool load(Index idx);
-
-bool hash_table_insert(Index idx, Product product);
-
-Product hash_table_search(Index idx, Key key);
-
-Product avl_eq_search(Index idx, Key key);
-
-bool avl_eq_insert(Index idx, Product product);
-
-Range avl_rquery(Index idx, char fint, Price fprice, char lint, Price lprice);
 
 Index create_index(const char* rec_name, const char* key_mode, ...);
 
