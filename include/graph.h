@@ -43,6 +43,7 @@ Graph new_graph() {
     return new;
 }
 
+// TODO (!) carece de testes
 void add_vertex(Graph this) {
     struct _vertex_s new;
     new.id = this->__vertex_count;
@@ -52,7 +53,7 @@ void add_vertex(Graph this) {
     this->__vertexes[new.id] = new;
 }
 
-// ainda tô fazendo essa função
+// TODO (!) carece de testes
 void add_edge(Graph this, size_t id_a, size_t id_b) {
     struct _vertex_s *vertex_a = &(this->__vertexes[id_a]);
     struct _vertex_s *vertex_b = &(this->__vertexes[id_b]);
@@ -60,19 +61,34 @@ void add_edge(Graph this, size_t id_a, size_t id_b) {
     struct _edge_s *aux_a = vertex_a->head;
     struct _edge_s *aux_b = vertex_b->head;
 
-    struct _edge_s *new_a;
-    struct _edge_s *new_b;
+    struct _edge_s *new_a = (struct _edge_s*) malloc(sizeof(struct _edge_s));
+    new_a->destiny = id_b;
+    new_a->next = NULL;
+    
+    struct _edge_s *new_b = (struct _edge_s*) malloc(sizeof(struct _edge_s));
+    new_b->destiny = id_a;
+    new_b->next = NULL;
 
     if(aux_a) {
         while(aux_a->next) {
-            if(aux_a->destiny == id_b) return;
+            if(aux_a->destiny == id_b) {
+                free(new_a);
+                free(new_b);
+                return;
+            }
             aux_a = aux_a->next;
         }
+        aux_a->next = new_a;
     }
+    vertex_a->head = new_a;
 
-    new_a = (struct _edge_s*) malloc(sizeof(struct _edge_s));
-    new_a->destiny = id_b;
-    new_a->next = NULL;
+    if(aux_b) {
+        while(aux_b->next) {
+            aux_b = aux_b->next;
+        }
+        aux_b->next = new_b;
+    }
+    vertex_b->head = new_b;
     
 }
 
