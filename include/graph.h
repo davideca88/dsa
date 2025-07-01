@@ -5,6 +5,10 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#define WHITE 0
+#define GRAY  1
+#define BLACK 2
+
 // Cada aresta é uma lista encadeada, onde cada elemento da lista é um destino desse nó
 // obs.: Arestas são específicas de cada nó, i.e., uma  conexão necessita  que ambos os
 // vértices  tenham  conexões mútuas, i.e., uma  que "vai" e outra que  "volta" (onde a 

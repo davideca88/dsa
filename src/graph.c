@@ -1,7 +1,55 @@
 #include "../include/graph.h"
 
+struct _bfs_node_s {
+    struct _bfs_node_s *next;
+    size_t id;
+    unsigned dist;
+    uint8_t colour;
+};
+
+struct _bfs_queue_s {
+    struct _bfs_node_s *head;
+    struct _bfs_node_s *tail;
+};
+
+void enqueue(struct _bfs_queue_s* queue, size_t id, unsigned dist, uint8_t colour) {
+    struct _bfs_node_s* new = (struct _bfs_node_s*) malloc(sizeof(struct _bfs_node_s));
+    
+    new->id = id;
+    new->dist = dist;
+    new->colour = colour;
+    new->next = NULL;
+    
+    if(!queue->head) {
+        queue->head = new;
+        queue->tail = new;
+        return;
+    }
+    
+    queue->tail->next = new;
+}
+struct _bfs_node_s dequeue();
+
+// fazendo
 void bfs(Graph this) {
-    if(!this->__vertex_count) return;
+    if(this->__vertex_count == 0) return;
+    
+    // Vértice "âncora" (a busca começa a partir dele)
+    struct _vertex_s anchor = ((struct _vertex_s*) this->__vertexes)[0];
+    
+    // Vetor que contém as distâncias do âncora para todos os outros
+    unsigned *dist = (unsigned*) malloc(sizeof(unsigned) * this->__vertex_count);
+    
+    // Vetor que contém as cores de cada vértice
+    uint8_t *colours = calloc(this->__vertex_count, sizeof(uint8_t));
+
+    // Fila utilizada na busca em profundidade
+    struct _bfs_queue_s queue = { .head = NULL,
+                                  .tail = NULL };
+    enqueue(&queue, 0, 0, GRAY);
+    
+    free(dist);
+    free(colours);
 }
 
 void dfs(Graph this) {
