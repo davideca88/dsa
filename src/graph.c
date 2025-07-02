@@ -12,7 +12,7 @@ struct _bfs_queue_s {
     struct _bfs_node_s *tail;
 };
 
-void enqueue(struct _bfs_queue_s* queue, size_t id, unsigned dist, uint8_t colour) {
+void bfs_enqueue(struct _bfs_queue_s *queue, size_t id, unsigned dist, uint8_t colour) {
     struct _bfs_node_s* new = (struct _bfs_node_s*) malloc(sizeof(struct _bfs_node_s));
     
     new->id = id;
@@ -20,7 +20,7 @@ void enqueue(struct _bfs_queue_s* queue, size_t id, unsigned dist, uint8_t colou
     new->colour = colour;
     new->next = NULL;
     
-    if(!queue->head) {
+    if(queue->head == NULL) {
         queue->head = new;
         queue->tail = new;
         return;
@@ -28,25 +28,44 @@ void enqueue(struct _bfs_queue_s* queue, size_t id, unsigned dist, uint8_t colou
     
     queue->tail->next = new;
 }
-struct _bfs_node_s dequeue();
+struct _bfs_node_s bfs_dequeue(struct _bfs_queue_s *queue) {
+    struct _bfs_node_s ret = *(queue->tail);
+    struct _bfs_node_s *aux = queue->head;
+    
+    while(aux->next) aux = aux->next;
+
+    free(aux->next);
+    aux->next = NULL;
+    
+    return ret;
+}
 
 // fazendo
 void bfs(Graph this) {
-    if(this->__vertex_count == 0) return;
+    struct _vertex_s *vertexes = this->__vertexes;
+    size_t vertex_count = this->__vertex_count;
     
-    // Vértice "âncora" (a busca começa a partir dele)
-    struct _vertex_s anchor = ((struct _vertex_s*) this->__vertexes)[0];
+    if(vertex_count == 0) return;
+    
+    // Vértice auxiliar que percorrerá o grafo. O primeiro eleito é o chamado
+    // "âncora" (a busca começa a partir dele) e sempre será o primeiro elemento
+    // do vetor de vértices (pois é o único garantido em um grafo não vazio)
+    struct _vertex_s *aux = vertexes;
     
     // Vetor que contém as distâncias do âncora para todos os outros
-    unsigned *dist = (unsigned*) malloc(sizeof(unsigned) * this->__vertex_count);
+    unsigned *dist = (unsigned*) malloc(sizeof(unsigned) * vertex_count);
     
     // Vetor que contém as cores de cada vértice
-    uint8_t *colours = calloc(this->__vertex_count, sizeof(uint8_t));
+    uint8_t *colours = calloc(vertex_count, sizeof(uint8_t));
 
-    // Fila utilizada na busca em profundidade
+    // Fila utilizada na busca em largura
     struct _bfs_queue_s queue = { .head = NULL,
                                   .tail = NULL };
-    enqueue(&queue, 0, 0, GRAY);
+    bfs_enqueue(&queue, aux->id, 0, GRAY);
+
+    for(size_t i = 0; i < vertex_count; i++) {
+
+    }
     
     free(dist);
     free(colours);
