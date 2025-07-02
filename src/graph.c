@@ -4,7 +4,7 @@ struct _bfs_node_s {
     struct _bfs_node_s *next;
     size_t id;
     unsigned dist;
-    uint8_t colour;
+//    uint8_t colour;
 };
 
 struct _bfs_queue_s {
@@ -12,12 +12,12 @@ struct _bfs_queue_s {
     struct _bfs_node_s *tail;
 };
 
-void bfs_enqueue(struct _bfs_queue_s *queue, size_t id, unsigned dist, uint8_t colour) {
+void bfs_enqueue(struct _bfs_queue_s *queue, size_t id, unsigned dist) {
     struct _bfs_node_s* new = (struct _bfs_node_s*) malloc(sizeof(struct _bfs_node_s));
     
     new->id = id;
     new->dist = dist;
-    new->colour = colour;
+//    new->colour = colour;
     new->next = NULL;
     
     if(queue->head == NULL) {
@@ -28,8 +28,8 @@ void bfs_enqueue(struct _bfs_queue_s *queue, size_t id, unsigned dist, uint8_t c
     
     queue->tail->next = new;
 }
-struct _bfs_node_s bfs_dequeue(struct _bfs_queue_s *queue) {
-    struct _bfs_node_s ret = *(queue->tail);
+size_t bfs_dequeue(struct _bfs_queue_s *queue) {
+    size_t ret = queue->tail->id;
     struct _bfs_node_s *aux = queue->head;
     
     while(aux->next) aux = aux->next;
@@ -51,6 +51,9 @@ void bfs(Graph this) {
     // "âncora" (a busca começa a partir dele) e sempre será o primeiro elemento
     // do vetor de vértices (pois é o único garantido em um grafo não vazio)
     struct _vertex_s *aux = vertexes;
+
+    // Ponteiro para percorrer a lista de adjacência
+    struct _edge_s *travel;
     
     // Vetor que contém as distâncias do âncora para todos os outros
     unsigned *dist = (unsigned*) malloc(sizeof(unsigned) * vertex_count);
@@ -61,10 +64,20 @@ void bfs(Graph this) {
     // Fila utilizada na busca em largura
     struct _bfs_queue_s queue = { .head = NULL,
                                   .tail = NULL };
-    bfs_enqueue(&queue, aux->id, 0, GRAY);
+    
+    bfs_enqueue(&queue, aux->id, 0);
+    colours[aux->id] = GRAY;
 
-    for(size_t i = 0; i < vertex_count; i++) {
-
+    size_t dist_inc = 1;
+    
+    while(queue.head) {
+        travel = aux->head;
+        while(travel) {
+             bfs_enqueue(&queue, travel->destiny, dist_inc++);
+             colours[travel->destiny] = GRAY;
+             travel = travel->next;
+        }
+        colours[bfs_dequeue(&queue)] = BLACK;
     }
     
     free(dist);
