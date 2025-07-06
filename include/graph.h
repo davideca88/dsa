@@ -39,4 +39,6 @@ struct _graph_s {
     void (*dfs)(Graph);
 };
 
+Graph new_graph();
+
 #endif // _GRAPH_H

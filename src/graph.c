@@ -12,12 +12,10 @@ struct _bfs_queue_s {
     struct _bfs_node_s *tail;
 };
 
-void bfs_enqueue(struct _bfs_queue_s *queue, size_t id, unsigned dist) {
+void bfs_enqueue(struct _bfs_queue_s *queue, size_t id) {
     struct _bfs_node_s* new = (struct _bfs_node_s*) malloc(sizeof(struct _bfs_node_s));
     
     new->id = id;
-    new->dist = dist;
-//    new->colour = colour;
     new->next = NULL;
     
     if(queue->head == NULL) {
@@ -29,13 +27,12 @@ void bfs_enqueue(struct _bfs_queue_s *queue, size_t id, unsigned dist) {
     queue->tail->next = new;
 }
 size_t bfs_dequeue(struct _bfs_queue_s *queue) {
-    size_t ret = queue->tail->id;
     struct _bfs_node_s *aux = queue->head;
-    
-    while(aux->next) aux = aux->next;
+    size_t ret = aux->id;
 
-    free(aux->next);
-    aux->next = NULL;
+    queue->head = aux->next;
+
+    free(aux);
     
     return ret;
 }
@@ -53,10 +50,11 @@ void bfs(Graph this) {
     struct _vertex_s *aux = vertexes;
 
     // Ponteiro para percorrer a lista de adjacência
-    struct _edge_s *travel;
+    struct _edge_s *edge_travel;
     
     // Vetor que contém as distâncias do âncora para todos os outros
-    unsigned *dist = (unsigned*) malloc(sizeof(unsigned) * vertex_count);
+    unsigned *dists = (unsigned*) malloc(sizeof(unsigned) * vertex_count); 
+    for(size_t i = 0; i < vertex_count; i++) dists[i] = (unsigned) -1;
     
     // Vetor que contém as cores de cada vértice
     uint8_t *colours = calloc(vertex_count, sizeof(uint8_t));
@@ -65,22 +63,35 @@ void bfs(Graph this) {
     struct _bfs_queue_s queue = { .head = NULL,
                                   .tail = NULL };
     
-    bfs_enqueue(&queue, aux->id, 0);
+    size_t visited;
+    size_t dist = 0;
+    
+    bfs_enqueue(&queue, aux->id);
     colours[aux->id] = GRAY;
-
-    size_t dist_inc = 1;
+    dists[aux->id] = dist;
+    
+    dist++;
     
     while(queue.head) {
-        travel = aux->head;
-        while(travel) {
-             bfs_enqueue(&queue, travel->destiny, dist_inc++);
-             colours[travel->destiny] = GRAY;
-             travel = travel->next;
+        edge_travel = (vertexes[queue.head->id]).head;
+        
+        while(edge_travel) {
+            
+            if(colours[edge_travel->destiny] == WHITE) {
+                bfs_enqueue(&queue, edge_travel->destiny);
+                colours[edge_travel->destiny] = GRAY;
+                dists[edge_travel->destiny] = dist;
+            }
+            
+            edge_travel = edge_travel->next;
         }
-        colours[bfs_dequeue(&queue)] = BLACK;
+        visited = bfs_dequeue(&queue);
+        colours[visited] = BLACK;
+        dist++;
+        printf("Vertex: %lu\nDistance from anchor: %u\n\n", visited, dists[visited]);
     }
     
-    free(dist);
+    free(dists);
     free(colours);
 }
 
@@ -118,6 +129,7 @@ void add_edge(Graph this, size_t id_a, size_t id_b) {
         vertex_a->head = new_a;
     }
     else {
+        printf("%p\n\n", aux_a);
         while(aux_a->next) {
             if(aux_a->destiny == id_b) {
                 free(new_a);
