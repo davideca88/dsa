@@ -3,8 +3,6 @@
 struct _bfs_node_s {
     struct _bfs_node_s *next;
     size_t id;
-    unsigned dist;
-//    uint8_t colour;
 };
 
 struct _bfs_queue_s {
@@ -51,6 +49,7 @@ void bfs(Graph this) {
 
     // Ponteiro para percorrer a lista de adjacência
     struct _edge_s *edge_travel;
+    size_t destiny;
     
     // Vetor que contém as distâncias do âncora para todos os outros
     unsigned *dists = (unsigned*) malloc(sizeof(unsigned) * vertex_count); 
@@ -76,11 +75,14 @@ void bfs(Graph this) {
         edge_travel = (vertexes[queue.head->id]).head;
         
         while(edge_travel) {
+            destiny = edge_travel->destiny;
+
+            printf("visitarei %lu de cor %d\n", destiny, colours[destiny]);
             
-            if(colours[edge_travel->destiny] == WHITE) {
-                bfs_enqueue(&queue, edge_travel->destiny);
-                colours[edge_travel->destiny] = GRAY;
-                dists[edge_travel->destiny] = dist;
+            if(colours[destiny] == WHITE) {
+                bfs_enqueue(&queue, destiny);
+                colours[destiny] = GRAY;
+                dists[destiny] = dist;
             }
             
             edge_travel = edge_travel->next;
@@ -88,7 +90,7 @@ void bfs(Graph this) {
         visited = bfs_dequeue(&queue);
         colours[visited] = BLACK;
         dist++;
-        printf("Vertex: %lu\nDistance from anchor: %u\n\n", visited, dists[visited]);
+        printf("Visted: %lu\nDistance from anchor: %u\n\n", visited, dists[visited]);
     }
     
     free(dists);
@@ -105,14 +107,18 @@ void add_vertex(Graph this) {
     new.id = this->__vertex_count;
     new.head = NULL;
 
-    this->__vertexes = realloc(this->__vertexes, ++(this->__vertex_count));
+    this->__vertex_count++;
+    
+    this->__vertexes = realloc(this->__vertexes, this->__vertex_count * sizeof(struct _vertex_s));
     ((struct _vertex_s*) (this->__vertexes))[new.id] = new;
 }
 
 // TODO (!) carece de testes
 void add_edge(Graph this, size_t id_a, size_t id_b) {
-    struct _vertex_s *vertex_a = &(this->__vertexes[id_a]);
-    struct _vertex_s *vertex_b = &(this->__vertexes[id_b]);
+    struct _vertex_s *vertexes = this->__vertexes;
+    
+    struct _vertex_s *vertex_a = &(vertexes[id_a]);
+    struct _vertex_s *vertex_b = &(vertexes[id_b]);
 
     struct _edge_s *aux_a = vertex_a->head;
     struct _edge_s *aux_b = vertex_b->head;
@@ -129,7 +135,6 @@ void add_edge(Graph this, size_t id_a, size_t id_b) {
         vertex_a->head = new_a;
     }
     else {
-        printf("%p\n\n", aux_a);
         while(aux_a->next) {
             if(aux_a->destiny == id_b) {
                 free(new_a);
