@@ -37,6 +37,7 @@ struct _graph_s {
 //  ii. Operações que não modificam o grafo
     void (*bfs)(Graph);
     void (*dfs)(Graph);
+    void (*print)(Graph);
 };
 
 Graph new_graph();

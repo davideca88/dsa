@@ -120,42 +120,54 @@ void add_edge(Graph this, size_t id_a, size_t id_b) {
     struct _vertex_s *vertex_a = &(vertexes[id_a]);
     struct _vertex_s *vertex_b = &(vertexes[id_b]);
 
-    struct _edge_s *aux_a = vertex_a->head;
-    struct _edge_s *aux_b = vertex_b->head;
-
+    struct _edge_s *aux = vertex_a->head;
+    while (aux)
+    {
+        if (aux->destiny == id_b) return;
+        aux = aux->next;
+    }
+    
     struct _edge_s *new_a = (struct _edge_s*) malloc(sizeof(struct _edge_s));
     new_a->destiny = id_b;
-    new_a->next = NULL;
+    new_a->next = vertex_a->head;
+    vertex_a->head = new_a;
     
     struct _edge_s *new_b = (struct _edge_s*) malloc(sizeof(struct _edge_s));
     new_b->destiny = id_a;
-    new_b->next = NULL;
-
-    if(!aux_a) {
-        vertex_a->head = new_a;
-    }
-    else {
-        while(aux_a->next) {
-            if(aux_a->destiny == id_b) {
-                free(new_a);
-                free(new_b);
-                return;
-            }
-            aux_a = aux_a->next;
-        }
-        aux_a->next = new_a;
-    }
-
-    if(!aux_b) {
-        vertex_b->head = new_b;
-    }
-    else {
-        while(aux_b->next) {
-            aux_b = aux_b->next;
-        }
-        aux_b->next = new_b;
-    }
+    new_b->next = vertex_b->head;
+    vertex_b->head = new_b;
     
+}
+
+void print_graph(Graph this) {
+    if (this == NULL || this->__vertexes == NULL) {
+        printf("Graph is empty!\n");
+        return;
+    }
+
+    struct _vertex_s *vertexes = this->__vertexes;
+    size_t vertex_count = this->__vertex_count;
+
+    printf("Graph with %lu vertices:\n", vertex_count);
+    
+    for (size_t i = 0; i < vertex_count; i++) {
+        struct _vertex_s vertex = vertexes[i];
+        printf("Vertex %lu: ", vertex.id);
+        
+        struct _edge_s *edge = vertex.head;
+        if (edge == NULL) {
+            printf("no connections");
+        } else {
+            while (edge != NULL) {
+                printf("%lu", edge->destiny);
+                edge = edge->next;
+                if (edge != NULL) {
+                    printf(" -> ");
+                }
+            }
+        }
+        printf("\n");
+    }
 }
 
 Graph new_graph() {
@@ -168,5 +180,6 @@ Graph new_graph() {
 
     new->bfs = bfs;
     new->dfs = dfs;
+    new->print = print_graph;
     return new;
 }
