@@ -35,7 +35,7 @@ struct _graph_s {
     void (*add_edge)(Graph, size_t id_a, size_t id_b); // Conecta dois vértices, i.e., cria uma aresta (função Ψ(G), i.e., Psi(G))
 
 //  ii. Operações que não modificam o grafo
-    void (*bfs)(Graph);
+    void (*bfs)(Graph, size_t anchor);
     void (*dfs)(Graph);
     void (*print)(Graph);
 };

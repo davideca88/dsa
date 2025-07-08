@@ -1,5 +1,17 @@
 #include "../include/graph.h"
 
+// Essa função macro só pega a cor e transforma uma string
+// Propósito majoritário p/ debug
+#define COLOUR_STRING(c) c == WHITE ? "WHITE" : (c == GRAY ? "GRAY" : "BLACK")
+
+static inline bool allocation_failed(void *ptr) {
+    if(ptr == NULL) {
+        fprintf(stderr, "Allocation has failed =(\n");
+        return true;
+    }
+    return false;
+}
+
 struct _bfs_node_s {
     struct _bfs_node_s *next;
     size_t id;
@@ -13,6 +25,9 @@ struct _bfs_queue_s {
 void bfs_enqueue(struct _bfs_queue_s *queue, size_t id) {
     struct _bfs_node_s* new = (struct _bfs_node_s*) malloc(sizeof(struct _bfs_node_s));
     
+    if(allocation_failed(new))
+        return;
+    
     new->id = id;
     new->next = NULL;
     
@@ -23,12 +38,22 @@ void bfs_enqueue(struct _bfs_queue_s *queue, size_t id) {
     }
     
     queue->tail->next = new;
+    queue->tail = new;
 }
+
 size_t bfs_dequeue(struct _bfs_queue_s *queue) {
     struct _bfs_node_s *aux = queue->head;
-    size_t ret = aux->id;
+    size_t ret;
+    
+    if(aux == NULL)
+        return (size_t) -1;
+    
+    ret = aux->id;
 
     queue->head = aux->next;
+
+    if(queue->head == NULL)
+        queue->tail = NULL;
 
     free(aux);
     
@@ -36,61 +61,68 @@ size_t bfs_dequeue(struct _bfs_queue_s *queue) {
 }
 
 // fazendo
-void bfs(Graph this) {
+void bfs(Graph this, size_t anchor) {
     struct _vertex_s *vertexes = this->__vertexes;
     size_t vertex_count = this->__vertex_count;
     
-    if(vertex_count == 0) return;
+    if(anchor >= vertex_count)
+        return;
     
-    // Vértice auxiliar que percorrerá o grafo. O primeiro eleito é o chamado
-    // "âncora" (a busca começa a partir dele) e sempre será o primeiro elemento
-    // do vetor de vértices (pois é o único garantido em um grafo não vazio)
-    struct _vertex_s *aux = vertexes;
+    // Seleciona vértice âncora, i.e., recebe seu endereço
+    struct _vertex_s *aux = &(vertexes[anchor]);
 
     // Ponteiro para percorrer a lista de adjacência
-    struct _edge_s *edge_travel;
+    struct _edge_s *travel;
     size_t destiny;
     
     // Vetor que contém as distâncias do âncora para todos os outros
-    unsigned *dists = (unsigned*) malloc(sizeof(unsigned) * vertex_count); 
+    unsigned *dists = (unsigned*) malloc(sizeof(unsigned) * vertex_count);
+
+    if(allocation_failed(dists))
+        return;
+    
     for(size_t i = 0; i < vertex_count; i++) dists[i] = (unsigned) -1;
     
     // Vetor que contém as cores de cada vértice
     uint8_t *colours = calloc(vertex_count, sizeof(uint8_t));
 
+    if(allocation_failed(colours))
+        return;
+
     // Fila utilizada na busca em largura
     struct _bfs_queue_s queue = { .head = NULL,
                                   .tail = NULL };
-    
+    size_t queue_head_id;
     size_t visited;
-    size_t dist = 0;
     
     bfs_enqueue(&queue, aux->id);
     colours[aux->id] = GRAY;
-    dists[aux->id] = dist;
+    dists[aux->id] = 0;
     
-    dist++;
     
     while(queue.head) {
-        edge_travel = (vertexes[queue.head->id]).head;
-        
-        while(edge_travel) {
-            destiny = edge_travel->destiny;
+        queue_head_id = queue.head->id;
+        travel = (vertexes[queue_head_id]).head;
 
-            printf("visitarei %lu de cor %d\n", destiny, colours[destiny]);
+//        printf("Distância %u:\n", dists[queue_head_id] + 1);
+        
+        while(travel) {
+            destiny = travel->destiny; 
             
             if(colours[destiny] == WHITE) {
                 bfs_enqueue(&queue, destiny);
                 colours[destiny] = GRAY;
-                dists[destiny] = dist;
+                dists[destiny] = dists[queue_head_id] + 1;
+
+//                printf("\tId: %lu\n", destiny);
             }
-            
-            edge_travel = edge_travel->next;
+
+            travel = travel->next;
         }
+
+//        putchar('\n');
         visited = bfs_dequeue(&queue);
         colours[visited] = BLACK;
-        dist++;
-        printf("Visted: %lu\nDistance from anchor: %u\n\n", visited, dists[visited]);
     }
     
     free(dists);
@@ -120,19 +152,31 @@ void add_edge(Graph this, size_t id_a, size_t id_b) {
     struct _vertex_s *vertex_a = &(vertexes[id_a]);
     struct _vertex_s *vertex_b = &(vertexes[id_b]);
 
+    struct _edge_s *new_a;
+    struct _edge_s *new_b;
+
     struct _edge_s *aux = vertex_a->head;
-    while (aux)
-    {
-        if (aux->destiny == id_b) return;
+    
+    while(aux) {
+        if (aux->destiny == id_b)
+            return;
         aux = aux->next;
     }
     
-    struct _edge_s *new_a = (struct _edge_s*) malloc(sizeof(struct _edge_s));
+    new_a = (struct _edge_s*) malloc(sizeof(struct _edge_s));
+
+    if(allocation_failed(new_a))
+        return;
+    
     new_a->destiny = id_b;
     new_a->next = vertex_a->head;
     vertex_a->head = new_a;
     
-    struct _edge_s *new_b = (struct _edge_s*) malloc(sizeof(struct _edge_s));
+    new_b = (struct _edge_s*) malloc(sizeof(struct _edge_s));
+
+    if(allocation_failed(new_b))
+        return;
+    
     new_b->destiny = id_a;
     new_b->next = vertex_b->head;
     vertex_b->head = new_b;
@@ -172,6 +216,10 @@ void print_graph(Graph this) {
 
 Graph new_graph() {
     Graph new = (Graph) malloc(sizeof(struct _graph_s));
+
+    if(allocation_failed(new))
+        return NULL;
+    
     new->__vertexes = NULL;
     new->__vertex_count = 0;
     
