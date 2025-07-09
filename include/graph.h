@@ -36,7 +36,7 @@ struct _graph_s {
 
 // Operações
 //  i. Operações que modificam o grafo
-    void (*gen_graph)(Graph, size_t n, float percent, char cycle);
+    void (*gen_graph)(Graph, size_t n, float percent, bool cycle);
 
 //  ii. Operações que não modificam o grafo
     void (*bfs)(Graph, size_t anchor);

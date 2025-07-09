@@ -203,7 +203,7 @@ bool add_edge(Graph this, size_t id_a, size_t id_b) {
  *  - Calcula e armazena a conectividade mínima (min_degree) e atual (current_degree)
  */
 
-void gen_graph(Graph this, size_t n, float percent, char cycle) {
+void gen_graph(Graph this, size_t n, float percent, bool cycle) {
     if (percent < 0 || percent > 100) {
         printf("Error: invalid percentage\n");
         return;
@@ -221,9 +221,9 @@ void gen_graph(Graph this, size_t n, float percent, char cycle) {
     size_t max_edges = (n * (n - 1)) / 2;
     size_t target_edges = (size_t) ceil((percent / 100.0) * max_edges);
 
-    if (target_edges < n - 1 || cycle == 0) {
-        target_edges = n - 1;
-    }
+    if (cycle && target_edges <= n-1)target_edges = n;
+    else if (!cycle)target_edges = n-1;
+    
 
     size_t current_edges = n - 1;
     while (current_edges < target_edges) {
