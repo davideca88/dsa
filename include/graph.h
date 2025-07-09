@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <time.h>
+#include <math.h>
 
 #define WHITE 0
 #define GRAY  1
@@ -29,11 +31,12 @@ struct _graph_s {
 // Dados
     void *__vertexes;
     size_t __vertex_count;
-    
+    float min_degree;
+    float current_degree;
+
 // Operações
 //  i. Operações que modificam o grafo
-    void (*add_vertex)(Graph); // Cria um vértice
-    void (*add_edge)(Graph, size_t id_a, size_t id_b); // Conecta dois vértices, i.e., cria uma aresta (função Ψ(G), i.e., Psi(G))
+    void (*gen_graph)(Graph, size_t n, float percent, char cycle);
 
 //  ii. Operações que não modificam o grafo
     void (*bfs)(Graph, size_t anchor);

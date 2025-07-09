@@ -133,7 +133,7 @@ void dfs(Graph this) {
     
 }
 
-// TODO (!) carece de testes
+
 void add_vertex(Graph this) {
     struct _vertex_s new;
     new.id = this->__vertex_count;
@@ -145,8 +145,8 @@ void add_vertex(Graph this) {
     ((struct _vertex_s*) (this->__vertexes))[new.id] = new;
 }
 
-// TODO (!) carece de testes
-void add_edge(Graph this, size_t id_a, size_t id_b) {
+
+bool add_edge(Graph this, size_t id_a, size_t id_b) {
     struct _vertex_s *vertexes = this->__vertexes;
     
     struct _vertex_s *vertex_a = &(vertexes[id_a]);
@@ -159,14 +159,14 @@ void add_edge(Graph this, size_t id_a, size_t id_b) {
     
     while(aux) {
         if (aux->destiny == id_b)
-            return;
+            return false;
         aux = aux->next;
     }
     
     new_a = (struct _edge_s*) malloc(sizeof(struct _edge_s));
 
     if(allocation_failed(new_a))
-        return;
+        return false;
     
     new_a->destiny = id_b;
     new_a->next = vertex_a->head;
@@ -175,13 +175,67 @@ void add_edge(Graph this, size_t id_a, size_t id_b) {
     new_b = (struct _edge_s*) malloc(sizeof(struct _edge_s));
 
     if(allocation_failed(new_b))
-        return;
+        return false;
     
     new_b->destiny = id_a;
     new_b->next = vertex_b->head;
     vertex_b->head = new_b;
-    
+
+    return true;
 }
+
+/**
+ * Função: gen_graph
+ * ---------
+ * Gera um grafo não direcionado e conexo com `n` vértices e grau de conectividade
+ * aproximado de `percent` (0 a 100).
+ *
+ * Parâmetros:
+ *  - this: ponteiro para o grafo
+ *  - n: número de vértices
+ *  - percent: porcentagem desejada de conectividade
+ *  - cycle: caso seja 0, garante que o grafo não tenha ciclos
+ * 
+ * Comportamento:
+ *  - Cria os vértices
+ *  - Garante conexidade com uma árvore de n-1 arestas
+ *  - Adiciona arestas aleatórias até atingir o grau de conectividade
+ *  - Calcula e armazena a conectividade mínima (min_degree) e atual (current_degree)
+ */
+
+void gen_graph(Graph this, size_t n, float percent, char cycle) {
+    if (percent < 0 || percent > 100) {
+        printf("Error: invalid percentage\n");
+        return;
+    }
+
+    for (size_t i = 0; i < n; i++) {
+        add_vertex(this);
+    }
+
+    for (size_t i = 1; i < n; i++) {
+        size_t parent = rand() % i;
+        add_edge(this, i, parent);
+    }
+
+    size_t max_edges = (n * (n - 1)) / 2;
+    size_t target_edges = (size_t) ceil((percent / 100.0) * max_edges);
+
+    if (target_edges < n - 1 || cycle == 0) {
+        target_edges = n - 1;
+    }
+
+    size_t current_edges = n - 1;
+    while (current_edges < target_edges) {
+        size_t id_a = rand() % n;
+        size_t id_b = rand() % n;
+
+        if (id_a != id_b && add_edge(this, id_a, id_b)) current_edges++;
+    }
+    this->current_degree = ((float)current_edges/max_edges)*100;
+    this->min_degree = ((float)(n-1)/max_edges)*100;
+}
+
 
 void print_graph(Graph this) {
     if (this == NULL || this->__vertexes == NULL) {
@@ -222,9 +276,10 @@ Graph new_graph() {
     
     new->__vertexes = NULL;
     new->__vertex_count = 0;
+    new->current_degree = 0;
+    new->min_degree = 0;
     
-    new->add_vertex = add_vertex;
-    new->add_edge = add_edge;
+    new->gen_graph = gen_graph;
 
     new->bfs = bfs;
     new->dfs = dfs;
