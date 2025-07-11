@@ -12,6 +12,16 @@ static inline bool allocation_failed(void *ptr) {
     return false;
 }
 
+typedef void (*_dfs)(
+    Graph g, size_t current, size_t parent,
+    uint8_t *color, size_t *path, size_t path_len, void *ctx);
+
+struct _sequence
+{
+    size_t *seq;
+    size_t idx;
+};
+
 struct _bfs_node_s {
     struct _bfs_node_s *next;
     size_t id;
@@ -136,10 +146,106 @@ void bfs(Graph this, size_t anchor) {
     free(colours);
 }
 
-void dfs(Graph this) {
-    
+static void dfs_visit(Graph this, size_t current, size_t parent,
+                              uint8_t *color, size_t *path, size_t path_len,
+                              _dfs callback, void *ctx) {
+    struct _vertex_s *vertexes = this->__vertexes;
+    struct _edge_s *edge = vertexes[current].head;
+
+    color[current] = GRAY;
+    path[path_len++] = current;
+
+    if (callback) {
+        callback(this, current, parent, color, path, path_len, ctx);
+    }
+
+    while (edge) {
+        size_t destiny = edge->destiny;
+        if (color[destiny] == WHITE) {
+            dfs_visit(this, destiny, current, color, path, path_len, callback, ctx);
+        }
+        edge = edge->next;
+    }
+
+    color[current] = BLACK;
 }
 
+void dfs(Graph this, size_t anchor, _dfs callback, void *ctx) {
+    size_t n = this->__vertex_count;
+
+    if (anchor >= n) return;
+
+    uint8_t *color = calloc(n, sizeof(uint8_t));
+    size_t *path = malloc(n * sizeof(size_t));
+    if (allocation_failed(color) || allocation_failed(path)) return;
+
+    dfs_visit(this, anchor, (size_t)-1, color, path, 0, callback, ctx);
+
+    free(color);
+    free(path);
+}
+
+void _store_sequence(Graph this, size_t current, size_t parent,
+                      uint8_t *color, size_t *path, size_t path_len,
+                      void *ctx) {
+    struct _sequence *sc = ctx;
+
+    if (color[current] == GRAY) {
+        sc->seq[sc->idx++] = current;
+    }
+}
+
+void dfs_print(Graph this, size_t archor){
+    struct _sequence sc = {
+        .seq = calloc(this->__vertex_count, sizeof(size_t)),
+        .idx = 0
+    };
+
+    dfs(this, archor, _store_sequence, &sc);
+
+    if (this->__path) free(this->__path);
+    size_t *path = malloc(sc.idx*sizeof(size_t));
+    if (allocation_failed(path))
+    {
+        free(sc.seq);
+        return;
+    }
+    
+    for (size_t i = 0; i < sc.idx; i++)
+    {
+        path[i] = sc.seq[i];
+    }
+
+    this->__path = path;
+    free(sc.seq);
+}
+
+void print(Graph this, size_t archor, char search){
+    switch (search)
+    {
+    case 0:
+        bfs(this, archor);
+        break;
+    
+    case 1:
+        dfs_print(this, archor);
+        break;
+    }
+
+    printf("Tudo certo por aqui\n");
+
+    size_t *path = this->__path;
+    size_t len = this->__vertex_count;
+    const char *_search = (search == 0) ? "BFS" : "DFS";
+
+    printf("Visited Vertexes by %s:", _search);
+    for (size_t i = 0; i < len; i++)
+    {
+        printf("%lu ", path[i]);
+    }
+
+    printf("\n");
+}
 
 void add_vertex(Graph this) {
     struct _vertex_s new;
@@ -281,6 +387,7 @@ Graph new_graph() {
     if(allocation_failed(new))
         return NULL;
     
+    new->__path = NULL;
     new->__vertexes = NULL;
     new->__vertex_count = 0;
     new->current_degree = 0;
@@ -289,7 +396,9 @@ Graph new_graph() {
     new->gen_graph = gen_graph;
 
     new->bfs = bfs;
-    new->dfs = dfs;
+    // new->dfs = dfs;
     new->print = print_graph;
+    new->print2 = print;
+    new->print3 = dfs_print;
     return new;
 }
