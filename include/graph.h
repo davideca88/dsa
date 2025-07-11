@@ -29,6 +29,7 @@ struct _vertex_s {
 typedef struct _graph_s* Graph;
 struct _graph_s {
 // Dados
+    void *__path;
     void *__vertexes;
     size_t __vertex_count;
     float min_degree;
@@ -40,8 +41,10 @@ struct _graph_s {
 
 //  ii. Operações que não modificam o grafo
     void (*bfs)(Graph, size_t anchor);
-    void (*dfs)(Graph);
+    // void (*dfs)(Graph);
     void (*print)(Graph);
+    void (*print2)(Graph, size_t archor, char search);
+    void (*print3)(Graph, size_t archor);
 };
 
 Graph new_graph();
