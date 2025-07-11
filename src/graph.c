@@ -146,9 +146,17 @@ void add_vertex(Graph this) {
     new.id = this->__vertex_count;
     new.head = NULL;
 
+    size_t **path = (size_t**) &(this->__path);
+
     this->__vertex_count++;
     
-    this->__vertexes = realloc(this->__vertexes, this->__vertex_count * sizeof(struct _vertex_s));
+    this->__vertexes = realloc(this->__vertexes, \
+            this->__vertex_count * (sizeof(struct _vertex_s) + sizeof(size_t)));
+
+    *path = (size_t*) &(this->__vertexes[this->__vertex_count]);
+
+    *path[this->__vertex_count - 1] = (size_t) -1;
+    
     ((struct _vertex_s*) (this->__vertexes))[new.id] = new;
 }
 
