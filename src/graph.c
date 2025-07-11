@@ -65,6 +65,10 @@ void bfs(Graph this, size_t anchor) {
     struct _vertex_s *vertexes = this->__vertexes;
     size_t vertex_count = this->__vertex_count;
     
+    size_t *path = this->__path;
+    // Iterador de path utilizado na construção de __path[]
+    size_t path_i = 0;
+    
     if(anchor >= vertex_count)
         return;
     
@@ -94,17 +98,20 @@ void bfs(Graph this, size_t anchor) {
                                   .tail = NULL };
     size_t queue_head_id;
     size_t visited;
-    
+     
     bfs_enqueue(&queue, aux->id);
     colours[aux->id] = GRAY;
     dists[aux->id] = 0;
-    
+
+    // Nesse ponto path_i = 0, então definimos __path[0] = anchor,
+    // pois o caminho percorrido começa no vértice âncora
+    path[path_i] = anchor;
+    path_i++;
     
     while(queue.head) {
         queue_head_id = queue.head->id;
         travel = (vertexes[queue_head_id]).head;
 
-//        printf("Distância %u:\n", dists[queue_head_id] + 1);
         
         while(travel) {
             destiny = travel->destiny; 
@@ -114,13 +121,13 @@ void bfs(Graph this, size_t anchor) {
                 colours[destiny] = GRAY;
                 dists[destiny] = dists[queue_head_id] + 1;
 
-//                printf("\tId: %lu\n", destiny);
+                path[path_i] = destiny;
+                path_i++;
             }
 
             travel = travel->next;
         }
 
-//        putchar('\n');
         visited = bfs_dequeue(&queue);
         colours[visited] = BLACK;
     }
