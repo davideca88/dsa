@@ -11,7 +11,7 @@ int main(){
     printf("EXEMPLO: CRIANDO UM GRAFO AUTOMATICAMENTE COM PARAMETROS:\n");
     Graph g1 = new_graph();
 
-    //cria um grafo com 10 vértices, 50% de conectividade e força a ter ciclo
+    //Cria um grafo com 10 vértices, 50% de conectividade e força a ter ciclo
     g1->gen_graph(g1, 10, 50, true);
     //Mostra toda estrutura do grafo, incluindo as informações gerais
     g1->show_graph(g1);
@@ -32,7 +32,7 @@ int main(){
     g2->add_vertex(g2);
     g2->add_vertex(g2);
 
-    //Conecta os grafos de modo a serem conexo;
+    //Conecta os vértices de modo que o grafo seja conexo;
     g2->add_edge(g2, 0, 1);
     g2->add_edge(g2, 1, 2);
     g2->add_edge(g2, 2, 3);
