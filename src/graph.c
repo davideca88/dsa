@@ -4,6 +4,18 @@
 // Propósito majoritário p/ debug
 #define COLOUR_STRING(c) c == WHITE ? "WHITE" : (c == GRAY ? "GRAY" : "BLACK")
 
+/* Função: allocation_failed
+ * Objetivo:
+ *   Verificar se uma alocação de memória falhou.
+ *
+ * Argumento:
+ *   ptr - ponteiro retornado por malloc/calloc/realloc.
+ *
+ * Retorno:
+ *   true se a alocação falhou (ptr == NULL), false caso contrário.
+ *   Também imprime mensagem de erro padrão para stderr se falhar.
+ */
+
 static inline bool allocation_failed(void *ptr) {
     if(ptr == NULL) {
         fprintf(stderr, "Allocation has failed =(\n");
@@ -12,25 +24,34 @@ static inline bool allocation_failed(void *ptr) {
     return false;
 }
 
+//Tipo de função callback usada em DFS para processar cada vértice visitado
 typedef void (*_dfs)(
     Graph g, size_t current, size_t parent,
     uint8_t *color, size_t *path, size_t path_len, void *ctx);
 
+//Armazena a sequência de vértices visitados durante a DFS
 struct _sequence
 {
     size_t *seq;
     size_t idx;
 };
 
+//Representa um nó da fila usada na BFS.
 struct _bfs_node_s {
     struct _bfs_node_s *next;
     size_t id;
 };
 
+//Representa a fila de BFS com ponteiros para início e fim.
 struct _bfs_queue_s {
     struct _bfs_node_s *head;
     struct _bfs_node_s *tail;
 };
+
+/* Função: bfs_enqueue (Função Auxiliar)
+ * Objetivo:
+ *   Inserir um novo vértice (id) no final da fila usada na busca em largura (BFS).
+ */
 
 void bfs_enqueue(struct _bfs_queue_s *queue, size_t id) {
     struct _bfs_node_s* new = (struct _bfs_node_s*) malloc(sizeof(struct _bfs_node_s));
@@ -51,6 +72,10 @@ void bfs_enqueue(struct _bfs_queue_s *queue, size_t id) {
     queue->tail = new;
 }
 
+/* Função: bfs_dequeue (Função Auxiliar)
+ * Objetivo:
+ *   Remover e retornar o vértice no início da fila usada na busca em largura (BFS).
+ */
 size_t bfs_dequeue(struct _bfs_queue_s *queue) {
     struct _bfs_node_s *aux = queue->head;
     size_t ret;
@@ -70,7 +95,18 @@ size_t bfs_dequeue(struct _bfs_queue_s *queue) {
     return ret;
 }
 
-// fazendo
+/* Função: bfs
+ * Objetivo:
+ *   Executar a busca em largura (BFS) a partir de um vértice de origem e registrar
+ *   a ordem dos vértices visitados no vetor __path do grafo.
+ *
+ * Argumentos:
+ *   this   - ponteiro para o grafo (Graph).
+ *   anchor - índice do vértice de origem da busca.
+ *
+ * Retorno:
+ *   Nenhum (void). Atualiza o vetor __path com a sequência de visita em BFS.
+ */
 void bfs(Graph this, size_t anchor) {
     struct _vertex_s *vertexes = this->__vertexes;
     size_t vertex_count = this->__vertex_count;
@@ -146,6 +182,24 @@ void bfs(Graph this, size_t anchor) {
     free(colours);
 }
 
+/* Função: dfs_visit
+ * Objetivo:
+ *   Executar recursivamente a busca em profundidade (DFS) no grafo, chamando um callback
+ *   opcional a cada visita de vértice.
+ *
+ * Argumentos:
+ *   this     - ponteiro para o grafo (Graph).
+ *   current  - vértice atualmente sendo visitado.
+ *   parent   - vértice anterior na busca.
+ *   color    - vetor de cores para controle da visitação (WHITE, GRAY, BLACK).
+ *   path     - vetor com o caminho atual da DFS.
+ *   path_len - comprimento atual do caminho.
+ *   callback - função opcional a ser chamada a cada visita de vértice.
+ *   ctx      - ponteiro genérico para contexto adicional, passado ao callback.
+ *
+ * Retorno:
+ *   Nenhum (void). Executa a DFS e atualiza cor, caminho e, se houver, o callback.
+ */
 static void dfs_visit(Graph this, size_t current, size_t parent,
                               uint8_t *color, size_t *path, size_t path_len,
                               _dfs callback, void *ctx) {
@@ -170,6 +224,20 @@ static void dfs_visit(Graph this, size_t current, size_t parent,
     color[current] = BLACK;
 }
 
+/* Função: dfs
+ * Objetivo:
+ *   Iniciar a execução da busca em profundidade (DFS) a partir de um vértice de origem,
+ *   utilizando uma função de callback para processar cada visita.
+ *
+ * Argumentos:
+ *   this     - ponteiro para o grafo (Graph).
+ *   anchor   - índice do vértice de origem da DFS.
+ *   callback - função a ser chamada a cada vértice visitado (pode ser NULL).
+ *   ctx      - ponteiro genérico para contexto adicional, passado ao callback.
+ *
+ * Retorno:
+ *   Nenhum (void). Executa a DFS e chama o callback conforme visita os vértices.
+ */
 void dfs(Graph this, size_t anchor, _dfs callback, void *ctx) {
     size_t n = this->__vertex_count;
 
@@ -185,6 +253,11 @@ void dfs(Graph this, size_t anchor, _dfs callback, void *ctx) {
     free(path);
 }
 
+/* Função: _store_sequence (Função Auxiliar)
+ * Objetivo:
+ *   Callback usado durante a DFS para armazenar os vértices 
+ *   visitados na ordem em que são encontrados.
+ */
 
 void _store_sequence(Graph this, size_t current, size_t parent,
                       uint8_t *color, size_t *path, size_t path_len,
@@ -196,13 +269,18 @@ void _store_sequence(Graph this, size_t current, size_t parent,
     }
 }
 
-void dfs_print(Graph this, size_t archor){
+/* Função: dfs_print (Função Auxiliar)
+ * Objetivo:
+ *   Executar a busca em profundidade (DFS) a partir de um vértice de origem
+ *   e armazenar a ordem de visita no vetor __path do grafo.
+ */
+void dfs_print(Graph this, size_t anchor){
     struct _sequence sc = {
         .seq = calloc(this->__vertex_count, sizeof(size_t)),
         .idx = 0
     };
 
-    dfs(this, archor, _store_sequence, &sc);
+    dfs(this, anchor, _store_sequence, &sc);
 
     size_t *path = (size_t*) this->__path;
 
@@ -214,31 +292,18 @@ void dfs_print(Graph this, size_t archor){
     free(sc.seq);
 }
 
-void print(Graph this, size_t archor, SearchMethod search){
-    switch (search)
-    {
-    case 0:
-        bfs(this, archor);
-        break;
-    
-    case 1:
-        dfs_print(this, archor);
-        break;
-    }
 
-    size_t *path = this->__path;
-    size_t len = this->__vertex_count;
-    const char *_search = (search == 0) ? "BFS" : "DFS";
 
-    printf("Visited Vertexes by %s:", _search);
-    for (size_t i = 0; i < len; i++)
-    {
-        printf("%lu ", path[i]);
-    }
-
-    printf("\n");
-}
-
+/* Função add_vertex
+ * Objetivo:
+ *   Adicionar um novo vértice ao grafo, realocando a lista de vértices e o vetor de path.
+ *
+ * Argumento:
+ *   this - ponteiro para o grafo (Graph) onde o vértice será inserido.
+ *
+ * Retorno:
+ *   Nenhum (void). Atualiza internamente as estruturas do grafo.
+ */
 void add_vertex(Graph this) {
     struct _vertex_s new;
     new.id = this->__vertex_count;
@@ -253,6 +318,19 @@ void add_vertex(Graph this) {
     ((struct _vertex_s*) (this->__vertexes))[new.id] = new;
 }
 
+/* Função add_edge
+ * Objetivo:
+ *   Adicionar uma aresta bidirecional entre dois vértices do grafo, caso ainda não exista.
+ *
+ * Argumentos:
+ *   this  - ponteiro para o grafo (Graph).
+ *   id_a  - índice do primeiro vértice.
+ *   id_b  - índice do segundo vértice.
+ *
+ * Retorno:
+ *   true  - se a aresta foi adicionada com sucesso.
+ *   false - se a aresta já existia ou houve falha de alocação.
+ */
 
 bool add_edge(Graph this, size_t id_a, size_t id_b) {
     struct _vertex_s *vertexes = this->__vertexes;
@@ -302,7 +380,7 @@ bool add_edge(Graph this, size_t id_a, size_t id_b) {
  *  - this: ponteiro para o grafo
  *  - n: número de vértices
  *  - percent: porcentagem desejada de conectividade
- *  - cycle: caso seja 0, garante que o grafo não tenha ciclos
+ *  - cycle: true - Grafo com ciclos / false - Grafo sem ciclos
  * 
  * Comportamento:
  *  - Cria os vértices
@@ -344,6 +422,17 @@ void gen_graph(Graph this, size_t n, float percent, bool cycle) {
     this->min_degree = ((float)(n-1)/max_edges)*100;
 }
 
+/* Função: show_graph
+ * Objetivo: 
+ *   Exibir informações gerais e a estrutura completa do grafo, incluindo
+ *   grau de conexão, número de vértices e conexões de cada vértice.
+ *
+ * Argumento:
+ *   this - ponteiro para o grafo (Graph) a ser exibido.
+ *
+ * Retorno:
+ *   Nenhum (void). Apenas imprime os dados na saída padrão.
+ */
 
 void show_graph(Graph this) {
     if (this == NULL || this->__vertexes == NULL) {
@@ -379,6 +468,56 @@ void show_graph(Graph this) {
     }
 }
 
+/* Função: print
+ * Objetivo:
+ *   Executar uma busca (BFS ou DFS) a partir de um vértice de origem e imprimir
+ *   a ordem dos vértices visitados.
+ *
+ * Argumentos:
+ *   this   - ponteiro para o grafo (Graph).
+ *   anchor - índice do vértice de origem da busca.
+ *   search - método de busca a ser usado (BFS ou DFS), definido por SearchMethod.
+ *
+ * Retorno:
+ *   Nenhum (void). Imprime a ordem de visita dos vértices na saída padrão.
+ */
+
+void print(Graph this, size_t anchor, SearchMethod search){
+    switch (search)
+    {
+    case 0:
+        bfs(this, anchor);
+        break;
+    
+    case 1:
+        dfs_print(this, anchor);
+        break;
+    }
+
+    size_t *path = this->__path;
+    size_t len = this->__vertex_count;
+    const char *_search = (search == 0) ? "BFS" : "DFS";
+
+    printf("Visited Vertexes by %s:", _search);
+    for (size_t i = 0; i < len; i++)
+    {
+        printf("%lu ", path[i]);
+    }
+
+    printf("\n");
+}
+
+/* Função new_graph
+ * Objetivo:
+ *   Criar e inicializar uma nova estrutura de grafo, atribuindo valores padrão
+ *   aos campos de dados e conectando os ponteiros de função.
+ *
+ * Argumento:
+ *   Nenhum.
+ *
+ * Retorno:
+ *   Ponteiro para o novo grafo alocado (Graph), ou NULL se a alocação falhar.
+ */
 Graph new_graph() {
     Graph new = (Graph) malloc(sizeof(struct _graph_s));
 
