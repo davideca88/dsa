@@ -12,6 +12,11 @@
 #define GRAY  1
 #define BLACK 2
 
+typedef enum {
+    BFS = 0,
+    DFS = 1
+} SearchMethod;
+
 // Cada aresta é uma lista encadeada, onde cada elemento da lista é um destino desse nó
 // obs.: Arestas são específicas de cada nó, i.e., uma  conexão necessita  que ambos os
 // vértices  tenham  conexões mútuas, i.e., uma  que "vai" e outra que  "volta" (onde a 
@@ -38,13 +43,12 @@ struct _graph_s {
 // Operações
 //  i. Operações que modificam o grafo
     void (*gen_graph)(Graph, size_t n, float percent, bool cycle);
+    bool (*add_edge)(Graph, size_t id_a, size_t id_b);
+    void (*add_vertex)(Graph);
 
 //  ii. Operações que não modificam o grafo
-    void (*bfs)(Graph, size_t anchor);
-    // void (*dfs)(Graph);
-    void (*print)(Graph);
-    void (*print2)(Graph, size_t archor, char search);
-    void (*print3)(Graph, size_t archor);
+    void (*show_graph)(Graph);
+    void (*print)(Graph, size_t archor, SearchMethod);
 };
 
 Graph new_graph();

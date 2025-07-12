@@ -185,6 +185,7 @@ void dfs(Graph this, size_t anchor, _dfs callback, void *ctx) {
     free(path);
 }
 
+
 void _store_sequence(Graph this, size_t current, size_t parent,
                       uint8_t *color, size_t *path, size_t path_len,
                       void *ctx) {
@@ -203,24 +204,17 @@ void dfs_print(Graph this, size_t archor){
 
     dfs(this, archor, _store_sequence, &sc);
 
-    if (this->__path) free(this->__path);
-    size_t *path = malloc(sc.idx*sizeof(size_t));
-    if (allocation_failed(path))
-    {
-        free(sc.seq);
-        return;
-    }
-    
+    size_t *path = (size_t*) this->__path;
+
     for (size_t i = 0; i < sc.idx; i++)
     {
         path[i] = sc.seq[i];
     }
 
-    this->__path = path;
     free(sc.seq);
 }
 
-void print(Graph this, size_t archor, char search){
+void print(Graph this, size_t archor, SearchMethod search){
     switch (search)
     {
     case 0:
@@ -231,8 +225,6 @@ void print(Graph this, size_t archor, char search){
         dfs_print(this, archor);
         break;
     }
-
-    printf("Tudo certo por aqui\n");
 
     size_t *path = this->__path;
     size_t len = this->__vertex_count;
@@ -251,17 +243,12 @@ void add_vertex(Graph this) {
     struct _vertex_s new;
     new.id = this->__vertex_count;
     new.head = NULL;
-
-    size_t **path = (size_t**) &(this->__path);
-
-    this->__vertex_count++;
     
-    this->__vertexes = realloc(this->__vertexes, \
-            this->__vertex_count * (sizeof(struct _vertex_s) + sizeof(size_t)));
+    this->__vertex_count++;
+    this->__vertexes = realloc(this->__vertexes, this->__vertex_count * sizeof(struct _vertex_s));
+    this->__path = realloc(this->__path, this->__vertex_count * sizeof(size_t));
 
-    *path = (size_t*) &(this->__vertexes[this->__vertex_count]);
-
-    *path[this->__vertex_count - 1] = (size_t) -1;
+    ((size_t*)this->__path)[this->__vertex_count - 1] = (size_t)-1;
     
     ((struct _vertex_s*) (this->__vertexes))[new.id] = new;
 }
@@ -358,7 +345,7 @@ void gen_graph(Graph this, size_t n, float percent, bool cycle) {
 }
 
 
-void print_graph(Graph this) {
+void show_graph(Graph this) {
     if (this == NULL || this->__vertexes == NULL) {
         printf("Graph is empty!\n");
         return;
@@ -367,7 +354,10 @@ void print_graph(Graph this) {
     struct _vertex_s *vertexes = this->__vertexes;
     size_t vertex_count = this->__vertex_count;
 
-    printf("Graph with %lu vertices:\n", vertex_count);
+    printf("GRAPH DATA:\n");
+    printf("Current connection degree: %.2f%%\n", this->current_degree);
+    printf("Minimum degree of connection(connected graph): %.2f%%\n", this->min_degree);
+    printf("\nGraph with %lu vertices:\n", vertex_count);
     
     for (size_t i = 0; i < vertex_count; i++) {
         struct _vertex_s vertex = vertexes[i];
@@ -402,11 +392,10 @@ Graph new_graph() {
     new->min_degree = 0;
     
     new->gen_graph = gen_graph;
+    new->add_edge = add_edge;
+    new->add_vertex = add_vertex;
 
-    new->bfs = bfs;
-    // new->dfs = dfs;
-    new->print = print_graph;
-    new->print2 = print;
-    new->print3 = dfs_print;
+    new->show_graph = show_graph;
+    new->print = print;
     return new;
 }
