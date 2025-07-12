@@ -292,6 +292,57 @@ void dfs_print(Graph this, size_t anchor){
     free(sc.seq);
 }
 
+/* Função: detect_cycle (Função Auxiliar)
+ * Objetivo:
+ *   Detectar ciclos de tamanho ≥ 3 durante a execução de uma DFS.
+ */
+
+void detect_cycle(Graph this, size_t current, size_t parent,
+                  uint8_t *color, size_t *path, size_t path_len,
+                  void *ctx) {
+    struct _vertex_s *vertex = this->__vertexes;
+    struct _edge_s *edge = vertex[current].head;
+    bool *found = ctx;
+
+    if (*found) return;
+
+    while (edge) {
+        size_t dest = edge->destiny;
+
+        if (color[dest] == GRAY && dest != parent && path_len >= 3) {
+            *found = true;
+            return;
+        }
+
+        edge = edge->next;
+    }
+}
+
+/* Função: dfs_cycle
+ * Objetivo:
+ *   Verificar se o grafo contém algum ciclo de tamanho ≥ 3 usando busca em profundidade (DFS).
+ *
+ * Argumento:
+ *   this - ponteiro para o grafo.
+ *
+ * Retorno:
+ *   Nenhum (void). Imprime no terminal se há ou não ciclo no grafo.
+ */
+
+void dfs_cycle(Graph this){
+    bool found = false;
+
+    dfs(this, 0, detect_cycle, &found);
+
+    if(found){
+        printf("This graph has a cycle!\n");
+        return;
+    }else{
+        printf("There is no cycle in this graph!\n");
+        return;
+    }
+}
+
 
 
 /* Função add_vertex
@@ -366,6 +417,13 @@ bool add_edge(Graph this, size_t id_a, size_t id_b) {
     new_b->destiny = id_a;
     new_b->next = vertex_b->head;
     vertex_b->head = new_b;
+    
+    size_t len = this->__vertex_count;
+    size_t current_edges = ++this->__edge_count;
+    size_t max_edges = (len*(len-1))/2;
+
+    this->__current_degree = ((float)current_edges/max_edges)*100;
+    this->__min_degree = ((float)(len-1)/max_edges)*100;
 
     return true;
 }
@@ -386,7 +444,7 @@ bool add_edge(Graph this, size_t id_a, size_t id_b) {
  *  - Cria os vértices
  *  - Garante conexidade com uma árvore de n-1 arestas
  *  - Adiciona arestas aleatórias até atingir o grau de conectividade
- *  - Calcula e armazena a conectividade mínima (min_degree) e atual (current_degree)
+ *  - Calcula e armazena a conectividade mínima (__min_degree) e atual (__current_degree)
  */
 
 void gen_graph(Graph this, size_t n, float percent, bool cycle) {
@@ -418,8 +476,8 @@ void gen_graph(Graph this, size_t n, float percent, bool cycle) {
 
         if (id_a != id_b && add_edge(this, id_a, id_b)) current_edges++;
     }
-    this->current_degree = ((float)current_edges/max_edges)*100;
-    this->min_degree = ((float)(n-1)/max_edges)*100;
+    this->__current_degree = ((float)current_edges/max_edges)*100;
+    this->__min_degree = ((float)(n-1)/max_edges)*100;
 }
 
 /* Função: show_graph
@@ -444,8 +502,8 @@ void show_graph(Graph this) {
     size_t vertex_count = this->__vertex_count;
 
     printf("GRAPH DATA:\n");
-    printf("Current connection degree: %.2f%%\n", this->current_degree);
-    printf("Minimum degree of connection(connected graph): %.2f%%\n", this->min_degree);
+    printf("Current connection degree: %.2f%%\n", this->__current_degree);
+    printf("Minimum degree of connection(connected graph): %.2f%%\n", this->__min_degree);
     printf("\nGraph with %lu vertices:\n", vertex_count);
     
     for (size_t i = 0; i < vertex_count; i++) {
@@ -482,7 +540,7 @@ void show_graph(Graph this) {
  *   Nenhum (void). Imprime a ordem de visita dos vértices na saída padrão.
  */
 
-void print(Graph this, size_t anchor, SearchMethod search){
+void print_graph(Graph this, size_t anchor, SearchMethod search){
     switch (search)
     {
     case 0:
@@ -527,14 +585,17 @@ Graph new_graph() {
     new->__path = NULL;
     new->__vertexes = NULL;
     new->__vertex_count = 0;
-    new->current_degree = 0;
-    new->min_degree = 0;
+    new->__edge_count = 0;
+    new->__current_degree = 0;
+    new->__min_degree = 0;
     
     new->gen_graph = gen_graph;
     new->add_edge = add_edge;
     new->add_vertex = add_vertex;
 
     new->show_graph = show_graph;
-    new->print = print;
+    new->print_graph = print_graph;
+    new->dfs_cycle = dfs_cycle;
+
     return new;
 }

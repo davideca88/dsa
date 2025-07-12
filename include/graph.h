@@ -37,8 +37,9 @@ struct _graph_s {
     void *__path;
     void *__vertexes;
     size_t __vertex_count;
-    float min_degree;
-    float current_degree;
+    size_t __edge_count;
+    float __min_degree;
+    float __current_degree;
 
 // Operações
 //  i. Operações que modificam o grafo
@@ -48,7 +49,8 @@ struct _graph_s {
 
 //  ii. Operações que não modificam o grafo
     void (*show_graph)(Graph);
-    void (*print)(Graph, size_t archor, SearchMethod);
+    void (*print_graph)(Graph, size_t archor, SearchMethod);
+    void (*dfs_cycle)(Graph);
 };
 
 Graph new_graph();
