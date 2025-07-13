@@ -51,6 +51,7 @@ struct _graph_s {
     void (*show_graph)(Graph);
     void (*print_graph)(Graph, size_t archor, SearchMethod);
     void (*dfs_cycle)(Graph);
+    void (*find_all_paths)(Graph, size_t start_node, size_t end_node); //adicionando por mr.AED1 (sem otimização)
 };
 
 Graph new_graph();

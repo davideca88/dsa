@@ -565,6 +565,110 @@ void print_graph(Graph this, size_t anchor, SearchMethod search){
     printf("\n");
 }
 
+/*
+ * Função: _print_found_path (Função Auxiliar)
+ *
+ * Objetivo: Imprimir um caminho que foi encontrado do início ao fim.
+ *
+ * Argumentos:
+ * path[] - array de caminhos
+ * path_len - Tamanho do array
+ * 
+ * Retorno:
+ * Nenhum(void)
+ */
+static void _print_found_path(size_t path[], size_t path_len) {
+    for (size_t i = 0; i < path_len; i++) {
+        printf("%zu", path[i]);
+        if (i < path_len - 1) {
+            printf(" -> ");
+        }
+    }
+    printf("\n");
+}
+
+/*
+ * Função: _find_all_paths_util (Função Auxiliar)
+ *
+ * Objetivo: Encontrar recursivamente todos os caminhos de 'u' para 'd' usando
+ * DFS com backtracking.
+ *
+ * Arrgumentos:
+ * this - ponteiro para o grafo
+ * u - pseudoinicio
+ * d - pseudofim 
+ * path - array de caminhos
+ * path_len tamanho do array
+ */
+static void _find_all_paths_util(Graph this, size_t u, size_t d, bool *visited, size_t *path, size_t path_len) {
+    // 1. Marca o nó atual como visitado e o adiciona ao array do caminho.
+    visited[u] = true;
+    path[path_len] = u;
+    path_len++;
+
+    // 2. Se o nó atual é o destino, encontramos um caminho.
+    if (u == d) {
+        _print_found_path(path, path_len);
+    } else {
+        // 3. Se não for o destino, visite todos os vizinhos recursivamente.
+        struct _vertex_s *vertexes = this->__vertexes;
+        struct _edge_s *edge = vertexes[u].head;
+
+        while (edge) {
+            size_t neighbor = edge->destiny;
+            // Prossiga apenas se o vizinho não foi visitado neste caminho para evitar ciclos.
+            if (!visited[neighbor]) {
+                _find_all_paths_util(this, neighbor, d, visited, path, path_len);
+            }
+            edge = edge->next;
+        }
+    }
+
+    // 4. Backtrack: Libera o nó atual do caminho e o desmarca como visitado.
+    // Importante....... Isso é para permitir que ele seja parte de outros caminhos.
+    visited[u] = false;
+}
+
+/*
+ * Função: find_all_paths (Implementação do ponteiro de função)
+ *
+ * Objetivo: Prepara as estruturas necessárias e inicia a busca por todos os caminhos
+ * entre um nó de origem (start_node) e um de destino (end_node).
+ * 
+ * Argumentos:
+ * this - ponteiro para o grafo
+ * start_node - nó de inicio
+ * end_node - nó de fim
+ */
+void find_all_paths(Graph this, size_t start_node, size_t end_node) {
+    size_t n = this->__vertex_count;
+
+    if (start_node >= n || end_node >= n) {
+        fprintf(stderr, "Erro: Vértice de início ou fim fora dos limites do grafo.\n");
+        return;
+    }
+
+    // Array para marcar os nós visitados no caminho ATUAL.
+    bool *visited = calloc(n, sizeof(bool));
+    // Array para armazenar o caminho ATUAL.
+    size_t *path = malloc(n * sizeof(size_t));
+
+    if (allocation_failed(visited) || allocation_failed(path)) {
+        free(visited); // É seguro chamar free(NULL)
+        free(path);
+        return;
+    }
+
+    printf("Buscando todos os caminhos de %zu para %zu:\n", start_node, end_node);
+
+    // Inicia a busca recursiva a partir do nó de origem.
+    _find_all_paths_util(this, start_node, end_node, visited, path, 0);
+
+    // Libera a memória alocada para esta operação.
+    free(visited);
+    free(path);
+}
+
 /* Função new_graph
  * Objetivo:
  *   Criar e inicializar uma nova estrutura de grafo, atribuindo valores padrão
@@ -596,6 +700,8 @@ Graph new_graph() {
     new->show_graph = show_graph;
     new->print_graph = print_graph;
     new->dfs_cycle = dfs_cycle;
+    //adicionado por mr aed1 
+    new->find_all_paths = find_all_paths;
 
     return new;
 }
