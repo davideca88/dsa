@@ -107,7 +107,7 @@ size_t bfs_dequeue(struct _bfs_queue_s *queue) {
  * Retorno:
  *   Nenhum (void). Atualiza o vetor __path com a sequência de visita em BFS.
  */
-void bfs(Graph this, size_t anchor) {
+void bfs(Graph this, size_t anchor, bool print_tree) {
     struct _vertex_s *vertexes = this->__vertexes;
     size_t vertex_count = this->__vertex_count;
     
@@ -153,12 +153,19 @@ void bfs(Graph this, size_t anchor) {
     // pois o caminho percorrido começa no vértice âncora
     path[path_i] = anchor;
     path_i++;
-    
+
+    if(print_tree) printf("Anchor: %lu\nDistance 0 from anchor:\n%lu", anchor, anchor);
+    bool pflag = true; // Flag p/ impressão da árvore
+
     while(queue.head) {
         queue_head_id = queue.head->id;
         travel = (vertexes[queue_head_id]).head;
 
-        
+        if(print_tree && pflag) {
+            printf("\nDistance %u from anchor:\n", dists[queue_head_id] + 1);
+            pflag = false;
+        }
+            
         while(travel) {
             destiny = travel->destiny; 
             
@@ -169,6 +176,10 @@ void bfs(Graph this, size_t anchor) {
 
                 path[path_i] = destiny;
                 path_i++;
+
+                if(print_tree) {
+                    printf("%lu ", destiny);
+                }
             }
 
             travel = travel->next;
@@ -543,13 +554,17 @@ void show_graph(Graph this) {
 void print_graph(Graph this, size_t anchor, SearchMethod search){
     switch (search)
     {
-    case 0:
-        bfs(this, anchor);
+    case BFS:
+        bfs(this, anchor, false);
         break;
     
-    case 1:
+    case DFS:
         dfs_print(this, anchor);
         break;
+        
+    case BFS_TREE:
+        bfs(this, anchor, true);
+        return;
     }
 
     size_t *path = this->__path;

@@ -14,7 +14,8 @@
 
 typedef enum {
     BFS = 0,
-    DFS = 1
+    DFS = 1,
+    BFS_TREE = 2
 } SearchMethod;
 
 // Cada aresta é uma lista encadeada, onde cada elemento da lista é um destino desse nó
