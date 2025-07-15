@@ -155,14 +155,16 @@ void bfs(Graph this, size_t anchor, bool print_tree) {
     path_i++;
 
     if(print_tree) printf("Anchor: %lu\nDistance 0 from anchor:\n%lu", anchor, anchor);
-    bool pflag = true; // Flag p/ impressão da árvore
 
+    bool pflag = true; // Flags p/ impressão da árvore
+    unsigned pdist;
+    
     while(queue.head) {
         queue_head_id = queue.head->id;
         travel = (vertexes[queue_head_id]).head;
 
-        if(print_tree && pflag) {
-            printf("\nDistance %u from anchor:\n", dists[queue_head_id] + 1);
+        if(print_tree && pflag && pdist != dists[queue_head_id] + 1) {
+            printf("\n\nDistance %u from anchor [%lu]:\n", dists[queue_head_id] + 1, anchor);
             pflag = false;
         }
             
@@ -179,6 +181,8 @@ void bfs(Graph this, size_t anchor, bool print_tree) {
 
                 if(print_tree) {
                     printf("%lu ", destiny);
+                    pdist = dists[queue_head_id] + 1;
+                    pflag = true;
                 }
             }
 
@@ -188,6 +192,8 @@ void bfs(Graph this, size_t anchor, bool print_tree) {
         visited = bfs_dequeue(&queue);
         colours[visited] = BLACK;
     }
+    
+    if(print_tree) putchar('\n');
     
     free(dists);
     free(colours);
