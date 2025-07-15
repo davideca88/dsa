@@ -57,4 +57,7 @@ void bm_keyatributte(const char* in, const char* out, int rep);
 
 void bm_avl_file_price(const char* file_bin, const char* name, unsigned reps, Vector keys);
 
+
+// Função que realiza benchmarks (testes de desempenho) das buscas BFS e DFS em grafos
+// gerados com diferentes tamanhos e graus de conectividade, salvando os resultados em um arquivo.
 void bm_graph(const char* name);
