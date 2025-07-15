@@ -18,6 +18,7 @@
 #include "binary_tree.h"
 #include "../include/avl_tree.h"
 #include "../include/index.h"
+#include "../include/graph.h"
 
 typedef int (*search) (Vector, int, int);
 
