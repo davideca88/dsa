@@ -162,16 +162,18 @@ void bfs(Graph this, size_t anchor, bool print_tree) {
     while(queue.head) {
         queue_head_id = queue.head->id;
         travel = (vertexes[queue_head_id]).head;
-
-        if(print_tree && pflag && pdist != dists[queue_head_id] + 1) {
-            printf("\n\nDistance %u from anchor [%lu]:\n", dists[queue_head_id] + 1, anchor);
-            pflag = false;
-        }
             
         while(travel) {
-            destiny = travel->destiny; 
+            destiny = travel->destiny;
             
             if(colours[destiny] == WHITE) {
+                
+                if(pflag && print_tree && pdist != dists[queue_head_id] + 1) {
+                    printf("\n\nDistance %u from anchor [%lu]:\n", dists[queue_head_id] + 1, anchor);
+                }
+
+                pflag = false;
+                
                 bfs_enqueue(&queue, destiny);
                 colours[destiny] = GRAY;
                 dists[destiny] = dists[queue_head_id] + 1;
@@ -182,13 +184,14 @@ void bfs(Graph this, size_t anchor, bool print_tree) {
                 if(print_tree) {
                     printf("%lu ", destiny);
                     pdist = dists[queue_head_id] + 1;
-                    pflag = true;
                 }
             }
 
             travel = travel->next;
         }
-
+        
+        pflag = true;
+       
         visited = bfs_dequeue(&queue);
         colours[visited] = BLACK;
     }
