@@ -504,12 +504,13 @@ void gen_graph(Graph this, size_t n, float percent, bool cycle) {
  *
  * Argumento:
  *   this - ponteiro para o grafo (Graph) a ser exibido.
+ *   all - true - mostra toda estrutura / false - apresenta apenas os dados
  *
  * Retorno:
  *   Nenhum (void). Apenas imprime os dados na saída padrão.
  */
 
-void show_graph(Graph this) {
+void show_graph(Graph this, bool all) {
     if (this == NULL || this->__vertexes == NULL) {
         printf("Graph is empty!\n");
         return;
@@ -523,23 +524,26 @@ void show_graph(Graph this) {
     printf("Minimum degree of connection(connected graph): %.2f%%\n", this->__min_degree);
     printf("\nGraph with %lu vertices:\n", vertex_count);
     
-    for (size_t i = 0; i < vertex_count; i++) {
-        struct _vertex_s vertex = vertexes[i];
-        printf("Vertex %lu: ", vertex.id);
+    if (all)
+    {
+        for (size_t i = 0; i < vertex_count; i++) {
+            struct _vertex_s vertex = vertexes[i];
+            printf("Vertex %lu: ", vertex.id);
         
-        struct _edge_s *edge = vertex.head;
-        if (edge == NULL) {
-            printf("no connections");
-        } else {
-            while (edge != NULL) {
-                printf("%lu", edge->destiny);
-                edge = edge->next;
-                if (edge != NULL) {
+            struct _edge_s *edge = vertex.head;
+            if (edge == NULL) {
+                printf("no connections");
+            } else {
+                while (edge != NULL) {
+                    printf("%lu", edge->destiny);
+                    edge = edge->next;
+                    if (edge != NULL) {
                     printf(" -> ");
+                    }
                 }
             }
-        }
         printf("\n");
+        }
     }
 }
 
