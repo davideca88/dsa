@@ -650,7 +650,7 @@ void bm_graph(const char* name){
             // Executa BFS e DFS 30 vezes para tirar média dos tempos
             for(unsigned i = 0; i < 30; i++){
                 begin = clock();
-                bfs(g, 0, true); // Executa BFS a partir do vértice 0
+                bfs(g, 0, false); // Executa BFS a partir do vértice 0
                 printf("\n\n");
                 end = clock();
                 // Calcula o tempo de execução e acumula
