@@ -5,7 +5,7 @@
 /* COMO USAR -> NO TERMINAL, EXECUTE:
 make
 gcc ex1.c lib/*.o -o ex1 -lm
-./ex1
+./ex1 > out1.txt
 */
 
 int main(){
