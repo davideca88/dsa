@@ -4,8 +4,12 @@
 
 /* COMO USAR -> NO TERMINAL, EXECUTE:
 make
-gcc ex3.c lib/*.o -o ex3 -lm
-./ex3 > out3.txt
+make run prog=ex3
+
+outros comandos:
+make run-all (executa todos)
+make clean (limpa todos txt e executáveis)
+
 */
 
 int main(){

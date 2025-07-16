@@ -5,8 +5,12 @@
 
 /* COMO USAR -> NO TERMINAL, EXECUTE:
 make
-gcc ex6.c lib/*.o -o ex6 -lm
-./ex6
+make run prog=ex6
+
+outros comandos:
+make run-all (executa todos)
+make clean (limpa todos txt e executáveis)
+
 */
 
 int main(){
