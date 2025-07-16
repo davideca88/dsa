@@ -12,7 +12,7 @@ gcc ex6.c lib/*.o -o ex6 -lm
 int main(){
     srand(time(NULL));
 
-    bm_graph("bm.txt");
+    bm_graph("ex6.txt");
 
     return 0;
 }
