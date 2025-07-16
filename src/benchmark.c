@@ -593,6 +593,101 @@ void bm_avl_file_price(const char* file_bin, const char* name, unsigned reps, Ve
     printf("arquivo salvo!\n");
 }
 
+// Função que realiza benchmarks (testes de desempenho) das buscas BFS e DFS em grafos
+// gerados com diferentes tamanhos e graus de conectividade, salvando os resultados em um arquivo.
+// Recebe como parâmetro o nome do arquivo em que as informações serão salvas.
+
+void bm_graph(const char* name){
+    // Abre um arquivo para escrita com o nome fornecido
+    FILE* file = fopen(name,"w");
+    if(file == NULL){
+        // Se houver erro ao criar o arquivo, exibe uma mensagem e encerra a função
+        printf("error creating file\n");
+        return;
+    }
+
+    // Variáveis para medir o tempo de execução.
+    clock_t begin, end;
+
+    // Cabeçalho do CSV com os campos dos resultados
+    fprintf(file,"execução, quantidade de vertices, grau de conectividade, media_bfs(s), media_dfs(s)\n");
+
+    // Contador de execuções
+    int execucao = 1;
+
+    // Variáveis auxiliares para armazenar tempos de execução
+    int flag = 1;
+    double time_bfs;
+    double time_dfs;
+    double sum_bfs = 0.0;
+    double sum_dfs = 0.0;
+
+    // Vetor com diferentes quantidades de vértices para teste
+    size_t num_vertices[] = {10, 50, 100, 200};
+
+    // Vetor com diferentes percentuais de conectividade (grau) para teste
+    float percents[] = {25.0f, 50.0f, 75.0f, 100.0f};
+
+  
+    // Laço externo: itera sobre os diferentes tamanhos de grafos
+    for(size_t i = 0; i < sizeof(num_vertices)/sizeof(num_vertices[0]); i++ ){
+        size_t n = num_vertices[i];
+
+        // Laço interno: itera sobre os diferentes graus de conectividade
+        for(size_t i = 0; i < sizeof(percents)/sizeof(percents[0]); i++){
+
+            float grau_conectividade = percents[i];
+
+            Graph g = new_graph();
+
+            // Geração do grafo com os parâmetros definidos
+            g->gen_graph(g, n, grau_conectividade, true);
+            
+            // Zera os acumuladores de tempo para as 30 execuções
+            sum_bfs = 0.0;
+            sum_dfs = 0.0;
+
+            // Executa BFS e DFS 30 vezes para tirar média dos tempos
+            for(unsigned i = 0; i < 30; i++){
+                begin = clock();
+                bfs(g, 0, true); // Executa BFS a partir do vértice 0
+                printf("\n\n");
+                end = clock();
+                // Calcula o tempo de execução e acumula
+                time_bfs = ((double)(end-begin))/CLOCKS_PER_SEC;
+                sum_bfs += time_bfs;
+
+                // Início do tempo para DFS
+                begin = clock();
+                dfs_print(g, 0); // Executa DFS a partir do vértice 0
+                printf("\n\n");
+                end = clock();
+                // Calcula o tempo de execução e acumula
+                time_dfs = ((double)(end-begin))/CLOCKS_PER_SEC;
+                sum_dfs += time_dfs;
+            }
+
+            // Cálculo das médias de tempo
+            double media_bfs = sum_bfs/30;
+            double media_dfs = sum_dfs/30;
+
+            // Escreve os resultados no arquivo
+            fprintf(file,"%d,    %d,    %.1f,    %.7f,    %.7f\n", execucao, n, grau_conectividade, media_bfs, media_dfs);
+            execucao += 1;
+            
+        }
+        
+    }
+
+    // Fecha o arquivo após os testes
+    fclose(file);
+    printf("Arquivo salvo com sucesso!\n");
+}
+
+
+
+
+
 //Comentei o código de baixo pois eu mudei a forma de como faço o search.
 
 

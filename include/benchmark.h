@@ -18,6 +18,7 @@
 #include "binary_tree.h"
 #include "../include/avl_tree.h"
 #include "../include/index.h"
+#include "../include/graph.h"
 
 typedef int (*search) (Vector, int, int);
 
@@ -55,3 +56,8 @@ void AB_AVL_bin_sorted(int len, int reps, BinTree t, Avl t2, const char* name);
 void bm_keyatributte(const char* in, const char* out, int rep);
 
 void bm_avl_file_price(const char* file_bin, const char* name, unsigned reps, Vector keys);
+
+
+// Função que realiza benchmarks (testes de desempenho) das buscas BFS e DFS em grafos
+// gerados com diferentes tamanhos e graus de conectividade, salvando os resultados em um arquivo.
+void bm_graph(const char* name);
