@@ -5,12 +5,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "product.h"
-
 #define CHAINING      0
 #define OVERFLOW_AREA 1
 
-#define PRIME 11400714819323198485ULL
+#define PRIME 0x9E3779B1
+
+typedef unsigned long Key;
+typedef unsigned long Offset; 
 
 typedef struct _bucket_s{
     Offset offset;

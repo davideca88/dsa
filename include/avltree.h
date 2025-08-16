@@ -3,11 +3,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
-#include <stdarg.h>
-#include <stdbool.h> 
 
-#define max(A, B) ((A > B) ? A : B)
+#include "macros.h"
+#include "types.h"
 
 #define PREORDER  0
 #define INORDER   1

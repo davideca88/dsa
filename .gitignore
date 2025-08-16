@@ -1,13 +1,7 @@
-teste
-testee
-testeee
-teste.c
-testee.c
-testeee.c
 .vscode
 output
 *.o
 *.d
 .pt_br
-main
 .env
+*test*

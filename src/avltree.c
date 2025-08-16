@@ -1,4 +1,4 @@
-#include "../include/avl_tree.h"
+#include "../include/avltree.h"
 
 // Nó sentinela para reduzir as comparações
 AvlNode _NullNode = {
@@ -14,18 +14,18 @@ Avl new_avl() {
     return NullNode;
 }
 
-int8_t avl_height(Avl t) {
+i8 avl_height(Avl t) {
     return t == NullNode ? 0 : t->height;
 }
 
 void avl_update_height(Avl t) {
-    int8_t hl = t->l->height;
-    int8_t hr = t->r->height;
+    i8 hl = t->l->height;
+    i8 hr = t->r->height;
 
-    t->height = 1 + max(hl, hr);
+    t->height = 1 + MAX(hl, hr);
 }
 
-int8_t avl_balance_factor(Avl t) {
+i8 avl_balance_factor(Avl t) {
     return (avl_height(t->l) - avl_height(t->r));
 }
 
@@ -58,7 +58,7 @@ Avl avl_l_rotate(Avl t) {
 Avl avl_balance(Avl t) {
     avl_update_height(t);
 
-    int8_t bf = avl_balance_factor(t);
+    i8 bf = avl_balance_factor(t);
 
     if(bf > 1) {
         if(avl_balance_factor(t->l) < 0) {
@@ -77,7 +77,7 @@ Avl avl_balance(Avl t) {
     return t;
 }
 
-Avl avl_insert(Avl t, uint32_t data) {
+Avl avl_insert(Avl t, u32 data) {
     if(t == NullNode) {
         Avl new = (Avl) malloc(sizeof(AvlNode));
         new->l = NullNode;
@@ -103,7 +103,7 @@ Avl avl_insert(Avl t, uint32_t data) {
     return avl_balance(t);
 }
 
-Avl avl_search(Avl t, uint32_t data) {
+Avl avl_search(Avl t, u32 data) {
     if(t == NullNode)
         return NULL;
 

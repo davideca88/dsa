@@ -13,37 +13,32 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
-#include "../include/vector.h"
 
 // Tipo nó
-typedef struct node2 {
+struct llist_node {
     int data;
-    struct node2* next;
-} Node2;
+    struct llist_node* next;
+};
 
-typedef struct _list_s* List;
+typedef struct llist* LinkedList;
 
-struct _list_s {
-    Node2 *head; // Cabeça da lista
-    Node2 *tail; // Cauda da lista
+struct llist {
+    struct llist_node *head; // Cabeça da lista
+    struct llist_node *tail; // Cauda da lista
     size_t len; // Tamanho da lista
     // TODO outros dados, se necessário
 };
 
 // Cria uma lista
-List new_list();
+LinkedList new_list();
 
 // Deleta uma lista
-List delete_list(List l);
+LinkedList delete_list(LinkedList l);
 
 // Retorna o dado contido no index i da lista
-int lindex(List l, size_t i);
-
-// Transforma um vetor em uma lista. Retorna o tamanho da lista se conseguiu criar. Se não, retorna INT_MAX
-size_t vector_to_list(Vector v, List l, size_t v_len);
+int lindex(LinkedList l, size_t i);
 
 // Busca sequencial na lista
-char ls_search(List l, int key);
+char ls_search(LinkedList l, int key);
 
 #endif /* _LIST_H */
