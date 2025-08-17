@@ -1,23 +1,15 @@
+
+/*
+ * Nesse commit, esse arquivo não possui serventia nenhuma
+ * Ele só tá aqui por motivos de "não sei"
+ */
+
 #include "../include/llist.h"
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "../include/utils.h"
-
-// Cria uma lista 
-static inline struct llist *_llist_init(size_t data_size) {
-    struct llist *l = (struct llist*) malloc(sizeof(struct llist));
-
-    check_allocation(l);
-    
-    l->head = NULL;
-    l->tail = NULL;
-    l->data_size = data_size;
-    l->len = 0;
-    return l;
-}
 
 // Deleta uma lista
 struct llist *llist_free(struct llist *l) {

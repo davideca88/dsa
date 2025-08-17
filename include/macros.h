@@ -1,14 +1,20 @@
+/*
+ *
+ * Cabeçalho com macros de propósito geral
+ *
+ */
+
 #ifndef _MACROS_H
 #define _MACROS_H
 
 #include <stddef.h>
 
 #ifndef MAX
-#define MAX(a, b) (a) > (b) ? (a) : (b)
+    #define MAX(a, b) (a) > (b) ? (a) : (b)
 #endif // MAX
 
 #ifndef MIN
-#define MIN(a, b) (a) < (b) ? (a) : (b)
+    #define MIN(a, b) (a) < (b) ? (a) : (b)
 #endif // MIN
 
 /*
@@ -32,6 +38,6 @@
  * const de @ptr.
  */
 #define CONTAINER_OF(ptr, type, member) \
-    (type*) ((char *) (ptr) - offsetof((type), (member)))
+    (type*) ((char*) ptr - offsetof(type, member))
 
 #endif // _MACROS_H
