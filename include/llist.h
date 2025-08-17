@@ -11,34 +11,39 @@
 #ifndef _LIST_H
 #define _LIST_H
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <stddef.h>
+#include "types.h"
 
 // Tipo nó
 struct llist_node {
-    int data;
+    void *data;
     struct llist_node* next;
 };
-
-typedef struct llist* LinkedList;
 
 struct llist {
     struct llist_node *head; // Cabeça da lista
     struct llist_node *tail; // Cauda da lista
+    size_t data_size;
     size_t len; // Tamanho da lista
     // TODO outros dados, se necessário
 };
 
 // Cria uma lista
-LinkedList new_list();
+static inline struct llist *_llist_init(size_t data_size);
+
+#define llist_init(type) \
+    _llist_init(sizeof(type))
 
 // Deleta uma lista
-LinkedList delete_list(LinkedList l);
+struct llist *delete_llist(struct llist *l);
+
+// Insere um elemento na lista encadeada
+void llist_insert_head(struct llist *l, void *data);
 
 // Retorna o dado contido no index i da lista
-int lindex(LinkedList l, size_t i);
+void *llist_index(struct llist *l, size_t i);
 
 // Busca sequencial na lista
-char ls_search(LinkedList l, int key);
+char llist_search(struct llist *l, const void* key, comp_fn cmp);
 
 #endif /* _LIST_H */
