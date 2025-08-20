@@ -13,6 +13,8 @@
 
 #include <stddef.h>
 
+#include "macros.h"
+
 struct list_node {
     struct list_node *prev;
     struct list_node *next;
@@ -43,6 +45,19 @@ struct list_head {
  */
 #define LIST_ENTRY(ptr, type, name) \
     CONTAINER_OF(ptr, type, name)
+
+/*
+ * LLIST_FOR_EACH - itera sobre toda a lista
+ *
+ * @head:       cabeça da lista
+ * @pos:        elemento que será iterado (criado e destruído localmente)
+ *
+ * Essa provavelmente não é a melhor mandeira de se fazer isso, mas foi a única
+ * que eu consegui pensar
+ */
+#define LIST_FOR_EACH(head, pos) \
+    for(struct list_node *pos = head.current, *marker = NULL; pos != marker; \
+                                        pos = pos->next, marker = head.current)
 
 /*
  * list_head_init - inicializa a cabeça da lista
