@@ -11,8 +11,6 @@
 
 #include "macros.h"
 
-
-
 struct llist_node {
     struct llist_node *next;
 };
@@ -28,8 +26,8 @@ struct llist_head {
  * @name:       nome da cabeça
  *
  * A cabeça não possui dados além de dados da lista. Ela atua apenas como
- * marcador do início da lista. Por isso, não faz sentido querer usar
- * operações de remoção nesse nó.
+ * marcador do início da lista. Por isso, não faz sentido usar operações de 
+ * remoção nesse nó.
  */
 #define LLIST_HEAD(name) \
     struct llist_head (name)
@@ -48,16 +46,29 @@ struct llist_head {
  * LLIST_FOR_EACH - itera sobre toda a lista
  *
  * @head:       cabeça da lista
- * @pos:        elemento que será iterado
+ * @pos:        elemento que será iterado (criado e destruído localmente)
  */
 #define LLIST_FOR_EACH(head, pos) \
-    for(pos = head.first; pos; pos = pos->next)
+    for(struct llist_node *pos = head.first; pos; pos = pos->next)
 
 /*
  * llist_head_init - inicializa a cabeça da lista
+ *
+ * @head:       cabeça da liista
  */
-static inline struct llist_head llist_head_init(void) {
-    return (struct llist_head) { .first = NULL };
+static inline void llist_head_init(struct llist_head *head)
+{
+    head->first = NULL;
+}
+
+/*
+ * llist_is_empty - verifica se a lista está vazia
+ *
+ * @head:       cabeça da lista
+ */
+static inline int llist_is_empty(struct llist_head *head)
+{
+    return head->first == NULL;
 }
 
 /*
@@ -69,7 +80,8 @@ static inline struct llist_head llist_head_init(void) {
  * @pos:        sucessor da sublista
  */
 static inline void llist_insert(struct llist_head *head, \
-                struct llist_node *new_head, struct llist_node *new_tail) {
+                struct llist_node *new_head, struct llist_node *new_tail)
+{
     new_tail->next = head->first;
     head->first = new_head;
 }
@@ -85,7 +97,8 @@ static inline void llist_insert(struct llist_head *head, \
  * Retorna o elemento cabeça da sublista removida
  */
 static inline struct llist_node *llist_bremoval(struct llist_head *head, \
-                        struct llist_node *rem_tail) {
+                                                    struct llist_node *rem_tail)
+{
     struct llist_node *rem_head = head->first;
     
     head->first = rem_tail->next;
@@ -100,7 +113,8 @@ static inline struct llist_node *llist_bremoval(struct llist_head *head, \
  * @head:       cabeça da lista
  * @new:        nó que será inserido
  */
-static inline void llist_add(struct llist_head *head, struct llist_node *new) {
+static inline void llist_add(struct llist_head *head, struct llist_node *new)
+{
     llist_insert(head, new, new);
 }
 
@@ -113,9 +127,9 @@ static inline void llist_add(struct llist_head *head, struct llist_node *new) {
  * Retorna o endereço do nó removido
  */
 static inline struct llist_node *llist_remove(struct llist_head *head, \
-                                                      struct llist_node *rem) {
+                                                      struct llist_node *rem)
+{
     return llist_bremoval(head, rem);
 }
-
 
 #endif /* _LLIST_H */
