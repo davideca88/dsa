@@ -242,6 +242,14 @@ static inline void list_replace(struct list_node *old, struct list_node *new)
     new->prev->next = new;
 }
 
+static inline void list_swap(struct list_node *node1, struct list_node *node2)
+{
+    struct list_node tmp = *node2;
+
+    list_replace(node1, node2);
+    list_replace(&tmp, node1);
+}
+
 /*
  * list_remove_tail - remove a calda da lista
  *
@@ -296,6 +304,16 @@ static inline void list_rotate_left(struct list_head *head)
 static inline void list_rotate_right(struct list_head *head)
 {
     head->current = head->current->prev;
+}
+
+static inline struct list_node *list_node_next(struct list_node *node)
+{
+    return node->next;
+}
+
+static inline struct list_node *list_node_prev(struct list_node *node)
+{
+    return node->prev;
 }
 
 #endif // _LIST_H

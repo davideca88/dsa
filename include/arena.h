@@ -3,21 +3,22 @@
 
 #include <stddef.h>
 
-#include "llist.h"
+#include "list.h"
 #include "types.h"
 
 // vou precisar da duplamente encadeada
 
 struct _arena_block {
-    struct llist_node node;
-    u8 *ptr;
+    struct list_node node;
+    u8 *prev_end;
+    u8 *buffer;
 };
 
 struct arena {
-    u16 block_count;
-    struct llist_head arena_head;
-    const size_t block_size; 
-    size_t used_space;
+    struct list_head arena_head;
+    const size_t block_size;
+    struct _arena_block *current_block;
+    void *alloc_ptr;
 };
 
 struct arena arena_init(size_t block_size);
