@@ -40,4 +40,12 @@
 #define CONTAINER_OF(ptr, type, member) \
     (type*) ((char*) ptr - offsetof(type, member))
 
+/*
+ * ALIGN_TO - alinha @n para o próximo múltiplo de @alignment
+ * 
+ * @n:          número base
+ * @alignment:  alinhamento
+ */
+#define ALIGN_TO(n, alignment) \
+    ((n + 1) | (alignment - 1) + 1)
 #endif // _MACROS_H

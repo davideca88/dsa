@@ -4,7 +4,10 @@
 #include <stddef.h>
 
 #include "list.h"
+#include "macros.h"
 #include "types.h"
+
+#define ARENA_ALIGNMENT 16
 
 // vou precisar da duplamente encadeada
 
